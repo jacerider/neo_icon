@@ -7,3 +7,4 @@ core_version_requirement: ^10.3
 dependencies:
   - neo:neo
   - neo_config_file:neo_config_file
+  - neo_modal:neo_modal
