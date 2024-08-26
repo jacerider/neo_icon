@@ -1,0 +1,175 @@
+admin.structure:
+  start: structure
+  icon: folder-tree
+  prefix:
+    - admin
+    - local_task
+admin.appearance:
+  start: appearance
+  icon: palette
+  prefix:
+    - admin
+    - local_task
+admin.extend:
+  start: extend
+  icon: layer-group
+  prefix:
+    - admin
+    - local_task
+admin.configuration:
+  start: configuration
+  icon: sliders-v-square
+  prefix:
+    - admin
+    - local_task
+admin.people:
+  word: people
+  icon: users
+  prefix:
+    - admin
+    - local_task
+admin.block_layout:
+  start: block layout
+  icon: cube
+  prefix:
+    - admin
+    - local_task
+admin.display_modes:
+  start: display modes
+  icon: glasses
+  prefix:
+    - admin
+    - local_task
+admin.menus:
+  start: menus
+  icon: list
+  prefix:
+    - admin
+    - local_task
+admin.taxonomy:
+  start: taxonomy
+  icon: tags
+  prefix:
+    - admin
+    - local_task
+admin.terms:
+  word: terms
+  icon: tags
+  prefix:
+    - admin
+    - local_task
+admin.webform:
+  regex: webform
+  icon: thunderstorm
+  prefix:
+    - admin
+    - local_task
+admin.report:
+  word: report
+  icon: analytics
+  prefix:
+    - admin
+    - local_task
+admin.log:
+  word: log
+  icon: laptop-code
+  weight: 10
+  prefix:
+    - admin
+    - local_task
+admin.error:
+  word: error
+  icon: exclamation-triangle
+  prefix:
+    - admin
+    - local_task
+admin.performance:
+  start: performance
+  icon: tachometer-fast
+  prefix:
+    - admin
+    - local_task
+admin.cron:
+  start: cron
+  icon: clock
+  prefix:
+    - admin
+    - local_task
+admin.maintenance_mode:
+  start: maintenance mode
+  icon: user-hard-hat
+  prefix:
+    - admin
+    - local_task
+admin.aliases:
+  word: alias
+  icon: theater-masks
+  prefix:
+    - admin
+    - local_task
+local_task.workflow:
+  word: workflow
+  icon: code-branch
+  prefix:
+    - admin
+    - local_task
+admin.date:
+  word: date
+  icon: alarm-clock
+  prefix:
+    - admin
+    - local_task
+admin.rss:
+  word: rss
+  icon: rss-square
+  prefix:
+    - admin
+    - local_task
+admin.image:
+  word: image
+  icon: file-image
+  prefix:
+    - admin
+    - local_task
+admin.file:
+  word: file
+  icon: file
+  prefix:
+    - admin
+    - local_task
+admin.crop:
+  word: crop
+  icon: crop
+  prefix:
+    - admin
+    - local_task
+admin.text:
+  word: text
+  icon: text-size
+  prefix:
+    - admin
+    - local_task
+admin.name:
+  start: name
+  icon: signature
+  prefix:
+    - admin
+    - local_task
+admin.login:
+  word: login
+  icon: sign-in-alt
+  prefix:
+    - admin
+    - local_task
+admin.load:
+  word: load
+  icon: spinner
+  prefix:
+    - admin
+    - local_task
+admin.loader:
+  word: loader
+  icon: spinner
+  prefix:
+    - admin
+    - local_task

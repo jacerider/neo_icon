@@ -1,0 +1,17 @@
+uuid: 1f039971-82f2-4e81-ab24-d8c404583542
+langcode: en
+status: true
+dependencies:
+  config:
+    - neo_icon.neo_icon_library.brands
+id: brands_zip
+uid: '1'
+filename: brands.zip
+uri: 'public://neo-file/brands.zip'
+parent_type: neo_icon_library
+parent_id: brands
+parent_field: file
+changed: '1628893706'
+dependents:
+  config:
+    - neo_icon.neo_icon_library.brands

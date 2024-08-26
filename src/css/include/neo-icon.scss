@@ -1,0 +1,26 @@
+@use 'neo-icons';
+@use 'sass:map';
+
+@mixin icon($name, $position: before) {
+  $icon: map.get(neo-icons.$icons, $name);
+
+  @if $icon {
+    $library: map.get($icon, 'library');
+    $hex: map.get($icon, 'hex');
+
+    &:#{$position} {
+      display: inline-block;
+      content: $hex;
+      font-family: 'icon-#{$library}' !important; // stylelint-disable-line declaration-no-important
+      -webkit-font-smoothing: antialiased; // sass-lint:disable-line no-vendor-prefixes
+      -moz-osx-font-smoothing: grayscale; // sass-lint:disable-line no-vendor-prefixes
+      font-style: normal;
+      font-variant: normal;
+      font-weight: normal;
+      line-height: 1;
+      @content;
+    }
+  } @else {
+    @content;
+  }
+}

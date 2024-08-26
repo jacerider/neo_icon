@@ -1,0 +1,17 @@
+uuid: c71c7f5e-f81a-4ed9-b9fd-baa0051047d2
+langcode: en
+status: true
+dependencies:
+  config:
+    - neo_icon.neo_icon_library.solid
+id: solid_zip
+uid: '1'
+filename: solid.zip
+uri: 'public://neo-file/solid.zip'
+parent_type: neo_icon_library
+parent_id: solid
+parent_field: file
+changed: '1628893621'
+dependents:
+  config:
+    - neo_icon.neo_icon_library.solid

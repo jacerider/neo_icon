@@ -1,0 +1,194 @@
+<?php
+
+/**
+ * @file
+ * Primary module hooks for Neo Icon module.
+ */
+
+use Drupal\neo_icon\IconElement;
+use Drupal\neo_icon\IconInterface;
+
+/**
+ * Implements hook_theme().
+ */
+function neo_icon_theme($existing, $type, $theme, $path) {
+  $themes = [];
+  $themes['neo_icon_element'] = [
+    'variables' => [
+      'title' => NULL,
+      'attributes' => [],
+      'position' => 'before',
+      'icon' => NULL,
+      'icon_only' => FALSE,
+    ],
+  ];
+  $themes['neo_icon'] = [
+    'variables' => [
+      'icon' => NULL,
+      'attributes' => [],
+      'children' => [],
+    ],
+  ];
+  $themes['neo_icon_library'] = [
+    'render element' => 'element',
+  ];
+  $themes['neo_icon_browser'] = [
+    'variables' => [
+      'libraries' => [],
+      'library_options' => [],
+      'attributes' => [],
+      'loader' => [],
+    ],
+  ];
+  return $themes;
+}
+
+/**
+ * Implements hook_library_info_build().
+ */
+function neo_icon_library_info_build() {
+  $libraries = [];
+  /** @var \Drupal\neo_icon\IconLibraryStorageInterface $storage */
+  $storage = \Drupal::service('entity_type.manager')->getStorage('neo_icon_library');
+  foreach ($storage->loadMultiple() as $library) {
+    /** @var \Drupal\neo_icon\IconLibraryInterface $library */
+    if ($stylesheet = $library->getStylesheet()) {
+      $library_name = $library->getLibraryName();
+      $libraries[$library_name]['css']['theme'][$stylesheet] = [];
+      // Add SVG library if necessary.
+      if ($library->isSvg()) {
+        $libraries[$library_name]['dependencies'][] = 'neo_icon/icon.svg';
+      }
+    }
+  }
+  return $libraries;
+}
+
+/**
+ * Implements hook_page_attachments().
+ */
+function neo_icon_page_attachments(array &$attachments) {
+  /** @var \Drupal\neo_icon\IconLibraryStorageInterface $storage */
+  $storage = \Drupal::service('entity_type.manager')->getStorage('neo_icon_library');
+  foreach ($storage->loadGlobals() as $library) {
+    /** @var \Drupal\neo_icon\IconLibraryInterface $library */
+    $attachments['#attached']['library'][] = 'neo_icon/' . $library->getLibraryName();
+  }
+}
+
+/**
+ * Prepares variables for icon and text display.
+ *
+ * Default template: neo-icon-element.html.twig.
+ *
+ * @param array $variables
+ *   An associative array containing:
+ *   - element: An associative array containing the icon
+ *   - attributes: HTML attributes for the containing element.
+ */
+function template_preprocess_neo_icon_browser(array &$variables) {
+  $variables['search_input'] = [
+    '#type' => 'search',
+    '#attributes' => [
+      'class' => ['neo-icon-browser--search'],
+      'placeholder' => t('Search...'),
+    ],
+  ];
+  if (!empty($variables['library_options']) && count($variables['library_options']) > 1) {
+    $variables['library_input'] = [
+      '#type' => 'select',
+      '#options' => ['' => t('- All Libraries -')] + $variables['library_options'],
+      '#attributes' => [
+        'class' => ['neo-icon-browser--libraries'],
+      ],
+    ];
+  }
+}
+
+/**
+ * Prepares variables for eXo icon library templates.
+ *
+ * Default template: neo-icon-library.html.twig.
+ *
+ * @param array $variables
+ *   An associative array containing:
+ *   - element: An associative array containing the icon
+ *   - attributes: HTML attributes for the containing element.
+ */
+function template_preprocess_neo_icon_library(array &$variables) {
+  /** @var \Drupal\neo_icon\IconLibraryInterface $library */
+  $library = $variables['element']['#neo_icon_library'];
+  $variables['type'] = $library->getType();
+  $variables['content']['browser'] = [
+    '#type' => 'neo_icon_browser',
+    '#libraries' => [$library->id()],
+    '#show_info' => TRUE,
+  ];
+}
+
+/**
+ * Prepares variables for icon and text display.
+ *
+ * Default template: neo-icon-element.html.twig.
+ *
+ * @param array $variables
+ *   An associative array containing:
+ *   - element: An associative array containing the icon
+ *   - attributes: HTML attributes for the containing element.
+ */
+function template_preprocess_neo_icon_element(array &$variables) {
+  $icon = $variables['icon'];
+  // Allow icon_id to be used as #icon.
+  if (is_string($icon)) {
+    /** @var \Drupal\neo_icon\IconRepositoryInterface $repository */
+    $repository = \Drupal::service('neo_icon.repository');
+    $icon = $repository->getIcon(NULL, $icon);
+  }
+  if ($icon instanceof IconInterface) {
+    $variables['icon'] = $icon->render();
+    if (!is_array($variables['title'])) {
+      $variables['icon']['#attributes']['title'] = $variables['title'];
+    }
+  }
+  else {
+    // No icon found. We don't want to render anything.
+    $variables['icon'] = '';
+  }
+}
+
+/**
+ * Prepares variables for icon and text display.
+ *
+ * Default template: neo-icon.html.twig.
+ *
+ * @param array $variables
+ *   An associative array containing:
+ *   - element: An associative array containing the icon
+ *   - attributes: HTML attributes for the containing element.
+ */
+function template_preprocess_neo_icon(array &$variables) {
+  /* @var \Drupal\neo_icon\IconInterface $icon */
+  $icon = $variables['icon'];
+  $variables['tag'] = 'span';
+  $variables['attributes']['class'][] = 'neo-icon';
+  // Allow icon_id to be used as #icon.
+  if (is_string($icon)) {
+    /** @var \Drupal\neo_icon\IconRepositoryInterface $repository */
+    $repository = \Drupal::service('neo_icon.repository');
+    $icon = $repository->getIcon(NULL, $icon);
+  }
+  if ($icon instanceof IconInterface) {
+    $variables['icon'] = $icon;
+    $variables['type'] = $icon->getLibrary()->getType();
+    $variables['tag'] = $icon->getTag();
+    $variables['attributes']['class'][] = 'neo-icon-' . $icon->getLibrary()->getType();
+    $variables['attributes']['class'][] = $icon->getSelector();
+    $variables['attributes']['aria-hidden'] = 'true';
+    $variables['children'] = $icon->getChildren();
+    $variables['#attached']['library'][] = 'neo_icon/' . $icon->getLibrary()->getLibraryName();
+  }
+  else {
+    // No icon found. We don't want to render anything.
+    $variables['icon'] = '';
+  }
+}

@@ -1,0 +1,9 @@
+neo_icon.published:
+  start: published
+  icon: check-circle
+neo_icon.unpublished:
+  start: unpublished
+  icon: circle
+neo_icon.icon_libraries:
+  start: icon libraries
+  icon: icons

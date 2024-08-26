@@ -1,0 +1,10 @@
+uuid: f469f03a-64f3-4790-bc57-db2b773077b1
+langcode: en
+status: false
+dependencies: {  }
+id: duo
+label: Duo
+type: font
+file: duo_zip
+global: false
+weight: -6

@@ -1,0 +1,22 @@
+{
+  "name": "jacerider/neo_icon",
+  "description": "An IconMoon-based icon manager.",
+  "type": "drupal-module",
+  "license": "proprietary",
+  "homepage": "https://github.com/jacerider/neo_icon",
+  "authors": [
+    {
+      "name": "Cyle Carlson (JaceRider)",
+      "email": "jacerider@gmail.com",
+      "role": "Maintainer"
+    }
+  ],
+  "support": {
+    "issues": "https://github.com/jacerider/neo_icon/issues",
+    "source": "https://github.com/jacerider/neo_icon"
+  },
+  "minimum-stability": "dev",
+  "require": {
+    "drupal/core": "^10.3"
+  }
+}

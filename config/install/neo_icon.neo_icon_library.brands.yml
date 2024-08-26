@@ -1,0 +1,10 @@
+uuid: e8d86826-454e-41cc-86c8-561de64ed4a0
+langcode: en
+status: true
+dependencies: {  }
+id: brands
+label: Brands
+type: font
+file: brands_zip
+global: false
+weight: -9

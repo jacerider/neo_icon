@@ -1,0 +1,82 @@
+<?php
+
+/**
+ * @file
+ * Primary module hooks for Neo Icon Local Task module.
+ */
+
+use Drupal\Core\Link;
+use Drupal\neo_icon\IconElement;
+use Drupal\neo_icon\IconElementInterface;
+use Drupal\neo_tooltip\Tooltip;
+
+/**
+ * Implements template_preprocess_admin_block().
+ */
+function neo_icon_admin_preprocess_admin_block(&$variables) {
+  $variables['block']['title'] = new IconElement($variables['block']['title'], NULL, NULL, [
+    'admin',
+    'local_task'
+  ]);
+}
+
+/**
+ * Implements template_preprocess_admin_block_content().
+ */
+function neo_icon_admin_preprocess_admin_block_content(&$variables) {
+  foreach ($variables['content'] as $key => &$item) {
+    $title = new IconElement($item['title'], NULL, NULL, [
+      'admin',
+      'local_task',
+    ]);
+    /** @var \Drupal\Core\Url $url */
+    $url = $item['url'];
+    $attributes = $url->getOption('attributes');
+    $attributes['class'][] = 'block';
+    $url->setOption('attributes', $attributes);
+
+    $item['link'] = Link::fromTextAndUrl($title, $url);
+    if (!empty($item['description'])) {
+      $tooltip = new Tooltip($item['description']);
+      $tooltip->setPlacementToBottomStart();
+      $tooltip->setDelay(200);
+      $tooltip->applyToLink($item['link']);
+      $variables['#attached'] = array_unique(array_merge($variables['#attached'] ?? [], $tooltip->getAttachments()));
+      $item['description'] = '';
+    }
+  }
+}
+
+/**
+ * Implements template_preprocess_page_title().
+ */
+function neo_icon_admin_preprocess_page_title(&$variables) {
+  if (!empty($variables['title']) && \Drupal::service('router.admin_context')->isAdminRoute()) {
+    if (is_array($variables['title'])) {
+      $variables['title'] = \Drupal::service('renderer')->render($variables['title']);
+    }
+    if (!$variables['title'] instanceof IconElementInterface) {
+      $variables['title'] = new IconElement($variables['title'], NULL, NULL, [
+        'admin',
+        'local_task'
+      ]);
+    }
+  }
+}
+
+/**
+ * Implements template_preprocess_links__dropbutton().
+ */
+function neo_icon_admin_preprocess_links__dropbutton(&$variables) {
+  if (!\Drupal::service('router.admin_context')->isAdminRoute()) {
+    return;
+  }
+  foreach ($variables['links'] as $key => &$item) {
+    if (!empty($item['link']['#title'])) {
+      $item['link']['#title'] = new IconElement($item['link']['#title'], NULL, NULL, [
+        'admin',
+        'local_task'
+      ]);
+    }
+  }
+}

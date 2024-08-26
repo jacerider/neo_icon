@@ -1,0 +1,10 @@
+uuid: e09f57b1-c433-4630-80c1-30937ab06cc8
+langcode: en
+status: false
+dependencies: {  }
+id: solid
+label: Solid
+type: font
+file: solid_zip
+global: false
+weight: -7

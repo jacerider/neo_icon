@@ -1,0 +1,17 @@
+neo.icon.data:
+  path: '/api/icons/{libraries}'
+  defaults:
+    _controller: '\Drupal\neo_icon\Controller\IconBrowserController::data'
+    _title: 'Icon Libraries Data'
+    libraries: ''
+  requirements:
+    _access: 'TRUE'
+
+neo.icon.all:
+  path: '/admin/config/neo/icon/all'
+  defaults:
+    _controller: '\Drupal\neo_icon\Controller\IconBrowserController::all'
+    _title: 'Icon Browser'
+    libraries: ''
+  requirements:
+    _permission: 'administer neo_icon'

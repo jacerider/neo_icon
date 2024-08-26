@@ -1,0 +1,17 @@
+uuid: ff2bb2ea-ec73-46df-b7b7-b07181e4980f
+langcode: en
+status: true
+dependencies:
+  config:
+    - neo_icon.neo_icon_library.light
+id: light_zip
+uid: '1'
+filename: light.zip
+uri: 'public://neo-file/light.zip'
+parent_type: neo_icon_library
+parent_id: light
+parent_field: file
+changed: '1628893518'
+dependents:
+  config:
+    - neo_icon.neo_icon_library.light

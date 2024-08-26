@@ -1,0 +1,22 @@
+{#
+/**
+ * @file neo-icon-library.html.twig
+ * Default theme implementation to present Neo library data of type ICON.
+ *
+ * @see template_preprocess_neo_icon_library_icon()
+ *
+ * @ingroup themeable
+ */
+#}
+{%
+  set classes = [
+    'neo-icon-library',
+    'neo-icon-library-' ~ type,
+  ]
+%}
+
+<div{{ attributes.addClass(classes) }}>
+  {% if content %}
+    {{- content -}}
+  {% endif %}
+</div>

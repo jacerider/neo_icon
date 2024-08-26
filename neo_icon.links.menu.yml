@@ -1,0 +1,7 @@
+
+entity.neo_icon.collection:
+  title: 'Icon Libraries'
+  route_name: entity.neo_icon_library.collection
+  description: 'Icon library management and configuration.'
+  parent: system.admin_config_neo
+  weight: 0

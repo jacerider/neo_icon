@@ -1,0 +1,10 @@
+uuid: c382a5f6-d3c2-490b-a6c3-91e26174d488
+langcode: en
+status: true
+dependencies: {  }
+id: regular
+label: Regular
+type: font
+file: regular_zip
+global: true
+weight: -10

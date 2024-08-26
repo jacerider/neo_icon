@@ -1,0 +1,27 @@
+# Icon routing definition
+entity.neo_icon_library.canonical:
+  route_name: entity.neo_icon_library.canonical
+  base_route: entity.neo_icon_library.canonical
+  title: 'View'
+
+entity.neo_icon_library.edit_form:
+  route_name: entity.neo_icon_library.edit_form
+  base_route: entity.neo_icon_library.canonical
+  title: 'Edit'
+
+entity.neo_icon_library.delete_form:
+  route_name:  entity.neo_icon_library.delete_form
+  base_route:  entity.neo_icon_library.canonical
+  title: Delete
+  weight: 10
+
+entity.neo_icon_library.collection:
+  route_name: entity.neo_icon_library.collection
+  base_route: entity.neo_icon_library.collection
+  title: 'Libraries'
+  weight: -10
+
+neo.icon.all:
+  route_name: neo.icon.all
+  base_route: entity.neo_icon_library.collection
+  title: 'Icon Browser'

@@ -1,0 +1,35 @@
+icon.svg:
+  version: VERSION
+  neo: { group: contrib }
+  css:
+    component:
+      src/css/icon.svg.scss: {}
+  js:
+    src/js/icon.svg.ts: {}
+
+icon.browser:
+  version: VERSION
+  neo: { group: contrib }
+  css:
+    component:
+      src/css/icon.browser.scss: {}
+  js:
+    src/js/icon.browser.ts: {}
+  dependencies:
+    - core/once
+    - core/drupal
+    - neo_tooltip/tooltip
+
+# Global SCSS includes.
+# neo_icon.build.includes:
+#   version: VERSION
+#   dependencies: []
+#   weight: -110
+#   build_include:
+#     - scss/globals
+icon.include:
+  version: VERSION
+  dependencies: []
+  neo:
+    include:
+      src/css/include/neo-icon.scss: {}

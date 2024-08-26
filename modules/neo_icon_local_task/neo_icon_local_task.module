@@ -1,0 +1,58 @@
+<?php
+
+/**
+ * @file
+ * Primary module hooks for Neo Icon Local Task module.
+ */
+
+use Drupal\neo_icon\IconElement;
+
+/**
+ * Prepares variables for single local task link templates.
+ *
+ * Default template: menu-local-task.html.twig.
+ *
+ * @param array $variables
+ *   An associative array containing:
+ *   - element: A render element containing:
+ *     - #link: A menu link array with 'title', 'url', and (optionally)
+ *       'localized_options' keys.
+ */
+function neo_icon_local_task_preprocess_menu_local_task(&$variables) {
+  if (isset($variables['link']['#title'])) {
+    $icon = new IconElement($variables['link']['#title'], NULL, NULL, [
+      'local_action',
+      'admin',
+    ]);
+    if ($icon->getIcon()) {
+      $variables['link']['#options']['attributes']['class'][] = 'use-neo-tooltip';
+      $variables['link']['#options']['attributes']['data-tippy-content'] = preg_replace('/<span class=\"visually-hidden\">.+?<\/span>/i', '', (string) $variables['link']['#title']);
+      $variables['link']['#options']['attributes']['data-tippy-placement'] = 'bottom';
+      $variables['#attached']['library'][] = 'neo_tooltip/tooltip';
+      $variables['link']['#title'] = $icon->iconOnly();
+    }
+  }
+}
+
+/**
+ * Prepares variables for single local action link templates.
+ *
+ * Default template: menu-local-action.html.twig.
+ *
+ * @param array $variables
+ *   An associative array containing:
+ *   - element: A render element containing:
+ *     - #link: A menu link array with 'title', 'url', and (optionally)
+ *       'localized_options' keys.
+ */
+function neo_icon_local_task_preprocess_menu_local_action(&$variables) {
+  if (isset($variables['link']['#title'])) {
+    $icon = new IconElement($variables['link']['#title'], NULL, NULL, [
+      'local_action',
+      'admin',
+    ]);
+    if ($icon->getIcon()) {
+      $variables['link']['#title'] = $icon;
+    }
+  }
+}

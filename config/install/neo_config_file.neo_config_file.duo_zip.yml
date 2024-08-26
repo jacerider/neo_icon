@@ -1,0 +1,17 @@
+uuid: 929af9d1-7340-496d-9796-c3ed7309fa35
+langcode: en
+status: true
+dependencies:
+  config:
+    - neo_icon.neo_icon_library.duo
+id: duo_zip
+uid: '1'
+filename: duo.zip
+uri: 'public://neo-file/duo.zip'
+parent_type: neo_icon_library
+parent_id: duo
+parent_field: file
+changed: '1628893005'
+dependents:
+  config:
+    - neo_icon.neo_icon_library.duo

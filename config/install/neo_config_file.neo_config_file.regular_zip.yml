@@ -1,0 +1,17 @@
+uuid: c1eb8c6d-5dc3-46ab-b36c-b55dda90af86
+langcode: en
+status: true
+dependencies:
+  config:
+    - neo_icon.neo_icon_library.regular
+id: regular_zip
+uid: '1'
+filename: regular.zip
+uri: 'public://neo-file/regular.zip'
+parent_type: neo_icon_library
+parent_id: regular
+parent_field: file
+changed: '1628804277'
+dependents:
+  config:
+    - neo_icon.neo_icon_library.regular

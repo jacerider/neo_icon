@@ -1,0 +1,5 @@
+entity.neo_icon.add_form:
+  route_name: entity.neo_icon_library.add_form
+  title: 'Add Icon Package'
+  appears_on:
+    - entity.neo_icon_library.collection
