@@ -22,6 +22,12 @@ admin.configuration:
   prefix:
     - admin
     - local_task
+admin.reroute:
+  start: reroute
+  icon: route
+  prefix:
+    - admin
+    - local_task
 admin.people:
   word: people
   icon: users
@@ -127,6 +133,12 @@ admin.rss:
     - local_task
 admin.image:
   word: image
+  icon: file-image
+  prefix:
+    - admin
+    - local_task
+admin.webp:
+  word: webp
   icon: file-image
   prefix:
     - admin

@@ -28,6 +28,42 @@ local_task.revision:
   prefix:
     - local_task
     - admin
+local_task.import:
+  start: import
+  icon: file-import
+  prefix:
+    - local_task
+    - admin
+local_task.export:
+  start: export
+  icon: file-export
+  prefix:
+    - local_task
+    - admin
+local_task.enable:
+  start: enable
+  icon: play-circle
+  prefix:
+    - local_task
+    - admin
+local_task.disable:
+  start: disable
+  icon: pause-circle
+  prefix:
+    - local_task
+    - admin
+local_task.duplicate:
+  start: duplicate
+  icon: clone
+  prefix:
+    - local_task
+    - admin
+local_task.copy:
+  start: copy
+  icon: copy
+  prefix:
+    - local_task
+    - admin
 local_task.register:
   start: register
   icon: cabinet-filing
