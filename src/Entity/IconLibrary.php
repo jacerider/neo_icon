@@ -486,12 +486,15 @@ class IconLibrary extends ConfigEntityBase implements IconLibraryInterface {
   public function neoConfigFileUpdate(ConfigFileInterface $config_file) {
     /** @var \Drupal\Core\Archiver\ArchiverManager $archiver_manager */
     $archiver_manager = \Drupal::service('plugin.manager.archiver');
-    $zip_uri = $config_file->getFile()->getFileUri();
+    $file = $config_file->getFile();
+    if (!$file) {
+      throw new \Exception(t('Cannot find %file.', ['%file' => $config_file->getConfigUri()]));
+    }
+    $zip_uri = $file->getFileUri();
     $archiver = $archiver_manager->getInstance(['filepath' => $zip_uri]);
     if (!$archiver) {
       throw new \Exception(t('Cannot extract %file, not a valid archive.', ['%file' => $zip_uri]));
     }
-
     $directory = $this->getUri();
     /** @var \Drupal\Core\File\FileSystemInterface $file_system */
     $file_system = \Drupal::service('file_system');
