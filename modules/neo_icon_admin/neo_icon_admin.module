@@ -16,7 +16,6 @@ use Drupal\neo_tooltip\Tooltip;
 function neo_icon_admin_preprocess_admin_block(&$variables) {
   $variables['block']['title'] = new IconElement($variables['block']['title'], NULL, NULL, [
     'admin',
-    'local_task'
   ]);
 }
 
@@ -27,7 +26,6 @@ function neo_icon_admin_preprocess_admin_block_content(&$variables) {
   foreach ($variables['content'] as $key => &$item) {
     $title = new IconElement($item['title'], NULL, NULL, [
       'admin',
-      'local_task',
     ]);
     /** @var \Drupal\Core\Url $url */
     $url = $item['url'];
@@ -58,7 +56,6 @@ function neo_icon_admin_preprocess_page_title(&$variables) {
     if (!$variables['title'] instanceof IconElementInterface) {
       $variables['title'] = new IconElement($variables['title'], NULL, NULL, [
         'admin',
-        'local_task'
       ]);
     }
   }
@@ -75,7 +72,6 @@ function neo_icon_admin_preprocess_links__dropbutton(&$variables) {
     if (!empty($item['link']['#title'])) {
       $item['link']['#title'] = new IconElement($item['link']['#title'], NULL, NULL, [
         'admin',
-        'local_task'
       ]);
     }
   }

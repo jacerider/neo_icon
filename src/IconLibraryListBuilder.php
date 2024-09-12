@@ -45,16 +45,17 @@ class IconLibraryListBuilder extends DraggableListBuilder {
     foreach ($this->getRandomIconNames($entity) as $icon_name) {
       $row['preview']['data'][]['#markup'] = $this->icon(NULL, $icon_name, $entity->id(), [], TRUE);
     }
+    $type = $entity->getType();
     $row['type'] = [
       '#wrapper_attributes' => ['class' => ['td--min', 'td--center']],
       'data' => [
-        '#markup' => $this->icon($entity->getType())->iconOnly(),
+        '#markup' => $this->icon($type, $type === 'font' ? 'font-case' : 'image-polaroid')->iconOnly(),
       ],
     ];
     $row['global'] = [
       '#wrapper_attributes' => ['class' => ['td--min', 'td--center']],
       'data' => [
-        '#markup' => $entity->isGlobal() ? $this->icon($this->t('Global'))->iconOnly() : $this->icon($this->t('Not Global'))->iconOnly(),
+        '#markup' => $entity->isGlobal() ? $this->icon($this->t('Global'), 'globe')->iconOnly() : $this->icon($this->t('Not Global'), 'circle')->iconOnly(),
       ],
     ];
     $row['status'] = [

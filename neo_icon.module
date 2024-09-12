@@ -5,6 +5,7 @@
  * Primary module hooks for Neo Icon module.
  */
 
+use Drupal\neo_icon\IconElement;
 use Drupal\neo_icon\IconInterface;
 
 /**
@@ -40,6 +41,25 @@ function neo_icon_theme($existing, $type, $theme, $path) {
     ],
   ];
   return $themes;
+}
+
+/**
+ * Creates a new IconElement object.
+ *
+ * @param string|null $text
+ *   The text to display with the icon.
+ * @param string|null $icon
+ *   The icon to display.
+ * @param string|null $library
+ *   The library to use for the icon.
+ * @param array $prefix
+ *   The prefix to use for the icon.
+ *
+ * @return \Drupal\neo_icon\IconElement
+ *   The IconElement object.
+ */
+function neo_icon($text = NULL, $icon = NULL, $library = NULL, array $prefix = []): IconElement {
+  return new IconElement($text, $icon, $library, $prefix);
 }
 
 /**

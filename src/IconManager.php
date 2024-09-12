@@ -130,7 +130,7 @@ class IconManager extends DefaultPluginManager implements IconManagerInterface {
     if (is_string($definition['prefix'])) {
       $definition['prefix'] = [$definition['prefix']];
     }
-    if (!empty($definition['prefix'])) {
+    if (!empty($definition['weight'])) {
       $definition['weight'] = 10000 + $definition['weight'];
     }
 
@@ -174,7 +174,7 @@ class IconManager extends DefaultPluginManager implements IconManagerInterface {
       $key = '_noprefix';
       if (!isset($this->definitionCache[$key])) {
         $this->definitionCache[$key] = array_filter($definitions, function ($definition) {
-          return empty($definition['prefix']);
+          return count($definition['prefix']) <= 1;
         });
       }
     }

@@ -1,187 +1,289 @@
+admin.home:
+  start: home
+  icon: home
+  prefix: admin
+admin.front:
+  start: front
+  icon: home
+  prefix: admin
+admin.administration:
+  start: administration
+  icon: tools
+  prefix: admin
 admin.structure:
   start: structure
   icon: folder-tree
-  prefix:
-    - admin
-    - local_task
+  prefix: admin
 admin.appearance:
   start: appearance
   icon: palette
-  prefix:
-    - admin
-    - local_task
+  prefix: admin
 admin.extend:
   start: extend
   icon: layer-group
-  prefix:
-    - admin
-    - local_task
+  prefix: admin
 admin.configuration:
   start: configuration
   icon: sliders-v-square
-  prefix:
-    - admin
-    - local_task
+  prefix: admin
 admin.reroute:
   start: reroute
   icon: route
-  prefix:
-    - admin
-    - local_task
+  prefix: admin
 admin.people:
   word: people
   icon: users
-  prefix:
-    - admin
-    - local_task
+  prefix: admin
 admin.block_layout:
   start: block layout
   icon: cube
-  prefix:
-    - admin
-    - local_task
+  prefix: admin
 admin.display_modes:
   start: display modes
   icon: glasses
-  prefix:
-    - admin
-    - local_task
+  prefix: admin
 admin.menus:
   start: menus
   icon: list
-  prefix:
-    - admin
-    - local_task
+  prefix: admin
 admin.taxonomy:
   start: taxonomy
   icon: tags
-  prefix:
-    - admin
-    - local_task
+  prefix: admin
 admin.terms:
   word: terms
   icon: tags
-  prefix:
-    - admin
-    - local_task
+  prefix: admin
 admin.webform:
   regex: webform
   icon: thunderstorm
-  prefix:
-    - admin
-    - local_task
+  prefix: admin
 admin.report:
   word: report
   icon: analytics
-  prefix:
-    - admin
-    - local_task
+  prefix: admin
 admin.log:
   word: log
   icon: laptop-code
   weight: 10
-  prefix:
-    - admin
-    - local_task
+  prefix: admin
 admin.error:
   word: error
   icon: exclamation-triangle
-  prefix:
-    - admin
-    - local_task
+  prefix: admin
 admin.performance:
   start: performance
   icon: tachometer-fast
-  prefix:
-    - admin
-    - local_task
+  prefix: admin
 admin.cron:
   start: cron
   icon: clock
-  prefix:
-    - admin
-    - local_task
+  prefix: admin
 admin.maintenance_mode:
   start: maintenance mode
   icon: user-hard-hat
-  prefix:
-    - admin
-    - local_task
+  prefix: admin
 admin.aliases:
   word: alias
   icon: theater-masks
-  prefix:
-    - admin
-    - local_task
-local_task.workflow:
+  prefix: admin
+admin.webservices:
+  word: web services
+  icon: globe
+  prefix: admin
+admin.workflow:
   word: workflow
   icon: code-branch
-  prefix:
-    - admin
-    - local_task
+  prefix: admin
 admin.date:
   word: date
   icon: alarm-clock
-  prefix:
-    - admin
-    - local_task
+  prefix: admin
 admin.rss:
   word: rss
   icon: rss-square
-  prefix:
-    - admin
-    - local_task
+  prefix: admin
 admin.image:
   word: image
   icon: file-image
-  prefix:
-    - admin
-    - local_task
+  prefix: admin
 admin.webp:
   word: webp
-  icon: file-image
-  prefix:
-    - admin
-    - local_task
+  icon: image-polaroid
+  prefix: admin
 admin.file:
   word: file
   icon: file
-  prefix:
-    - admin
-    - local_task
+  prefix: admin
 admin.crop:
   word: crop
   icon: crop
-  prefix:
-    - admin
-    - local_task
+  prefix: admin
 admin.text:
   word: text
   icon: text-size
-  prefix:
-    - admin
-    - local_task
+  prefix: admin
 admin.name:
   start: name
   icon: signature
-  prefix:
-    - admin
-    - local_task
+  prefix: admin
 admin.login:
   word: login
   icon: sign-in-alt
-  prefix:
-    - admin
-    - local_task
+  prefix: admin
 admin.load:
   word: load
   icon: spinner
-  prefix:
-    - admin
-    - local_task
+  prefix: admin
 admin.loader:
   word: loader
   icon: spinner
-  prefix:
-    - admin
-    - local_task
+  prefix: admin
+admin.devel:
+  start: devel
+  icon: code
+  prefix: admin
+admin.view:
+  start: view
+  icon: eye
+  prefix: admin
+admin.edit:
+  start: edit
+  icon: edit
+  prefix: admin
+admin.delete:
+  start: delete
+  icon: trash
+  prefix: admin
+admin.revision:
+  start: revision
+  icon: code-branch
+  prefix: admin
+admin.import:
+  start: import
+  icon: file-import
+  prefix: admin
+admin.export:
+  start: export
+  icon: file-export
+  prefix: admin
+admin.enable:
+  start: enable
+  icon: play-circle
+  prefix: admin
+admin.disable:
+  start: disable
+  icon: pause-circle
+  prefix: admin
+admin.duplicate:
+  start: duplicate
+  icon: clone
+  prefix: admin
+admin.copy:
+  start: copy
+  icon: copy
+  prefix: admin
+admin.register:
+  start: register
+  icon: cabinet-filing
+  prefix: admin
+admin.registrations:
+  word: registrations
+  icon: cabinet-filing
+  prefix: admin
+admin.content:
+  start: content
+  icon: file-invoice
+  prefix: admin
+admin.media:
+  start: media
+  icon: photo-video
+  prefix: admin
+admin.add_user:
+  word: add user
+  icon: user-plus
+  prefix: admin
+admin.add:
+  start: add
+  icon: plus
+  prefix: admin
+admin.create:
+  start: create
+  icon: plus
+  prefix: admin
+admin.list:
+  word: list
+  icon: list
+  prefix: admin
+admin.manage_fields:
+  start: manage fields
+  icon: shield
+  prefix: admin
+admin.manage_form_display:
+  start: manage form display
+  icon: shield-alt
+  prefix: admin
+admin.manage_display:
+  start: manage display
+  icon: shield-check
+  prefix: admin
+admin.manage_permissions:
+  start: manage permissions
+  icon: user-shield
+  prefix: admin
+admin.update:
+  word: update
+  icon: cloud-download
+  prefix: admin
+admin.settings:
+  word: settings
+  icon: cog
+  prefix: admin
+admin.uninstall:
+  start: uninstall
+  icon: minus-hexagon
+  prefix: admin
+admin.permissions:
+  start: permissions
+  icon: fingerprint
+  prefix: admin
+admin.profile:
+  word: profile
+  icon: id-badge
+  prefix: admin
+admin.roles:
+  start: roles
+  icon: users-class
+  prefix: admin
+admin.tasks:
+  word: tasks
+  icon: poll-h
+  prefix: admin
+admin.index:
+  start: index
+  icon: th-list
+  prefix: admin
+admin.submissions:
+  start: submissions
+  icon: poll-people
+  prefix: admin
+admin.account_login:
+  word: log in
+  icon: sign-in
+  prefix: admin
+admin.account_reset:
+  word: reset your password
+  icon: user-shield
+  prefix: admin
+admin.account_new:
+  word: create new account
+  icon: user-plus
+  prefix: admin
+admin.preset:
+  word: preset
+  icon: cogs
+  prefix: admin
+admin.variation:
+  word: variation
+  icon: cogs
+  prefix: admin
