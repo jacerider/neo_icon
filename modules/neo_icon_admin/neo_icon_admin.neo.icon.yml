@@ -6,6 +6,10 @@ admin.front:
   start: front
   icon: home
   prefix: admin
+# admin.back:
+#   start: back
+#   icon: backpack
+#   prefix: admin
 admin.administration:
   start: administration
   icon: tools
@@ -151,10 +155,12 @@ admin.edit:
   start: edit
   icon: edit
   prefix: admin
+  weight: -1
 admin.delete:
   start: delete
   icon: trash
   prefix: admin
+  weight: -1
 admin.revision:
   start: revision
   icon: code-branch
@@ -286,4 +292,28 @@ admin.preset:
 admin.variation:
   word: variation
   icon: cogs
+  prefix: admin
+admin.items:
+  word: items
+  icon: ballot
+  prefix: admin
+admin.inbox:
+  word: inbox
+  icon: inbox
+  prefix: admin
+admin.address:
+  start: address
+  icon: address-book
+  prefix: admin
+admin.order:
+  start: order
+  icon: file-invoice-dollar
+  prefix: admin
+admin.commerce:
+  start: commerce
+  icon: store
+  prefix: admin
+admin.cart:
+  start: cart
+  icon: shopping-cart
   prefix: admin

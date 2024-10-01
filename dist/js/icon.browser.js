@@ -1,7 +1,7 @@
 var y = Object.defineProperty;
 var v = (d, e, i) => e in d ? y(d, e, { enumerable: !0, configurable: !0, writable: !0, value: i }) : d[e] = i;
 var s = (d, e, i) => (v(d, typeof e != "symbol" ? e + "" : e, i), i);
-class w {
+class L {
   /**
    * Construct.
    */
@@ -91,7 +91,7 @@ class w {
   placeIcons() {
     const e = [];
     let i = this.limit;
-    if (console.log(this.updateAllowEmpty), this.updateInput && this.updateAllowEmpty) {
+    if (this.updateInput && this.updateAllowEmpty) {
       let t = this.icons.find((o) => o.name === "ban");
       t && (t = Object.assign({}, t), t.empty = !0, t.render = t.render.replace(t.selector, t.selector + " text-alert-500 opacity-60"), e.push(t), i--);
     }
@@ -163,7 +163,7 @@ class w {
   d.behaviors.chatInbox = {
     attach: (i) => {
       e("neo.icon.browser", ".neo-icon-browser", i).forEach((n) => {
-        new w(n);
+        new L(n);
       });
     }
   };

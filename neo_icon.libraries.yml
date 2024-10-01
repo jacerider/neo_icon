@@ -10,9 +10,9 @@ icon.svg:
 icon.browser:
   version: VERSION
   neo: { group: contrib }
-  css:
-    component:
-      src/css/icon.browser.scss: {}
+  # css:
+  #   component:
+  #     src/css/icon.browser.scss: {}
   js:
     src/js/icon.browser.ts: {}
   dependencies:

@@ -19,12 +19,12 @@ use Drupal\neo_modal\Ajax\NeoModalCommand;
  * Usage Example:
  * @code
  * $build['neo_icon'] = [
- *   '#type' => 'neo_icon',
+ *   '#type' => 'neo_icon_select',
  * ];
  * @endcode
  */
-#[RenderElement('neo_icon')]
-final class Icon extends FormElementBase {
+#[RenderElement('neo_icon_select')]
+final class IconSelect extends FormElementBase {
 
   use CompositeFormElementTrait;
 
@@ -103,7 +103,7 @@ final class Icon extends FormElementBase {
       $element['icon']['preview']['#attributes']['class'][] = 'opacity-60';
     }
     $element['icon']['browse'] = [
-      '#type' => 'button',
+      '#type' => 'submit',
       '#title' => new IconElement(t('Browse'), 'search'),
       '#libraries' => $element['#libraries'],
       '#format' => $element['#format'],
@@ -111,6 +111,7 @@ final class Icon extends FormElementBase {
       '#attributes' => [
         'class' => ['ml-2', 'btn-xs'],
       ],
+      '#limit_validation_errors' => [],
       '#field_id' => $id,
       '#ajax' => [
         'callback' => [self::class, 'ajaxCallback'],
@@ -124,6 +125,10 @@ final class Icon extends FormElementBase {
    */
   public static function ajaxCallback(array &$form, FormStateInterface $form_state) {
     $trigger = $form_state->getTriggeringElement();
+    if ($form_state->hasAnyErrors()) {
+      // Remove all form validation messages.
+      \Drupal::messenger()->deleteByType('error');
+    }
     $response = new AjaxResponse();
     $response->addCommand(new NeoModalCommand([
       '#type' => 'neo_icon_browser',
@@ -133,6 +138,7 @@ final class Icon extends FormElementBase {
       '#update_icon' => '#' . $trigger['#field_id'] . '-icon i',
     ], [
       'width' => '100%',
+      'height' => '100%',
       'contentScroll' => TRUE,
     ]));
     return $response;

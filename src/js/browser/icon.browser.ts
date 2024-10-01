@@ -181,7 +181,6 @@ class NeoIconBrowser {
   protected placeIcons() {
     const icons:ExoIcon[] = [];
     let limit = this.limit;
-    console.log(this.updateAllowEmpty);
     if (this.updateInput && this.updateAllowEmpty) {
       let empty = this.icons.find(icon => {
         return icon.name === 'ban';
