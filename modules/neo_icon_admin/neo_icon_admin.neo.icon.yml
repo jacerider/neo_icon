@@ -317,3 +317,11 @@ admin.cart:
   start: cart
   icon: shopping-cart
   prefix: admin
+admin.payment:
+  start: payment
+  icon: money-bill
+  prefix: admin
+admin.wishlist:
+  start: wishlist
+  icon: star-shooting
+  prefix: admin
