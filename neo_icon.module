@@ -5,6 +5,10 @@
  * Primary module hooks for Neo Icon module.
  */
 
+use Drupal\Core\Cache\Cache;
+use Drupal\Core\Config\Entity\ConfigEntityInterface;
+use Drupal\Core\Entity\EntityFormInterface;
+use Drupal\Core\Form\FormStateInterface;
 use Drupal\neo_icon\IconElement;
 use Drupal\neo_icon\IconInterface;
 
@@ -93,6 +97,52 @@ function neo_icon_page_attachments(array &$attachments) {
     /** @var \Drupal\neo_icon\IconLibraryInterface $library */
     $attachments['#attached']['library'][] = 'neo_icon/' . $library->getLibraryName();
   }
+}
+
+/**
+ * Implements hook_form_alter().
+ */
+function neo_icon_form_alter(&$form, $form_state, $form_id) {
+  if ($form_state->getFormObject() instanceof EntityFormInterface) {
+    $entity = $form_state->getFormObject()->getEntity();
+    if ($entity instanceof ConfigEntityInterface) {
+      /** @var \Drupal\neo_icon\IconEntityTypePluginManager $iconPluginManager */
+      $iconPluginManager = \Drupal::service('neo_icon.entity_type.manager');
+      if (!$iconPluginManager->isSupportedEntity($entity)) {
+        return;
+      }
+      if (
+        strpos($form['#form_id'], '_edit_form') === FALSE &&
+        strpos($form['#form_id'], '_add_form') === FALSE &&
+        $form['#form_id'] !== $entity->getEntityTypeId() . '_form'
+      ) {
+        return;
+      }
+      $form['neo_icon'] = [
+        '#type' => 'neo_icon_select',
+        '#title' => t('Icon'),
+        '#default_value' => $iconPluginManager->getEntityIcon($entity),
+        '#weight' => 0,
+      ];
+      $form['#entity_builders'][] = 'neo_icon_form_config_entity_build';
+    }
+  }
+}
+
+/**
+ * Entity form builder for config entities that support icons.
+ */
+function neo_icon_form_config_entity_build($entity_type, ConfigEntityInterface $entity, &$form, FormStateInterface $form_state) {
+  /** @var \Drupal\neo_icon\IconEntityTypePluginManager $iconPluginManager */
+  $iconPluginManager = \Drupal::service('neo_icon.entity_type.manager');
+  $icon = $form_state->getValue('neo_icon');
+  if (!empty($icon) && is_string($icon)) {
+    $iconPluginManager->setEntityIcon($entity, $icon);
+  }
+  else {
+    $iconPluginManager->unsetEntityIcon($entity);
+  }
+  Cache::invalidateTags(['neo_icon']);
 }
 
 /**
@@ -209,5 +259,33 @@ function template_preprocess_neo_icon(array &$variables) {
   else {
     // No icon found. We don't want to render anything.
     $variables['icon'] = '';
+  }
+}
+
+/**
+ * Implements hook_preprocess_table().
+ *
+ * Preprocess list builder tables.
+ */
+function neo_icon_preprocess_table(&$variables) {
+  if ($entityTypeId = \Drupal::routeMatch()->getRouteObject()->getDefault('_entity_list')) {
+    /** @var \Drupal\neo_icon\IconEntityTypePluginManager $iconPluginManager */
+    $iconPluginManager = \Drupal::service('neo_icon.entity_type.manager');
+    if ($iconPluginManager->isSupportedEntityTypeId($entityTypeId)) {
+      foreach ($variables['rows'] as $i => $row) {
+        if (!empty($row['cells'])) {
+          foreach ([
+            'title',
+            'name',
+          ] as $key) {
+            if (isset($row['cells'][$key])) {
+              if (isset($row['cells'][$key]['content'])) {
+                $variables['rows'][$i]['cells'][$key]['content'] = neo_icon($row['cells'][$key]['content'], NULL, NULL, ['entity']);
+              }
+            }
+          }
+        }
+      }
+    }
   }
 }

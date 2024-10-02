@@ -1,0 +1,10 @@
+media_type:
+  label: 'Media Type'
+node_type:
+  label: 'Node Type'
+taxonomy_vocabulary:
+  label: 'Vocabulary'
+commerce_product_type:
+  label: 'Product Type'
+profile_type:
+  label: 'Profile Type'

@@ -2,15 +2,22 @@ services:
   plugin.manager.neo_icon:
     class: Drupal\neo_icon\IconManager
     arguments: ['@module_handler', '@theme_handler', '@cache.discovery']
+
   neo_icon.repository:
     class: Drupal\neo_icon\IconRepository
     arguments: ['@entity_type.manager', '@plugin.manager.neo_icon']
+
   twig.neo_icon:
     class: 'Drupal\neo_icon\TwigExtension\NeoIcon'
     tags:
       - { name: twig.extension }
+
   neo_icon.neo_build_event_subscriber:
     class: '\Drupal\neo_icon\EventSubscriber\NeoBuildEventSubscriber'
     arguments: ['@entity_type.manager', '@file_system', '@file_url_generator']
     tags:
       - { name: 'event_subscriber' }
+
+  neo_icon.entity_type.manager:
+    class: Drupal\neo_icon\IconEntityTypeManager
+    arguments: ['@module_handler', '@cache.discovery']

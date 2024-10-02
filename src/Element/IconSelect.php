@@ -35,10 +35,14 @@ final class IconSelect extends FormElementBase {
     $class = static::class;
     return [
       '#input' => TRUE,
+      '#tree' => TRUE,
       '#process' => [
+        [$class, 'processNeoIcon'],
         [$class, 'processAjaxForm'],
         [$class, 'processGroup'],
-        [$class, 'processNeoIcon'],
+      ],
+      '#element_validate' => [
+        [$class, 'validateNeoIcon'],
       ],
       '#pre_render' => [
         [$class, 'preRenderCompositeFormElement'],
@@ -67,7 +71,7 @@ final class IconSelect extends FormElementBase {
    */
   public static function processNeoIcon(&$element, FormStateInterface $form_state, &$complete_form): array {
     $id = Html::getId('neo-icon-' . implode('_', $element['#parents']));
-    $defaultValue = $element['#default_value'];
+    $defaultValue = $element['#default_value'] ?? NULL;
     $defaultIconName = $defaultValue;
     switch ($element['#format']) {
       case 'selector':
@@ -80,7 +84,6 @@ final class IconSelect extends FormElementBase {
         }
         break;
     }
-    $element['#element_validate'][] = [static::class, 'elementValidate'];
     $element['value'] = [
       '#attributes' => [
         'id' => $id . '-value',
@@ -113,11 +116,21 @@ final class IconSelect extends FormElementBase {
       ],
       '#limit_validation_errors' => [],
       '#field_id' => $id,
+      '#submit' => [
+        [self::class, 'submitBrowse'],
+      ],
       '#ajax' => [
         'callback' => [self::class, 'ajaxCallback'],
       ],
     ];
     return $element;
+  }
+
+  /**
+   * Submit browse button.
+   */
+  public static function submitBrowse(array &$form, FormStateInterface $form_state) {
+    $form_state->setRebuild(TRUE);
   }
 
   /**
@@ -147,7 +160,7 @@ final class IconSelect extends FormElementBase {
   /**
    * {@inheritdoc}
    */
-  public static function elementValidate($element, FormStateInterface $form_state, $form) {
+  public static function validateNeoIcon($element, FormStateInterface $form_state, $form) {
     $value = $form_state->getValue($element['#parents']);
     $value = $value['value'] ?? NULL;
     $form_state->setValueForElement($element, $value);
