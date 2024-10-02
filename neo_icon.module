@@ -9,6 +9,8 @@ use Drupal\Core\Cache\Cache;
 use Drupal\Core\Config\Entity\ConfigEntityInterface;
 use Drupal\Core\Entity\EntityFormInterface;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Link;
+use Drupal\Core\Url;
 use Drupal\neo_icon\IconElement;
 use Drupal\neo_icon\IconInterface;
 
@@ -280,12 +282,27 @@ function neo_icon_preprocess_table(&$variables) {
           ] as $key) {
             if (isset($row['cells'][$key])) {
               if (isset($row['cells'][$key]['content'])) {
-                $variables['rows'][$i]['cells'][$key]['content'] = neo_icon($row['cells'][$key]['content'], NULL, NULL, ['entity']);
+                $variables['rows'][$i]['cells'][$key]['content'] = neo_icon($row['cells'][$key]['content'], NULL, NULL, ['entity.' . $entityTypeId]);
               }
             }
           }
         }
       }
+    }
+  }
+}
+
+function neo_icon_preprocess_node_add_list(&$variables) {
+  $variables['types'] = [];
+  if (!empty($variables['content'])) {
+    foreach ($variables['content'] as $type) {
+      $variables['types'][$type->id()] = [
+        'type' => $type->id(),
+        'add_link' => Link::fromTextAndUrl(neo_icon($type->label(), NULL, NULL, ['entity.node']), Url::fromRoute('node.add', ['node_type' => $type->id()]))->toString(),
+        'description' => [
+          '#markup' => $type->getDescription(),
+        ],
+      ];
     }
   }
 }

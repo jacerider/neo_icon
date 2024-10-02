@@ -127,6 +127,10 @@ admin.text:
   word: text
   icon: text-size
   prefix: admin
+admin.unapproved:
+  start: unapproved
+  icon: question-circle
+  prefix: admin
 admin.name:
   start: name
   icon: signature

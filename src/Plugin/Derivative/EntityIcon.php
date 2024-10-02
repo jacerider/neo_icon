@@ -45,13 +45,19 @@ final class EntityIcon extends DeriverBase implements ContainerDeriverInterface 
         continue;
       }
       $entityType = $this->entityTypeManager->getDefinition($entityTypeId);
-      $bundleInfo = $this->bundleManager->getBundleInfo($entityType->getBundleOf());
+      $bundleOf = $entityType->getBundleOf();
+      $bundleInfo = $this->bundleManager->getBundleInfo($bundleOf);
       foreach ($bundleInfo as $bundleId => $bundle) {
         $entityType = $this->entityTypeManager->getStorage($entityTypeId)->load($bundleId);
         if ($icon = $this->iconPluginManager->getEntityIcon($entityType)) {
           $this->derivatives[$entityTypeId . '.' . $bundleId] = [
             'icon' => $icon,
             'exact' => strtolower($entityType->label()),
+            'prefix' => [
+              'entity',
+              'entity.' . $entityTypeId,
+              'entity.' . $bundleOf,
+            ],
           ] + $base_plugin_definition;
         }
       }
