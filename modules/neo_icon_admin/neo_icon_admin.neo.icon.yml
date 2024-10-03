@@ -217,6 +217,10 @@ admin.add:
   start: add
   icon: plus
   prefix: admin
+admin.place:
+  start: place
+  icon: plus
+  prefix: admin
 admin.create:
   start: create
   icon: plus
