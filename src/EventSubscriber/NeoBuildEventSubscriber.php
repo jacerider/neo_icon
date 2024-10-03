@@ -57,7 +57,7 @@ class NeoBuildEventSubscriber implements EventSubscriberInterface {
     $directory = 'public://neo-build/neo-icon';
     $destination = $directory . '/neo-icons.scss';
     $this->fileSystem->prepareDirectory($directory, FileSystemInterface::CREATE_DIRECTORY);
-    $this->fileSystem->saveData(implode("\n", $css), $destination, FileExists::Rename);
+    $this->fileSystem->saveData(implode("\n", $css), $destination, FileExists::Replace);
     $url = $event->getDocRoot() . ltrim($this->fileUrlGenerator->generateString($destination), '/');
     foreach ($config['scopes'] as $scopeId => &$scope) {
       $scope['vite']['scssInclude'][] = dirname($url);
