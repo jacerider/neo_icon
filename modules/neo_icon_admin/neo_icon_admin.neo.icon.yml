@@ -225,6 +225,10 @@ admin.create:
   start: create
   icon: plus
   prefix: admin
+admin.select:
+  start: select
+  icon: check-square
+  prefix: admin
 admin.list:
   word: list
   icon: list
