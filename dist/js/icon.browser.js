@@ -1,6 +1,6 @@
 var y = Object.defineProperty;
 var v = (d, e, i) => e in d ? y(d, e, { enumerable: !0, configurable: !0, writable: !0, value: i }) : d[e] = i;
-var s = (d, e, i) => (v(d, typeof e != "symbol" ? e + "" : e, i), i);
+var s = (d, e, i) => v(d, typeof e != "symbol" ? e + "" : e, i);
 class L {
   /**
    * Construct.
