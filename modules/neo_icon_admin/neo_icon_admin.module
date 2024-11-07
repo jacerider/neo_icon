@@ -69,7 +69,7 @@ function neo_icon_admin_preprocess_links__dropbutton(&$variables) {
     return;
   }
   foreach ($variables['links'] as $key => &$item) {
-    if (!empty($item['link']['#title'])) {
+    if (!empty($item['link']['#title']) && !$item['link']['#title'] instanceof IconElementInterface) {
       $item['link']['#title'] = new IconElement($item['link']['#title'], NULL, NULL, [
         'admin',
       ]);
