@@ -3,6 +3,7 @@
 namespace Drupal\neo_icon;
 
 use Drupal\Component\Utility\ToStringTrait;
+use Drupal\neo_tooltip\Tooltip;
 
 /**
  * The icon element.
@@ -67,6 +68,13 @@ class IconElement implements IconElementInterface {
   protected $iconOnly = FALSE;
 
   /**
+   * If true will show as tooltip.
+   *
+   * @var bool
+   */
+  protected $asTooltip = FALSE;
+
+  /**
    * The icon object.
    *
    * @var \Drupal\neo_icon\IconInterface
@@ -105,8 +113,16 @@ class IconElement implements IconElementInterface {
   /**
    * {@inheritdoc}
    */
-  public function iconOnly($icon_only = TRUE) {
+  public function iconOnly($icon_only = TRUE): self {
     $this->iconOnly = $icon_only;
+    return $this;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function asTooltip($as_tooltip = TRUE): self {
+    $this->asTooltip = $as_tooltip;
     return $this;
   }
 
@@ -178,6 +194,10 @@ class IconElement implements IconElementInterface {
         '#theme' => 'neo_icon',
         '#icon' => $icon,
       ];
+    }
+    if ($this->asTooltip) {
+      $tooltip = new Tooltip($text);
+      $tooltip->applyTo($markup);
     }
     $output = $this->renderer()->render($markup);
     return $output;

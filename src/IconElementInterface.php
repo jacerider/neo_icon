@@ -16,8 +16,20 @@ interface IconElementInterface extends MarkupInterface {
    *   (optional) Whether to hide the string and only show the icon.
    *
    * @return $this
+   *   The current instance of the IconElement class.
    */
-  public function iconOnly($icon_only = TRUE);
+  public function iconOnly($icon_only = TRUE): self;
+
+  /**
+   * Sets the icon to be displayed as a tooltip.
+   *
+   * @param bool $as_tooltip
+   *   (optional) Whether to display the icon as a tooltip. Defaults to TRUE.
+   *
+   * @return $this
+   *   The current instance of the IconElement class.
+   */
+  public function asTooltip($as_tooltip = TRUE): self;
 
   /**
    * Set the icon position. Either 'before' or 'after'.
