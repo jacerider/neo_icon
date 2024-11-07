@@ -165,6 +165,10 @@ admin.delete:
   icon: trash
   prefix: admin
   weight: -1
+admin.remove:
+  start: remove
+  icon: trash
+  prefix: admin
 admin.revision:
   start: revision
   icon: code-branch
@@ -336,4 +340,12 @@ admin.payment:
 admin.wishlist:
   start: wishlist
   icon: star-shooting
+  prefix: admin
+admin.sort:
+  start: sort
+  icon: sort-circle
+  prefix: admin
+admin.reorder:
+  start: reorder
+  icon: sort-circle
   prefix: admin
