@@ -77,4 +77,4 @@
     }, !1);
   }
 })();
-//# sourceMappingURL=icon.svg.js.map
+//# sourceMappingURL=icon-svg.js.map

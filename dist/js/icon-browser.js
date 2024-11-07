@@ -162,10 +162,10 @@ class L {
 (function(d, e) {
   d.behaviors.chatInbox = {
     attach: (i) => {
-      e("neo.icon.browser", ".neo-icon-browser", i).forEach((n) => {
+      e("neo.icon-browser", ".neo-icon-browser", i).forEach((n) => {
         new L(n);
       });
     }
   };
 })(Drupal, once);
-//# sourceMappingURL=icon.browser.js.map
+//# sourceMappingURL=icon-browser.js.map

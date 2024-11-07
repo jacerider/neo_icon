@@ -8,8 +8,8 @@ class NeoIconBrowser {
   protected pagerPrev:NodeListOf<HTMLElement>;
   protected pagerNext:NodeListOf<HTMLElement>;
   protected infoPages:HTMLElement;
-  protected iconsAll: Array<ExoIcon> = [];
-  protected icons: Array<ExoIcon> = [];
+  protected iconsAll: Array<NeoIcon> = [];
+  protected icons: Array<NeoIcon> = [];
   protected limit:number = 80;
   protected page:number = 1;
   protected searchTimer:NodeJS.Timeout|undefined;
@@ -67,7 +67,7 @@ class NeoIconBrowser {
   /**
    * Fetch icon data.
    */
-  protected fetchData = async ():Promise<Array<ExoIcon>> => {
+  protected fetchData = async ():Promise<Array<NeoIcon>> => {
     let url = drupalSettings.path.baseUrl + 'api/icons';
     if (this.element.dataset.libraries) {
       const libraries = JSON.parse(this.element.dataset.libraries) as Array<string>;
@@ -179,7 +179,7 @@ class NeoIconBrowser {
   }
 
   protected placeIcons() {
-    const icons:ExoIcon[] = [];
+    const icons:NeoIcon[] = [];
     let limit = this.limit;
     if (this.updateInput && this.updateAllowEmpty) {
       let empty = this.icons.find(icon => {

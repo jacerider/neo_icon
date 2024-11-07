@@ -82,7 +82,7 @@ function neo_icon_library_info_build() {
       $libraries[$library_name]['css']['theme'][$stylesheet] = [];
       // Add SVG library if necessary.
       if ($library->isSvg()) {
-        $libraries[$library_name]['dependencies'][] = 'neo_icon/icon.svg';
+        $libraries[$library_name]['dependencies'][] = 'neo_icon/icon-svg';
       }
     }
   }

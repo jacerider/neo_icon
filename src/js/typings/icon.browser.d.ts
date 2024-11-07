@@ -1,8 +1,4 @@
-// interface ExoIcons {
-//   [index: string]: ExoIcon;
-// }
-
-interface ExoIcon {
+interface NeoIcon {
   name: string;
   hex: string;
   selector: string;

@@ -51,7 +51,7 @@ class IconBrowser extends RenderElementBase {
       '#loader' => 'wave',
       '#title' => t('Loading'),
     ];
-    $element['#attached']['library'][] = 'neo_icon/icon.browser';
+    $element['#attached']['library'][] = 'neo_icon/icon-browser';
     /** @var \Drupal\neo_icon\IconLibraryStorageInterface $storage */
     $storage = \Drupal::entityTypeManager()->getStorage('neo_icon_library');
     $ignore_status = !empty($element['#libraries']);
