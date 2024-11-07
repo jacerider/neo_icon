@@ -7,6 +7,12 @@ neo_icon.published:
 neo_icon.unpublished:
   start: unpublished
   icon: circle
+neo_icon.enabled:
+  start: enabled
+  icon: check-circle
+neo_icon.disabled:
+  start: disabled
+  icon: circle
 neo_icon.icon_libraries:
   start: icon libraries
   icon: icons
