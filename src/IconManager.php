@@ -138,7 +138,12 @@ class IconManager extends DefaultPluginManager implements IconManagerInterface {
       throw new PluginException(sprintf('Neo Icon property (%s) definition "prefix" should be an array of strings.', $plugin_id));
     }
 
-    $definition['prefix'][] = $definition['provider'];
+    if (empty($definition['prefix'])) {
+      $definition['prefix'][] = '_any';
+    }
+    if (!in_array($definition['provider'], $definition['prefix'])) {
+      $definition['prefix'] = array_merge([$definition['provider']], $definition['prefix']);
+    }
   }
 
   /**
@@ -163,7 +168,7 @@ class IconManager extends DefaultPluginManager implements IconManagerInterface {
             }
             // If we didn't find a match and the prefix is only the provider
             // it is allowed to be used as a fallback.
-            if (!isset($this->definitionCache[$key][$id]) && count($definition['prefix']) === 1) {
+            if (!isset($this->definitionCache[$key][$id]) && in_array('_any', $definition['prefix'])) {
               $this->definitionCache[$key][$id] = $definition;
             }
           }
@@ -174,7 +179,7 @@ class IconManager extends DefaultPluginManager implements IconManagerInterface {
       $key = '_noprefix';
       if (!isset($this->definitionCache[$key])) {
         $this->definitionCache[$key] = array_filter($definitions, function ($definition) {
-          return count($definition['prefix']) <= 1;
+          return in_array('_any', $definition['prefix']);
         });
       }
     }
