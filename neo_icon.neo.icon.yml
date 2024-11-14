@@ -4,15 +4,33 @@ neo_icon.entity:
 neo_icon.published:
   start: published
   icon: check-circle
+neo_icon.publish:
+  start: publish
+  icon: check-circle
 neo_icon.unpublished:
   start: unpublished
+  icon: circle
+neo_icon.unpublish:
+  start: unpublish
   icon: circle
 neo_icon.enabled:
   start: enabled
   icon: check-circle
+neo_icon.enable:
+  start: enable
+  icon: check-circle
 neo_icon.disabled:
   start: disabled
   icon: circle
+neo_icon.disable:
+  start: disable
+  icon: circle
+neo_icon.revert:
+  start: revert
+  icon: undo
+neo_icon.reset:
+  start: reset
+  icon: trash-undo
 neo_icon.icon_libraries:
   start: icon libraries
   icon: icons
