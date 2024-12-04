@@ -2,35 +2,41 @@ neo_icon.entity:
   deriver: 'Drupal\neo_icon\Plugin\Derivative\EntityIcon'
   prefix: entity
 neo_icon.published:
-  start: published
+  word: published
   icon: check-circle
 neo_icon.publish:
-  start: publish
+  word: publish
   icon: check-circle
 neo_icon.unpublished:
-  start: unpublished
+  word: unpublished
   icon: circle
 neo_icon.unpublish:
-  start: unpublish
+  word: unpublish
   icon: circle
 neo_icon.enabled:
-  start: enabled
+  word: enabled
   icon: check-circle
 neo_icon.enable:
-  start: enable
+  word: enable
   icon: check-circle
 neo_icon.disabled:
-  start: disabled
+  word: disabled
   icon: circle
 neo_icon.disable:
-  start: disable
+  word: disable
+  icon: circle
+neo_icon.yes:
+  word: 'yes'
+  icon: check-circle
+neo_icon.no:
+  word: 'no'
   icon: circle
 neo_icon.revert:
-  start: revert
+  word: revert
   icon: undo
 neo_icon.reset:
-  start: reset
+  word: reset
   icon: trash-undo
 neo_icon.icon_libraries:
-  start: icon libraries
+  word: icon libraries
   icon: icons
