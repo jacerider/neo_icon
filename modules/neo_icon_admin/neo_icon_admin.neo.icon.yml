@@ -261,6 +261,7 @@ admin.settings:
   word: settings
   icon: cog
   prefix: admin
+  weight: 50
 admin.uninstall:
   start: uninstall
   icon: minus-hexagon
