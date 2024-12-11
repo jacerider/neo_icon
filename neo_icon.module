@@ -69,6 +69,21 @@ function neo_icon($text = NULL, $icon = NULL, $library = NULL, array $prefix = [
 }
 
 /**
+ * Creates a new IconElement object.
+ *
+ * @param string|null $text
+ *   The text to display with the icon.
+ * @param string|null $icon
+ *   The icon to display.
+ *
+ * @return \Drupal\neo_icon\IconElement
+ *   The IconElement object.
+ */
+function neo_admin_icon($text = NULL, $icon = NULL): IconElement {
+  return new IconElement($text, $icon, NULL, ['admin']);
+}
+
+/**
  * Implements hook_library_info_build().
  */
 function neo_icon_library_info_build() {
