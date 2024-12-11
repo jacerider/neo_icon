@@ -8,7 +8,7 @@ services:
     arguments: ['@entity_type.manager', '@plugin.manager.neo_icon']
 
   twig.neo_icon:
-    class: 'Drupal\neo_icon\TwigExtension\NeoIcon'
+    class: 'Drupal\neo_icon\TwigExtension'
     tags:
       - { name: twig.extension }
 

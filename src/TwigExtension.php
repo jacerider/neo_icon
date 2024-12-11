@@ -1,8 +1,9 @@
 <?php
 
-namespace Drupal\neo_icon\TwigExtension;
+namespace Drupal\neo_icon;
 
 use Twig\Extension\AbstractExtension;
+use Twig\TwigFilter;
 use Twig\TwigFunction;
 
 /**
@@ -11,7 +12,7 @@ use Twig\TwigFunction;
  * This provides a Twig extension that registers the {{ icon() }} extension
  * to Twig.
  */
-class NeoIcon extends AbstractExtension {
+class TwigExtension extends AbstractExtension {
 
   /**
    * Gets a unique identifier for this Twig extension.
@@ -33,6 +34,15 @@ class NeoIcon extends AbstractExtension {
   }
 
   /**
+   * {@inheritdoc}
+   */
+  public function getFilters() {
+    return [
+      new TwigFilter('icon_only', [$this, 'iconOnly']),
+    ];
+  }
+
+  /**
    * Render the icon.
    *
    * @param string $icon
@@ -47,6 +57,16 @@ class NeoIcon extends AbstractExtension {
       '#icon' => $icon,
     ];
     return $build;
+  }
+
+  /**
+   * Add classes to a renderable array.
+   */
+  public function iconOnly($icon, $iconOnly = TRUE) {
+    if ($icon instanceof IconElement) {
+      $icon->iconOnly($iconOnly);
+    }
+    return $icon;
   }
 
 }
