@@ -3,12 +3,15 @@
 namespace Drupal\neo_icon;
 
 use Drupal\Component\Utility\ToStringTrait;
+use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\neo_tooltip\Tooltip;
 
 /**
  * The icon element.
  */
 class IconElement implements IconElementInterface {
+
+  use StringTranslationTrait;
   use ToStringTrait;
 
   /**
@@ -167,6 +170,10 @@ class IconElement implements IconElementInterface {
     $text = $this->text ?? '';
     if ($rendered && is_array($this->text)) {
       $text = $this->renderer()->render($text);
+    }
+    if (is_string($text)) {
+      // phpcs:ignore
+      $text = $this->t($text);
     }
     return $text;
   }
