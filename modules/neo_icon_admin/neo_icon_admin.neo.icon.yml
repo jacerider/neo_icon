@@ -160,6 +160,11 @@ admin.edit:
   icon: edit
   prefix: admin
   weight: -1
+admin.customize:
+  start: customize
+  icon: edit
+  prefix: admin
+  weight: -1
 admin.delete:
   start: delete
   icon: trash
@@ -191,6 +196,10 @@ admin.disable:
   prefix: admin
 admin.duplicate:
   start: duplicate
+  icon: clone
+  prefix: admin
+admin.clone:
+  start: clone
   icon: clone
   prefix: admin
 admin.copy:
