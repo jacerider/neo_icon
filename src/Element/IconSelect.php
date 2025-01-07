@@ -48,7 +48,6 @@ final class IconSelect extends FormElementBase {
         [$class, 'preRenderCompositeFormElement'],
         [$class, 'preRenderGroup'],
       ],
-      // '#theme_wrappers' => ['form_element'],
       '#libraries' => [],
       // Can be name, selector.
       '#format' => 'name',
