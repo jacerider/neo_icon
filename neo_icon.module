@@ -139,9 +139,20 @@ function neo_icon_form_alter(&$form, $form_state, $form_id) {
         '#type' => 'neo_icon_select',
         '#title' => t('Icon'),
         '#default_value' => $iconPluginManager->getEntityIcon($entity),
+        '#parents' => ['neo_icon'],
         '#weight' => 0,
       ];
       $form['#entity_builders'][] = 'neo_icon_form_config_entity_build';
+      // Special handling for media types to avoid core error.
+      if ($entity->getEntityTypeId() === 'media_type') {
+        if (empty($form['source_dependent']['source_configuration'])) {
+          unset($form['neo_icon']);
+        }
+        else {
+          $form['source_dependent']['neo_icon'] = $form['neo_icon'];
+          unset($form['neo_icon']);
+        }
+      }
     }
   }
 }
