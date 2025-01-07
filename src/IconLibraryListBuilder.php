@@ -41,28 +41,34 @@ class IconLibraryListBuilder extends DraggableListBuilder {
       '#url' => $entity->toUrl('canonical'),
     ];
     $row['title']['data'][]['#markup'] = ' <small>(' . $entity->id() . ')</small>';
-    $row['preview']['#wrapper_attributes'] = ['class' => ['td--min']];
+    $row['title']['#neo_style'] = 'heading';
+
     foreach ($this->getRandomIconNames($entity) as $icon_name) {
       $row['preview']['data'][]['#markup'] = $this->icon(NULL, $icon_name, $entity->id(), [], TRUE);
     }
+    $row['preview']['#neo_size'] = 'min';
+
     $type = $entity->getType();
     $row['type'] = [
-      '#wrapper_attributes' => ['class' => ['td--min', 'td--center']],
       'data' => [
         '#markup' => $this->icon($type, $type === 'font' ? 'font-case' : 'image-polaroid')->iconOnly(),
       ],
+      '#neo_size' => 'min',
+      '#neo_align' => 'center',
     ];
     $row['global'] = [
-      '#wrapper_attributes' => ['class' => ['td--min', 'td--center']],
       'data' => [
         '#markup' => $entity->isGlobal() ? $this->icon($this->t('Global'), 'globe')->iconOnly() : $this->icon($this->t('Not Global'), 'circle')->iconOnly(),
       ],
+      '#neo_size' => 'min',
+      '#neo_align' => 'center',
     ];
     $row['status'] = [
-      '#wrapper_attributes' => ['class' => ['td--min', 'td--center']],
       'data' => [
         '#markup' => $entity->status() ? $this->icon($this->t('Published'))->iconOnly() : $this->icon($this->t('Unpublished'))->iconOnly(),
       ],
+      '#neo_size' => 'min',
+      '#neo_align' => 'center',
     ];
     return $row + parent::buildRow($entity);
   }
