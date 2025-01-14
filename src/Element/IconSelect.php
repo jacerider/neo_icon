@@ -97,7 +97,7 @@ final class IconSelect extends FormElementBase {
     $element['icon']['preview'] = [
       '#theme' => 'neo_icon',
       '#icon' => $defaultIconName ?: $element['#empty_icon'],
-      '#prefix' => '<span id="' . $id . '-icon" class="neo-icon-element--icon text-2xl">',
+      '#prefix' => '<span id="' . $id . '-icon" class="neo-icon-element--icon text-2xl mr-2">',
       '#suffix' => '</span>',
     ];
     if (!$defaultIconName) {
@@ -111,7 +111,7 @@ final class IconSelect extends FormElementBase {
       '#format' => $element['#format'],
       '#value' => 'search',
       '#attributes' => [
-        'class' => ['ml-2', 'btn-xs'],
+        'class' => ['btn-xs'],
       ],
       '#limit_validation_errors' => [],
       '#field_id' => $id,
