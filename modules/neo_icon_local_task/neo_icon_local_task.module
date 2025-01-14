@@ -64,3 +64,14 @@ function neo_icon_local_task_preprocess_menu_local_action(&$variables) {
     }
   }
 }
+
+/**
+ * Implements hook_local_tasks_alter().
+ */
+function neo_icon_local_task_local_tasks_alter(&$local_tasks) {
+  foreach ($local_tasks as $key => $local_task) {
+    if ($local_task['class'] === 'Drupal\Core\Menu\LocalTaskDefault') {
+      $local_tasks[$key]['class'] = 'Drupal\neo_icon_local_task\Menu\LocalTask\NeoIconLocalTask';
+    }
+  }
+}
