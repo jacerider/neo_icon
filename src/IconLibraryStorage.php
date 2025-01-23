@@ -68,4 +68,15 @@ class IconLibraryStorage extends ConfigEntityStorage implements IconLibraryStora
     return $global;
   }
 
+  /**
+   * {@inheritdoc}
+   */
+  public function loadAsOptions(array $include = [], array $exclude = [], $ignore_status = FALSE) {
+    $options = [];
+    foreach ($this->loadAvailable($include, $exclude, $ignore_status) as $library) {
+      $options[$library->id()] = $library->label();
+    }
+    return $options;
+  }
+
 }

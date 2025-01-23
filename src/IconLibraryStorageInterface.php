@@ -32,4 +32,19 @@ interface IconLibraryStorageInterface extends ConfigEntityStorageInterface {
    */
   public function loadGlobals();
 
+  /**
+   * Return available icon libraries as options.
+   *
+   * @param array $include
+   *   The libraries to include.
+   * @param array $exclude
+   *   The libraries to exclude.
+   * @param bool $ignore_status
+   *   If TRUE, the status will be ignored.
+   *
+   * @return \Drupal\neo_icon\IconLibraryInterface[]
+   *   An array of available icon libraries.
+   */
+  public function loadAsOptions(array $include = [], array $exclude = [], $ignore_status = FALSE);
+
 }
