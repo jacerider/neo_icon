@@ -37,8 +37,7 @@ class NeoIconBrowser {
     this.showInfo = this.element.dataset.showInfo === 'true';
     this.updateInput = this.element.dataset.updateInput || null;
     this.updateInputFormat = this.element.dataset.updateInputFormat || 'name';
-    // this.updateAllowEmpty = this.element.dataset.updateAllowEmpty === 'true';
-    this.updateAllowEmpty = true;
+    this.updateAllowEmpty = this.element.dataset.updateAllowEmpty === 'true';
     this.updateIcon = this.element.dataset.updateIcon || null;
 
     this.content.style.display = 'none';
@@ -57,9 +56,13 @@ class NeoIconBrowser {
           this.content.style.display = 'block';
           setTimeout(() => {
             this.content.classList.remove('opacity-0');
+            this.search.focus();
           });
         });
         loader.classList.add('opacity-0');
+      }
+      else {
+        this.search.focus();
       }
     });
   }
@@ -92,7 +95,11 @@ class NeoIconBrowser {
 
   protected buildSearch() {
     this.searchQuery = this.search.value.toString().toLowerCase();
-    this.search.focus();
+    // setTimeout(() => {
+    //   this.search.focus();
+    // }, 500);
+
+    // this.search.focus();
     this.search.addEventListener('keyup', () => {
       clearTimeout(this.searchTimer);
       this.searchTimer = setTimeout(() => {
@@ -289,6 +296,7 @@ class NeoIconBrowser {
                     break;
                 }
               }
+              element.dispatchEvent(new Event('change'));
               element.dispatchEvent(new Event('input', {
                 bubbles: true,
                 cancelable: true,
@@ -308,12 +316,12 @@ class NeoIconBrowser {
       item.setAttribute('aria-label', icon.name);
       this.list.appendChild(item);
     });
-    const modal = this.element.closest('.neo-modal--content-inner');
+    const modal = this.element.closest('.neo-modal--content');
     if (modal) {
       modal.scrollTo({top: 0, behavior: 'smooth'});
     }
     else {
-      this.element.scrollIntoView({behavior: 'smooth'});
+      this.content.scrollIntoView({behavior: 'smooth'});
     }
     if (Drupal.behaviors && Drupal.behaviors.neoTooltip) {
       Drupal.behaviors.neoTooltip.attach(this.element);
