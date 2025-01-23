@@ -26,6 +26,8 @@ class IconBrowser extends RenderElementBase {
       // The the value format that will be set to the input field.
       // Can be name, selector.
       '#update_input_format' => 'name',
+      // Allow empty value to be set.
+      '#update_allow_empty' => TRUE,
       // A selector to an input field that will store the selected icon.
       '#update_icon' => NULL,
       '#pre_render' => [
@@ -59,6 +61,9 @@ class IconBrowser extends RenderElementBase {
     if (!empty($element['#update_input'])) {
       $element['#attributes']['data-update-input'] = $element['#update_input'];
       $element['#attributes']['data-update-input-format'] = $element['#update_input_format'];
+      if ($element['#update_allow_empty']) {
+        $element['#attributes']['data-update-allow-empty'] = 'true';
+      }
     }
     if (!empty($element['#update_icon'])) {
       $element['#attributes']['data-update-icon'] = $element['#update_icon'];
