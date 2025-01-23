@@ -45,13 +45,13 @@ final class IconSelect extends FormElementBase {
         [$class, 'validateNeoIcon'],
       ],
       '#pre_render' => [
-        [$class, 'preRenderCompositeFormElement'],
         [$class, 'preRenderGroup'],
       ],
       '#libraries' => [],
       // Can be name, selector.
       '#format' => 'name',
       '#empty_icon' => 'ban',
+      '#theme_wrappers' => ['form_element', 'container'],
     ];
   }
 
@@ -107,6 +107,7 @@ final class IconSelect extends FormElementBase {
     $element['icon']['browse'] = [
       '#type' => 'submit',
       '#title' => new IconElement(t('Browse'), 'search'),
+      '#name' => $id,
       '#libraries' => $element['#libraries'],
       '#format' => $element['#format'],
       '#value' => 'search',
@@ -115,6 +116,7 @@ final class IconSelect extends FormElementBase {
       ],
       '#limit_validation_errors' => [],
       '#field_id' => $id,
+      '#required' => !empty($element['#required']),
       '#submit' => [
         [self::class, 'submitBrowse'],
       ],
@@ -148,6 +150,7 @@ final class IconSelect extends FormElementBase {
       '#update_input' => '#' . $trigger['#field_id'] . '-value',
       '#update_input_format' => $trigger['#format'],
       '#update_icon' => '#' . $trigger['#field_id'] . '-icon i',
+      '#update_allow_empty' => empty($trigger['#required'])
     ], [
       'width' => '100%',
       'height' => '100%',
