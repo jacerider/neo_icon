@@ -62,6 +62,7 @@ class NeoBuildEventSubscriber implements EventSubscriberInterface {
     foreach ($config['scopes'] as $scopeId => &$scope) {
       $scope['vite']['scssInclude'][] = dirname($url);
     }
+    $config['tailwind']['variants']['icon'] = ['& .neo-icon'];
     $event->setConfig($config);
   }
 
