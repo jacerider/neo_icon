@@ -491,6 +491,7 @@ class IconLibrary extends ConfigEntityBase implements IconLibraryInterface {
       throw new \Exception(t('Cannot find %file.', ['%file' => $config_file->getConfigUri()]));
     }
     $zip_uri = $file->getFileUri();
+    /** @var \Drupal\system\Plugin\Archiver\Zip $archiver */
     $archiver = $archiver_manager->getInstance(['filepath' => $zip_uri]);
     if (!$archiver) {
       throw new \Exception(t('Cannot extract %file, not a valid archive.', ['%file' => $zip_uri]));
