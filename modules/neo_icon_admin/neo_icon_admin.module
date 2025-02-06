@@ -5,6 +5,7 @@
  * Primary module hooks for Neo Icon Local Task module.
  */
 
+use Drupal\Core\Config\Entity\ConfigEntityInterface;
 use Drupal\Core\Link;
 use Drupal\neo_icon\IconElement;
 use Drupal\neo_icon\IconElementInterface;
@@ -54,9 +55,22 @@ function neo_icon_admin_preprocess_page_title(&$variables) {
       $variables['title'] = \Drupal::service('renderer')->render($variables['title']);
     }
     if (!$variables['title'] instanceof IconElementInterface) {
-      $variables['title'] = new IconElement($variables['title'], NULL, NULL, [
-        'admin',
-      ]);
+      $prefix = [];
+      $route_match = \Drupal::routeMatch();
+      // Entity will be found in the route parameters.
+      if (($route = $route_match->getRouteObject()) && ($parameters = $route->getOption('parameters'))) {
+        // Determine if the current route represents an entity.
+        foreach ($parameters as $name => $options) {
+          if (isset($options['type']) && strpos($options['type'], 'entity:') === 0) {
+            $entity = $route_match->getParameter($name);
+            if ($entity instanceof ConfigEntityInterface) {
+              $prefix[] = 'entity.' . $entity->getEntityTypeId();
+            }
+          }
+        }
+      }
+      $prefix[] = 'admin';
+      $variables['title'] = new IconElement($variables['title'], NULL, NULL, $prefix);
     }
   }
 }
