@@ -13,6 +13,9 @@ neo_icon.unpublished:
 neo_icon.unpublish:
   word: unpublish
   icon: circle
+neo_icon.draft:
+  word: draft
+  icon: dot-circle
 neo_icon.enabled:
   word: enabled
   icon: check-circle
