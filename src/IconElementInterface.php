@@ -53,6 +53,17 @@ interface IconElementInterface extends MarkupInterface {
   public function iconAfter();
 
   /**
+   * Set the text that will be used when matching an icon.
+   *
+   * @param string $text
+   *   The text.
+   *
+   * @return $this
+   *   The current instance of the IconElement class.
+   */
+  public function iconLookup($text);
+
+  /**
    * Get the text.
    *
    * @return string

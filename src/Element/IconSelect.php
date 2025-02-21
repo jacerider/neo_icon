@@ -112,7 +112,7 @@ final class IconSelect extends FormElementBase {
       '#format' => $element['#format'],
       '#value' => 'search',
       '#attributes' => [
-        'class' => ['btn-xs'],
+        'class' => ['btn', 'btn-xs'],
       ],
       '#limit_validation_errors' => [],
       '#field_id' => $id,

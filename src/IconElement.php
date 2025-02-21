@@ -36,6 +36,13 @@ class IconElement implements IconElementInterface {
   protected $text;
 
   /**
+   * The text to use for icon lookup.
+   *
+   * @var mixed
+   */
+  protected $iconLookupText;
+
+  /**
    * The icon id.
    *
    * @var string
@@ -156,9 +163,17 @@ class IconElement implements IconElementInterface {
   /**
    * {@inheritdoc}
    */
+  public function iconLookup(mixed $text) {
+    $this->iconLookupText = $text;
+    return $this;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function getIcon() {
     if (!isset($this->iconObject)) {
-      $this->iconObject = $this->iconRepository()->getIcon($this->text, $this->icon, $this->library, $this->prefix, $this->ignoreStatus);
+      $this->iconObject = $this->iconRepository()->getIcon($this->iconLookupText ?? $this->text, $this->icon, $this->library, $this->prefix, $this->ignoreStatus);
     }
     return $this->iconObject;
   }
