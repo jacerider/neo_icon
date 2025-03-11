@@ -154,6 +154,9 @@ final class IconSelect extends FormElementBase {
     ], [
       'width' => '100%',
       'height' => '100%',
+      'title' => t('Select Icon'),
+      'subtitle' => t('Click on an icon to select it.'),
+      'headerInContent' => TRUE,
       'contentScroll' => TRUE,
       'nest' => TRUE,
     ]));
