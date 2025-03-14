@@ -43,4 +43,21 @@ trait IconTranslationTrait {
     return $this->icon($text, $icon, NULL, ['admin']);
   }
 
+  /**
+   * Get a status icon.
+   *
+   * @param mixed $status
+   *   The status.
+   * @param string $true
+   *   The true text.
+   * @param string $false
+   *   The false text.
+   *
+   * @return \Drupal\neo_icon\IconElement
+   *   The icon element.
+   */
+  protected function statusIcon($status, $true = 'Enabled', $false = 'Disabled'): IconElement {
+    return $this->icon(!empty($status) ? $true : $false);
+  }
+
 }
