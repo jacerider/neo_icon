@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Drupal\neo_icon\Element;
 
@@ -150,7 +150,7 @@ final class IconSelect extends FormElementBase {
       '#update_input' => '#' . $trigger['#field_id'] . '-value',
       '#update_input_format' => $trigger['#format'],
       '#update_icon' => '#' . $trigger['#field_id'] . '-icon i',
-      '#update_allow_empty' => empty($trigger['#required'])
+      '#update_allow_empty' => empty($trigger['#required']),
     ], [
       'width' => '100%',
       'height' => '100%',

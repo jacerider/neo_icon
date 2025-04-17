@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Drupal\neo_icon\Plugin\ComponentShape;
 
+use Drupal\Core\Field\FieldDefinitionInterface;
 use Drupal\Core\StringTranslation\TranslatableMarkup;
 use Drupal\neo_alchemist\ComponentShapePluginBase;
 use Drupal\neo_alchemist\Attribute\ComponentShape;
@@ -18,5 +19,19 @@ use Drupal\neo_alchemist\Attribute\ComponentShape;
   default_field_widget: 'neo_icon',
 )]
 class IconShape extends ComponentShapePluginBase {
+
+  /**
+   * {@inheritDoc}
+   */
+  public function getMatches(FieldDefinitionInterface $entityFieldDefinition) {
+    $matches = parent::getMatches($entityFieldDefinition);
+    if ($entityFieldDefinition->getType() === 'link') {
+      // Links have an option field which can store attributes and an icon.
+      return [
+        'options:attributes~data-icon' => $this->t('Icon'),
+      ];
+    }
+    return $matches;
+  }
 
 }

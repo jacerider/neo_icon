@@ -20,7 +20,7 @@ final class EntityIcon extends DeriverBase implements ContainerDeriverInterface 
   public function __construct(
     private readonly EntityTypeManager $entityTypeManager,
     private readonly EntityTypeBundleInfoInterface $bundleManager,
-    private readonly IconEntityTypeManager $iconPluginManager
+    private readonly IconEntityTypeManager $iconPluginManager,
   ) {
   }
 
