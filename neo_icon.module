@@ -23,6 +23,7 @@ function neo_icon_theme($existing, $type, $theme, $path) {
     'variables' => [
       'title' => NULL,
       'attributes' => [],
+      'attributes_icon' => [],
       'position' => 'before',
       'icon' => NULL,
       'icon_only' => FALSE,
@@ -244,6 +245,7 @@ function template_preprocess_neo_icon_element(array &$variables) {
   if ($icon instanceof IconInterface) {
     $variables['icon'] = $icon->render();
     if (!is_array($variables['title'])) {
+      $variables['icon']['#attributes'] = $variables['attributes_icon'];
       $variables['icon']['#attributes']['title'] = $variables['title'];
     }
   }

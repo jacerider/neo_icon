@@ -3,6 +3,7 @@
 namespace Drupal\neo_icon;
 
 use Drupal\Component\Render\MarkupInterface;
+use Drupal\Core\Template\Attribute;
 
 /**
  * Interface for an icon.
@@ -70,6 +71,48 @@ interface IconElementInterface extends MarkupInterface {
    *   The text.
    */
   public function getText();
+
+  /**
+   * Get the icon attributes.
+   *
+   * @param bool $asArray
+   *   (optional) If TRUE, return the attributes as an array. Defaults to TRUE.
+   *
+   * @return \Drupal\Core\Template\Attribute|array
+   *   The icon attributes.
+   */
+  public function getIconAttributes($asArray = TRUE): Attribute|array;
+
+  /**
+   * Set the icon attributes.
+   *
+   * @param array $attributes
+   *   The icon attributes.
+   *
+   * @return $this
+   */
+  public function setIconAttributes(array $attributes);
+
+  /**
+   * Get the label attributes.
+   *
+   * @param bool $asArray
+   *   (optional) If TRUE, return the attributes as an array. Defaults to TRUE.
+   *
+   * @return \Drupal\Core\Template\Attribute|array
+   *   The icon attributes.
+   */
+  public function getLabelAttributes($asArray = TRUE): Attribute|array;
+
+  /**
+   * Set the label attributes.
+   *
+   * @param array $attributes
+   *   The icon attributes.
+   *
+   * @return $this
+   */
+  public function setLabelAttributes(array $attributes);
 
   /**
    * Get the icon.

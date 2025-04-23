@@ -4,6 +4,7 @@ namespace Drupal\neo_icon;
 
 use Drupal\Component\Utility\ToStringTrait;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
+use Drupal\Core\Template\Attribute;
 use Drupal\neo_tooltip\Tooltip;
 
 /**
@@ -97,6 +98,20 @@ class IconElement implements IconElementInterface {
    * @var bool
    */
   protected $iconPosition = 'before';
+
+  /**
+   * The item attributes.
+   *
+   * @var \Drupal\Core\Template\Attribute
+   */
+  protected Attribute $iconAttributes;
+
+  /**
+   * The label attributes.
+   *
+   * @var \Drupal\Core\Template\Attribute
+   */
+  protected Attribute $labelAttributes;
 
   /**
    * Construct an icon.
@@ -196,6 +211,42 @@ class IconElement implements IconElementInterface {
   /**
    * {@inheritdoc}
    */
+  public function setIconAttributes(array $attributes) {
+    $this->iconAttributes = new Attribute($attributes);
+    return $this;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getIconAttributes($asArray = TRUE): Attribute|array {
+    if (!isset($this->iconAttributes)) {
+      $this->setIconAttributes([]);
+    }
+    return $asArray ? $this->iconAttributes->toArray() : $this->iconAttributes;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function setLabelAttributes(array $attributes) {
+    $this->labelAttributes = new Attribute($attributes);
+    return $this;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getLabelAttributes($asArray = TRUE): Attribute|array {
+    if (!isset($this->labelAttributes)) {
+      $this->setLabelAttributes([]);
+    }
+    return $asArray ? $this->labelAttributes->toArray() : $this->labelAttributes;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function render() {
     $icon = $this->getIcon();
     $text = $this->getText();
@@ -209,12 +260,15 @@ class IconElement implements IconElementInterface {
         '#icon' => $icon,
         '#position' => $this->iconPosition,
         '#icon_only' => $this->iconOnly,
+        '#attributes_icon' => $this->getIconAttributes(),
+        '#attributes_label' => $this->getLabelAttributes(),
       ];
     }
     else {
       $markup = [
         '#theme' => 'neo_icon',
         '#icon' => $icon,
+        '#attributes' => $this->getIconAttributes(),
       ];
     }
     if ($this->asTooltip) {
