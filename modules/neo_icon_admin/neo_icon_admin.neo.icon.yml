@@ -262,9 +262,14 @@ admin.manage_permissions:
   start: manage permissions
   icon: user-shield
   prefix: admin
+admin.available_updates:
+  word: available updates
+  icon: cloud-download
+  prefix: admin
+  weight: -10
 admin.update:
   word: update
-  icon: cloud-download
+  icon: check-square
   prefix: admin
 admin.settings:
   word: settings
@@ -358,4 +363,8 @@ admin.sort:
 admin.reorder:
   start: reorder
   icon: sort-circle
+  prefix: admin
+admin.masquerade:
+  start: masquerade
+  icon: user-secret
   prefix: admin
