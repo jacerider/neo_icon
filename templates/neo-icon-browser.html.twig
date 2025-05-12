@@ -14,10 +14,12 @@
       {{ loader }}
     </div>
     <div class="neo-icon-browser--content w-full hidden opacity-0 transition-opacity duration-300">
-      <div class="neo-icon-browser--header flex items-center bg-base-100 border-b border-base-200">
-        <div class="neo-icon-browser--first form--inline p-4">
-          {{ search_input }}
-          {{ library_input}}
+      <div class="neo-icon-browser--header flex items-center bg-base-100 border-b border-base-300 sticky top-neo-t modal:top-0 z-10 shadow-lg">
+        <div class="neo-icon-browser--first p-4">
+          <div class="form--inline">
+            {{ search_input }}
+            {{ library_input}}
+          </div>
         </div>
         <div class="neo-icon-browser--second ml-auto !mt-0 p-4">
           <div class="neo-icon-browser--pager">
@@ -30,14 +32,14 @@
         <div class="neo-icon-browser--list grid grid-cols-2 gap-1 p-4 md:grid-cols-5 lg:grid-cols-8">
         </div>
       </div>
-      <div class="neo-icon-browser--footer bg-base-100 border-t border-base-200 p-4">
+      <div class="neo-icon-browser--footer bg-base-100 border-t border-base-300 p-4 py-2 sticky bottom-0 z-10">
         <div class="neo-icon-browser--info flex items-center">
           <div class="neo-icon-browser--pager">
-            <a class="neo-icon-browser--pager-link neo-icon-browser--pager-prev btn btn-secondary" tabindex="0">{{ icon('chevron-left') }}<span class="label"> {{ 'Prev'|t }}</span></a>
+            <a class="neo-icon-browser--pager-link neo-icon-browser--pager-prev btn btn-secondary btn-xs" tabindex="0">{{ icon('chevron-left') }}<span class="label"> {{ 'Prev'|t }}</span></a>
           </div>
           <div class="neo-icon-browser--info-pages mx-auto"></div>
           <div class="neo-icon-browser--pager flex whitespace-nowrap">
-            <a class="neo-icon-browser--pager-link neo-icon-browser--pager-next btn btn-secondary" tabindex="0"><span class="label">{{ 'Next'|t }} </span>{{ icon('chevron-right') }}</a>
+            <a class="neo-icon-browser--pager-link neo-icon-browser--pager-next btn btn-secondary btn-xs" tabindex="0"><span class="label">{{ 'Next'|t }} </span>{{ icon('chevron-right') }}</a>
           </div>
         </div>
       </div>

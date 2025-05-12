@@ -156,9 +156,11 @@ final class IconSelect extends FormElementBase {
       'height' => '100%',
       'title' => t('Select Icon'),
       'subtitle' => t('Click on an icon to select it.'),
+      'icon' => 'icon-regular-bullseye-pointer',
       'headerInContent' => TRUE,
       'contentScroll' => TRUE,
       'nest' => TRUE,
+      'contentPadding' => '0px',
     ]));
     return $response;
   }
