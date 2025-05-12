@@ -316,6 +316,10 @@ admin.account_new:
   word: create new account
   icon: user-plus
   prefix: admin
+admin.account:
+  word: account
+  icon: user
+  prefix: admin
 admin.preset:
   word: preset
   icon: cogs
