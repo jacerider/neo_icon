@@ -1,53 +1,25 @@
-var y = Object.defineProperty;
-var v = (d, e, i) => e in d ? y(d, e, { enumerable: !0, configurable: !0, writable: !0, value: i }) : d[e] = i;
-var s = (d, e, i) => v(d, typeof e != "symbol" ? e + "" : e, i);
-class w {
+class y {
   /**
    * Construct.
    */
   constructor(e) {
-    s(this, "element");
-    s(this, "content");
-    s(this, "list");
-    s(this, "search");
-    s(this, "categories");
-    s(this, "pager");
-    s(this, "pagerPrev");
-    s(this, "pagerNext");
-    s(this, "infoPages");
-    s(this, "iconsAll", []);
-    s(this, "icons", []);
-    s(this, "limit", 80);
-    s(this, "page", 1);
-    s(this, "searchTimer");
-    s(this, "category", "");
-    s(this, "searchQuery", "");
-    s(this, "showInfo", !1);
-    s(this, "updateInput");
-    s(this, "updateInputFormat");
-    s(this, "updateAllowEmpty", !1);
-    s(this, "updateIcon");
-    /**
-     * Fetch icon data.
-     */
-    s(this, "fetchData", async () => {
-      let e = drupalSettings.path.baseUrl + "api/icons";
+    this.iconsAll = [], this.icons = [], this.limit = 80, this.page = 1, this.category = "", this.searchQuery = "", this.showInfo = !1, this.updateAllowEmpty = !1, this.fetchData = async () => {
+      let i = drupalSettings.path.baseUrl + "api/icons";
       if (this.element.dataset.libraries) {
-        const r = JSON.parse(this.element.dataset.libraries);
-        e += "/" + r.join("+");
+        const d = JSON.parse(this.element.dataset.libraries);
+        i += "/" + d.join("+");
       }
       return await (await fetch(
-        e
+        i
       )).json();
-    });
-    this.element = e, this.content = e.querySelector(".neo-icon-browser--content"), this.list = e.querySelector(".neo-icon-browser--list"), this.search = e.querySelector(".neo-icon-browser--search"), this.categories = e.querySelector(".neo-icon-browser--libraries"), this.pager = e.querySelectorAll(".neo-icon-browser--pager"), this.pagerPrev = e.querySelectorAll(".neo-icon-browser--pager-prev"), this.pagerNext = e.querySelectorAll(".neo-icon-browser--pager-next"), this.infoPages = e.querySelector(".neo-icon-browser--info-pages"), this.showInfo = this.element.dataset.showInfo === "true", this.updateInput = this.element.dataset.updateInput || null, this.updateInputFormat = this.element.dataset.updateInputFormat || "name", this.updateAllowEmpty = this.element.dataset.updateAllowEmpty === "true", this.updateIcon = this.element.dataset.updateIcon || null, this.content.style.display = "none", this.content.classList.remove("hidden"), this.fetchData().then((i) => {
+    }, this.element = e, this.content = e.querySelector(".neo-icon-browser--content"), this.list = e.querySelector(".neo-icon-browser--list"), this.search = e.querySelector(".neo-icon-browser--search"), this.categories = e.querySelector(".neo-icon-browser--libraries"), this.pager = e.querySelectorAll(".neo-icon-browser--pager"), this.pagerPrev = e.querySelectorAll(".neo-icon-browser--pager-prev"), this.pagerNext = e.querySelectorAll(".neo-icon-browser--pager-next"), this.infoPages = e.querySelector(".neo-icon-browser--info-pages"), this.showInfo = this.element.dataset.showInfo === "true", this.updateInput = this.element.dataset.updateInput || null, this.updateInputFormat = this.element.dataset.updateInputFormat || "name", this.updateAllowEmpty = this.element.dataset.updateAllowEmpty === "true", this.updateIcon = this.element.dataset.updateIcon || null, this.content.style.display = "none", this.content.classList.remove("hidden"), this.fetchData().then((i) => {
       this.iconsAll = i, this.buildCategories(), this.buildSearch(), this.buildIcons(), this.buildPager();
-      const n = this.element.querySelector(".neo-icon-browser--loader");
-      n ? (n.addEventListener("transitionend", () => {
-        n.style.display = "none", this.content.style.display = "block", setTimeout(() => {
+      const o = this.element.querySelector(".neo-icon-browser--loader");
+      o ? (o.addEventListener("transitionend", () => {
+        o.style.display = "none", this.content.style.display = "block", setTimeout(() => {
           this.content.classList.remove("opacity-0"), this.search.focus();
         });
-      }), n.classList.add("opacity-0")) : this.search.focus();
+      }), o.classList.add("opacity-0")) : this.search.focus();
     });
   }
   buildCategories() {
@@ -79,10 +51,10 @@ class w {
   buildIcons() {
     this.icons = this.iconsAll, this.category !== "" && (this.icons = this.icons.filter((e) => e.library === this.category)), this.searchQuery !== "" && (this.icons = this.icons.filter((e) => e.name.toLowerCase().indexOf(this.searchQuery) > -1)), this.page = 1, this.placeIcons();
   }
-  copyToClipboard(e, i, n) {
+  copyToClipboard(e, i, o) {
     e.preventDefault();
     let r = e.target;
-    r = r.classList.contains("use-neo-tooltip") ? r : r.closest(".use-neo-tooltip"), r.hasOwnProperty("_tippy") && (r._tippy.setContent("Copied"), r._tippy.show(), navigator.clipboard.writeText(n), setTimeout(() => {
+    r = r.classList.contains("use-neo-tooltip") ? r : r.closest(".use-neo-tooltip"), r.hasOwnProperty("_tippy") && (r._tippy.setContent("Copied"), r._tippy.show(), navigator.clipboard.writeText(o), setTimeout(() => {
       r._tippy.hide(), setTimeout(() => {
         r._tippy.setContent(i);
       }, 1e3);
@@ -92,65 +64,65 @@ class w {
     const e = [];
     let i = this.limit;
     if (this.updateInput && this.updateAllowEmpty) {
-      let t = this.icons.find((o) => o.name === "ban");
+      let t = this.icons.find((a) => a.name === "ban");
       t && (t = Object.assign({}, t), t.empty = !0, t.render = t.render.replace(t.selector, t.selector + " text-alert-500 opacity-60"), e.push(t), i--);
     }
-    const n = i * this.page, r = n - i;
-    let u = 0;
+    const o = i * this.page, r = o - i;
+    let d = 0;
     this.icons.forEach((t) => {
-      u >= r && u < n && e.push(t), u++;
+      d >= r && d < o && e.push(t), d++;
     }), this.list.innerHTML = "", e.forEach((t) => {
-      const o = this.showInfo ? document.createElement("div") : document.createElement("a"), l = this.showInfo ? document.createElement("a") : document.createElement("div");
-      if (l.classList.add("neo-icon-browser--icon", "flex", "items-center", "justify-center", "rounded", "h-20", "text-4xl", "bg-base-200", "border", "border-base-300", "text-base-content-200", "w-full", "overflow-hidden", "[&_span:before]:!text-base-content-200"), l.innerHTML = t.render, o.appendChild(l), this.showInfo && !this.updateInput && !this.updateIcon && !t.empty) {
-        const h = "Copy Icon Name";
-        l.setAttribute("href", "#"), l.classList.add("use-neo-tooltip"), l.setAttribute("data-tippy-content", h), l.setAttribute("data-tippy-delay", "200"), l.addEventListener("click", (c) => {
-          this.copyToClipboard(c, h, t.name);
+      const a = this.showInfo ? document.createElement("div") : document.createElement("a"), l = this.showInfo ? document.createElement("a") : document.createElement("div");
+      if (l.classList.add("neo-icon-browser--icon", "flex", "items-center", "justify-center", "rounded", "h-20", "text-4xl", "bg-base-200", "border", "border-base-300", "text-base-content-200", "w-full", "overflow-hidden", "[&_span:before]:!text-base-content-200"), l.innerHTML = t.render, a.appendChild(l), this.showInfo && !this.updateInput && !this.updateIcon && !t.empty) {
+        const c = "Copy Icon Name";
+        l.setAttribute("href", "#"), l.classList.add("use-neo-tooltip"), l.setAttribute("data-tippy-content", c), l.setAttribute("data-tippy-delay", "200"), l.addEventListener("click", (n) => {
+          this.copyToClipboard(n, c, t.name);
         });
+        const h = document.createElement("div");
+        h.classList.add("neo-icon-browser--icon-info", "flex", "flex-col", "text-xs", "text-base-content-300", "mt-1"), a.appendChild(h);
+        const s = document.createElement("a");
+        s.setAttribute("href", "#"), s.classList.add("neo-icon-browser--icon-name", "flex", "text-base", "text-xs"), s.innerHTML = '<div class="mr-1 opacity-60">' + Drupal.t("Name") + ':</div> <div class="text-ellipsis overflow-hidden whitespace-nowrap">' + t.name + "</div>", s.classList.add("use-neo-tooltip"), s.setAttribute("data-tippy-content", c), s.setAttribute("data-tippy-delay", "200"), s.addEventListener("click", (n) => {
+          this.copyToClipboard(n, c, t.name);
+        }), h.appendChild(s);
         const p = document.createElement("div");
-        p.classList.add("neo-icon-browser--icon-info", "flex", "flex-col", "text-xs", "text-base-content-300", "mt-1"), o.appendChild(p);
-        const a = document.createElement("a");
-        a.setAttribute("href", "#"), a.classList.add("neo-icon-browser--icon-name", "flex", "text-base", "text-xs"), a.innerHTML = '<div class="mr-1 opacity-60">' + Drupal.t("Name") + ':</div> <div class="text-ellipsis overflow-hidden whitespace-nowrap">' + t.name + "</div>", a.classList.add("use-neo-tooltip"), a.setAttribute("data-tippy-content", h), a.setAttribute("data-tippy-delay", "200"), a.addEventListener("click", (c) => {
-          this.copyToClipboard(c, h, t.name);
-        }), p.appendChild(a);
-        const b = document.createElement("div");
-        if (b.classList.add("neo-icon-browser--icon-library", "flex"), b.innerHTML = '<div class="mr-1 opacity-60">' + Drupal.t("Library") + ":</div> " + t.library, p.appendChild(b), t.hex) {
-          const c = document.createElement("a"), f = "Copy Hex Value";
-          c.setAttribute("href", "#"), c.classList.add("neo-icon-browser--icon-hex", "flex", "text-base", "text-xs"), c.innerHTML = '<div class="mr-1 opacity-60">' + Drupal.t("Hex") + ":</div> " + t.hex, c.classList.add("use-neo-tooltip"), c.setAttribute("data-tippy-content", f), c.setAttribute("data-tippy-delay", "200"), c.addEventListener("click", (g) => {
-            this.copyToClipboard(g, f, t.hex);
-          }), p.appendChild(c);
+        if (p.classList.add("neo-icon-browser--icon-library", "flex"), p.innerHTML = '<div class="mr-1 opacity-60">' + Drupal.t("Library") + ":</div> " + t.library, h.appendChild(p), t.hex) {
+          const n = document.createElement("a"), m = "Copy Hex Value";
+          n.setAttribute("href", "#"), n.classList.add("neo-icon-browser--icon-hex", "flex", "text-base", "text-xs"), n.innerHTML = '<div class="mr-1 opacity-60">' + Drupal.t("Hex") + ":</div> " + t.hex, n.classList.add("use-neo-tooltip"), n.setAttribute("data-tippy-content", m), n.setAttribute("data-tippy-delay", "200"), n.addEventListener("click", (f) => {
+            this.copyToClipboard(f, m, t.hex);
+          }), h.appendChild(n);
         }
       } else
-        t.empty && (l.classList.add("opacity-60", "text-alert-500"), o.classList.add("neo-icon-browser--empty"), o.classList.add("use-neo-tooltip"), o.classList.add("use-neo-tooltip"), o.setAttribute("data-tippy-content", "None")), o.setAttribute("href", "#"), o.addEventListener("click", (h) => {
-          if (h.preventDefault(), this.element.closest(".neo-modal") && NeoModal.closeTop(), this.updateInput) {
-            const a = document.querySelector(this.updateInput);
-            if (a) {
+        t.empty && (l.classList.add("opacity-60", "text-alert-500"), a.classList.add("neo-icon-browser--empty"), a.classList.add("use-neo-tooltip"), a.classList.add("use-neo-tooltip"), a.setAttribute("data-tippy-content", "None")), a.setAttribute("href", "#"), a.addEventListener("click", (c) => {
+          if (c.preventDefault(), this.element.closest(".neo-modal") && NeoModal.closeTop(), this.updateInput) {
+            const s = document.querySelector(this.updateInput);
+            if (s) {
               if (t.empty)
-                a.value = "";
+                s.value = "";
               else
                 switch (this.updateInputFormat) {
                   case "selector":
-                    a.value = t.selector;
+                    s.value = t.selector;
                     break;
                   case "name":
                   default:
-                    a.value = t.name;
+                    s.value = t.name;
                     break;
                 }
-              a.dispatchEvent(new Event("change")), a.dispatchEvent(new Event("input", {
+              s.dispatchEvent(new Event("change")), s.dispatchEvent(new Event("input", {
                 bubbles: !0,
                 cancelable: !0
               }));
             }
           }
           if (this.updateIcon) {
-            const a = document.querySelector(this.updateIcon);
-            a && (a.outerHTML = t.render);
+            const s = document.querySelector(this.updateIcon);
+            s && (s.outerHTML = t.render);
           }
         });
-      o.classList.add("neo-icon-browser--item", "bg-base-50", "border", "border-base-300", "rounded-lg", "p-3", "m-1", "flex", "flex-col", "hover:bg-base-100", "focus", "transition-all"), o.tabIndex = 0, o.setAttribute("aria-label", t.name), this.list.appendChild(o);
+      a.classList.add("neo-icon-browser--item", "bg-base-50", "border", "border-base-300", "rounded-lg", "p-3", "m-1", "flex", "flex-col", "hover:bg-base-100", "focus", "transition-all"), a.tabIndex = 0, a.setAttribute("aria-label", t.name), this.list.appendChild(a);
     });
-    const m = this.element.closest(".neo-modal--content");
-    m ? m.scrollTo({ top: 0, behavior: "smooth" }) : this.content.scrollIntoView({ behavior: "smooth" }), Drupal.behaviors && Drupal.behaviors.neoTooltip && Drupal.behaviors.neoTooltip.attach(this.element), this.togglePager(), this.buildInfo();
+    const b = this.element.closest(".neo-modal--content");
+    b ? b.scrollTo({ top: 0, behavior: "smooth" }) : this.content.scrollIntoView({ behavior: "smooth" }), Drupal.behaviors && Drupal.behaviors.neoTooltip && Drupal.behaviors.neoTooltip.attach(this.element), this.togglePager(), this.buildInfo();
   }
   buildInfo() {
     this.infoPages.innerHTML = Drupal.t("Page <strong>@current</strong> of <strong>@total</strong>", {
@@ -159,11 +131,11 @@ class w {
     });
   }
 }
-(function(d, e) {
-  d.behaviors.chatInbox = {
+(function(u, e) {
+  u.behaviors.chatInbox = {
     attach: (i) => {
-      e("neo.icon-browser", ".neo-icon-browser", i).forEach((n) => {
-        new w(n);
+      e("neo.icon-browser", ".neo-icon-browser", i).forEach((o) => {
+        new y(o);
       });
     }
   };
