@@ -361,11 +361,15 @@ admin.wishlist:
   icon: star-shooting
   prefix: admin
 admin.sort:
-  start: sort
+  word: sort
   icon: sort-circle
   prefix: admin
 admin.reorder:
-  start: reorder
+  word: reorder
+  icon: sort-circle
+  prefix: admin
+admin.rearrange:
+  word: rearrange
   icon: sort-circle
   prefix: admin
 admin.masquerade:
