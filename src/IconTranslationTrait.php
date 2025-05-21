@@ -57,7 +57,7 @@ trait IconTranslationTrait {
    *   The icon element.
    */
   protected function statusIcon($status, $true = 'Enabled', $false = 'Disabled'): IconElement {
-    return $this->icon(!empty($status) ? $true : $false);
+    return $this->icon(!empty($status) ? $true : $false)->iconLookup(!empty($status) ? 'enabled' : 'disabled');
   }
 
 }
