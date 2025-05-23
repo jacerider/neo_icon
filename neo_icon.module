@@ -8,6 +8,7 @@
 use Drupal\Core\Cache\Cache;
 use Drupal\Core\Config\Entity\ConfigEntityInterface;
 use Drupal\Core\Entity\EntityFormInterface;
+use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Link;
 use Drupal\Core\Url;
@@ -80,8 +81,40 @@ function neo_icon($text = NULL, $icon = NULL, $library = NULL, array $prefix = [
  * @return \Drupal\neo_icon\IconElement
  *   The IconElement object.
  */
-function neo_admin_icon($text = NULL, $icon = NULL): IconElement {
+function neo_icon_admin($text = NULL, $icon = NULL): IconElement {
   return new IconElement($text, $icon, NULL, ['admin']);
+}
+
+/**
+ * Generates an IconElement for a given entity.
+ *
+ * Determines the appropriate label for the entity, using the bundle label if
+ * available, and creates an IconElement instance with the label and entity type
+ * information.
+ *
+ * @param \Drupal\Core\Entity\EntityInterface $entity
+ *   The entity for which to generate the icon element.
+ * @param string $labelOverride
+ *   An optional label override. If provided, this will be used as the label
+ *   for the icon element instead of the entity label.
+ *
+ * @return \Drupal\neo_icon\IconElement
+ *   The generated IconElement for the entity.
+ */
+function neo_icon_entity(EntityInterface $entity, string $labelOverride = NULL): IconElement {
+  $label = $entity->label();
+  $entityTypeId = $entity->getEntityTypeId();
+  if ($entity->getEntityType()->getKey('bundle')) {
+    $bundle = $entity->bundle();
+    $bundleInfo = \Drupal::service("entity_type.bundle.info")->getAllBundleInfo();
+    if (isset($bundleInfo[$entity->getEntityTypeId()][$bundle])) {
+      $label = $bundleInfo[$entity->getEntityTypeId()][$bundle]['label'];
+    }
+  }
+  elseif ($bundleOf = $entity->getEntityType()->getBundleOf()) {
+    $entityTypeId = $bundleOf;
+  }
+  return new IconElement($labelOverride ?? $label, NULL, NULL, ['entity.' . $entityTypeId]);
 }
 
 /**
