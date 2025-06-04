@@ -140,9 +140,9 @@ class BooleanIconFormatter extends FormatterBase {
       $iconOnly = $this->getSetting('icon_only') ?? TRUE;
       $asTooltip = $this->getSetting('as_tooltip') ?? FALSE;
       $elements[$delta] = [
-        '#markup' => $item->value ?
+        '#markup' => !empty($item->value) ?
         $this->icon($settings['on_label'] ?? '', $formats[$format][0])->asTooltip($asTooltip)->iconOnly($iconOnly) :
-        $this->icon($settings['off_label'] ?? '', $formats[$format][0])->asTooltip($asTooltip)->iconOnly($iconOnly),
+        $this->icon($settings['off_label'] ?? '', $formats[$format][1])->asTooltip($asTooltip)->iconOnly($iconOnly),
       ];
     }
 
