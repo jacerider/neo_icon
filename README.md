@@ -35,7 +35,7 @@ A PHP trait has been provided that can be a dropin replacement for the Drupal
 core StringTranslationTrait.
 
 ```php
-use Drupal\neo_icon\IconTranslationTrait;
+use Drupal\neo_icon\IconTrait;
 
 // Dynamic icon using icon repository.
 $this->icon('Angel');
