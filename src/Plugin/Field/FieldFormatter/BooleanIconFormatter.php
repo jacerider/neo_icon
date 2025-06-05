@@ -7,7 +7,7 @@ use Drupal\Core\Field\FormatterBase;
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\StringTranslation\TranslatableMarkup;
-use Drupal\neo_icon\IconTranslationTrait;
+use Drupal\neo_icon\IconTrait;
 
 /**
  * Plugin implementation of the 'boolean' formatter.
@@ -21,7 +21,7 @@ use Drupal\neo_icon\IconTranslationTrait;
 )]
 class BooleanIconFormatter extends FormatterBase {
 
-  use IconTranslationTrait;
+  use IconTrait;
 
   /**
    * {@inheritdoc}
