@@ -9,7 +9,7 @@ use Drupal\Core\Entity\EntityInterface;
  * Provides a listing of Neo Icon Package entities.
  */
 class IconLibraryListBuilder extends DraggableListBuilder {
-  use IconTranslationTrait;
+  use IconTrait;
 
   /**
    * {@inheritdoc}
