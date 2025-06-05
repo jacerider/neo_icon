@@ -4,7 +4,7 @@ namespace Drupal\neo_icon\Plugin\Field\FieldFormatter;
 
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Field\FormatterBase;
-use Drupal\neo_icon\IconTranslationTrait;
+use Drupal\neo_icon\IconTrait;
 
 /**
  * Plugin implementation of the 'icon' formatter.
@@ -18,7 +18,7 @@ use Drupal\neo_icon\IconTranslationTrait;
  * )
  */
 class IconFormatter extends FormatterBase {
-  use IconTranslationTrait;
+  use IconTrait;
 
   /**
    * {@inheritdoc}
