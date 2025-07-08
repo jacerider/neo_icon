@@ -14,9 +14,8 @@ neo_icon.neo_icon_library.*:
       type: string
       label: 'The type of icon. Either font or image.'
     file:
-      type: sequence
-      sequence:
-        type: string
+      type: string
+      label: File
     status:
       type: boolean
       label: 'Status'

@@ -5,6 +5,5 @@ package: Neo
 version: 0.0.0
 core_version_requirement: ^10.3 || ^11
 dependencies:
-  - neo:neo
   - neo_config_file:neo_config_file
   - neo_modal:neo_modal
