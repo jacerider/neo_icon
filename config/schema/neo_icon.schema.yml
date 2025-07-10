@@ -25,3 +25,24 @@ neo_icon.neo_icon_library.*:
     weight:
       type: integer
       label: 'Weight'
+
+neo_icon.entity.third_party:
+  type: sequence
+  label: Neo Icon
+  sequence:
+    type: string
+
+node.type.*.third_party.neo_icon:
+  type: neo_icon.entity.third_party
+
+taxonomy.vocabulary.*.third_party:
+  type: neo_icon.entity.third_party
+
+commerce_order.commerce_order_type.*.third_party:
+  type: neo_icon.entity.third_party
+
+profile.type.*.third_party:
+  type: neo_icon.entity.third_party
+
+media.type.*.third_party:
+  type: neo_icon.entity.third_party
