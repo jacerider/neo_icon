@@ -11,7 +11,7 @@ use Drupal\Core\Form\FormStateInterface;
  * @FieldType(
  *   id = "neo_icon",
  *   label = @Translation("Icon"),
- *   description = @Translation("A field containing an icon."),
+ *   description = @Translation("A field containing a Neo icon."),
  *   default_widget = "neo_icon",
  *   default_formatter = "neo_icon"
  * )
