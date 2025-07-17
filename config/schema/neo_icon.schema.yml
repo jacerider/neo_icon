@@ -35,14 +35,14 @@ neo_icon.entity.third_party:
 node.type.*.third_party.neo_icon:
   type: neo_icon.entity.third_party
 
-taxonomy.vocabulary.*.third_party:
+taxonomy.vocabulary.*.third_party.neo_icon:
   type: neo_icon.entity.third_party
 
-commerce_order.commerce_order_type.*.third_party:
+commerce_order.commerce_order_type.*.third_party.neo_icon:
   type: neo_icon.entity.third_party
 
-profile.type.*.third_party:
+profile.type.*.third_party.neo_icon:
   type: neo_icon.entity.third_party
 
-media.type.*.third_party:
+media.type.*.third_party.neo_icon:
   type: neo_icon.entity.third_party
