@@ -1,3 +1,8 @@
 icon:
   title: Icon
   type: string
+  example: alien-monster
+  twig:
+    prefix: '{% if %name% %}'
+    content: '{{ icon(%name%) }}'
+    suffix: '{% endif %}'
