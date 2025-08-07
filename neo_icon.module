@@ -277,10 +277,7 @@ function template_preprocess_neo_icon_element(array &$variables) {
   }
   if ($icon instanceof IconInterface) {
     $variables['icon'] = $icon->render();
-    if (!is_array($variables['title'])) {
-      $variables['icon']['#attributes'] = $variables['attributes_icon'];
-      $variables['icon']['#attributes']['title'] = $variables['title'];
-    }
+    $variables['icon']['#attributes'] = $variables['attributes_icon'];
   }
   else {
     // No icon found. We don't want to render anything.
@@ -353,6 +350,11 @@ function neo_icon_preprocess_table(&$variables) {
   }
 }
 
+/**
+ * Implements hook_preprocess_node_add_list().
+ *
+ * Prepares variables for the node add list.
+ */
 function neo_icon_preprocess_node_add_list(&$variables) {
   $variables['types'] = [];
   if (!empty($variables['content'])) {
