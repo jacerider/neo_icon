@@ -86,6 +86,13 @@ class IconElement implements IconElementInterface {
   protected $asTooltip = FALSE;
 
   /**
+   * The tooltip text.
+   *
+   * @var string|null
+   */
+  protected $tooltip = NULL;
+
+  /**
    * The icon object.
    *
    * @var \Drupal\neo_icon\IconInterface
@@ -146,9 +153,17 @@ class IconElement implements IconElementInterface {
   /**
    * {@inheritdoc}
    */
-  public function asTooltip($as_tooltip = TRUE): self {
+  public function asTooltip($as_tooltip = TRUE, mixed $content = NULL): self {
     $this->asTooltip = $as_tooltip;
+    $this->tooltip = $content;
     return $this;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function isTooltip(): bool {
+    return $this->asTooltip;
   }
 
   /**
@@ -247,14 +262,14 @@ class IconElement implements IconElementInterface {
   /**
    * {@inheritdoc}
    */
-  public function render() {
+  public function getRenderable(): array {
     $icon = $this->getIcon();
     $text = $this->getText();
     if (!$icon) {
-      return $text;
+      $build = ['#markup' => $text];
     }
-    if (!empty($text)) {
-      $markup = [
+    elseif (!empty($text)) {
+      $build = [
         '#theme' => 'neo_icon_element',
         '#title' => $text,
         '#icon' => $icon,
@@ -263,19 +278,30 @@ class IconElement implements IconElementInterface {
         '#attributes_icon' => $this->getIconAttributes(),
         '#attributes_label' => $this->getLabelAttributes(),
       ];
+      if (!$this->isTooltip()) {
+        $build['#attributes_icon']['title'] = $text;
+      }
     }
     else {
-      $markup = [
+      $build = [
         '#theme' => 'neo_icon',
         '#icon' => $icon,
         '#attributes' => $this->getIconAttributes(),
       ];
     }
-    if ($this->asTooltip) {
-      $tooltip = new Tooltip($text);
-      $tooltip->applyTo($markup);
+    if ($this->isTooltip()) {
+      $tooltip = new Tooltip($this->tooltip ?? $text);
+      $tooltip->applyTo($build);
     }
-    $output = $this->renderer()->render($markup);
+    return $build;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function render() {
+    $build = $this->getRenderable();
+    $output = $this->renderer()->render($build);
     return $output;
   }
 

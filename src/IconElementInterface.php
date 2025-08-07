@@ -33,6 +33,14 @@ interface IconElementInterface extends MarkupInterface {
   public function asTooltip($as_tooltip = TRUE): self;
 
   /**
+   * Check if the icon is displayed as a tooltip.
+   *
+   * @return bool
+   *   TRUE if the icon is displayed as a tooltip, FALSE otherwise.
+   */
+  public function isTooltip(): bool;
+
+  /**
    * Set the icon position. Either 'before' or 'after'.
    *
    * @return $this
@@ -121,5 +129,21 @@ interface IconElementInterface extends MarkupInterface {
    *   The icon.
    */
   public function getIcon();
+
+  /**
+   * Get the renderable array for the icon.
+   *
+   * @return array
+   *   The renderable array.
+   */
+  public function getRenderable(): array;
+
+  /**
+   * Render the icon.
+   *
+   * @return \Drupal\Component\Render\MarkupInterface|string
+   *   The rendered HTML.
+   */
+  public function render();
 
 }
