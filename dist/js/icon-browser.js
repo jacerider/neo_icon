@@ -73,13 +73,13 @@ class y {
       d >= r && d < o && e.push(t), d++;
     }), this.list.innerHTML = "", e.forEach((t) => {
       const a = this.showInfo ? document.createElement("div") : document.createElement("a"), l = this.showInfo ? document.createElement("a") : document.createElement("div");
-      if (l.classList.add("neo-icon-browser--icon", "flex", "items-center", "justify-center", "rounded", "h-20", "text-4xl", "bg-base-200", "border", "border-base-300", "text-base-content-200", "w-full", "overflow-hidden", "[&_span:before]:!text-base-content-200"), l.innerHTML = t.render, a.appendChild(l), this.showInfo && !this.updateInput && !this.updateIcon && !t.empty) {
+      if (l.classList.add("neo-icon-browser--icon", "flex", "items-center", "justify-center", "rounded", "h-20", "text-4xl", "bg-base-200", "border", "border-base-300", "text-base-200-content", "w-full", "overflow-hidden", "[&_span:before]:!text-base-200-content"), l.innerHTML = t.render, a.appendChild(l), this.showInfo && !this.updateInput && !this.updateIcon && !t.empty) {
         const c = "Copy Icon Name";
         l.setAttribute("href", "#"), l.classList.add("use-neo-tooltip"), l.setAttribute("data-tippy-content", c), l.setAttribute("data-tippy-delay", "200"), l.addEventListener("click", (n) => {
           this.copyToClipboard(n, c, t.name);
         });
         const h = document.createElement("div");
-        h.classList.add("neo-icon-browser--icon-info", "flex", "flex-col", "text-xs", "text-base-content-300", "mt-1"), a.appendChild(h);
+        h.classList.add("neo-icon-browser--icon-info", "flex", "flex-col", "text-xs", "text-base-300-content", "mt-1"), a.appendChild(h);
         const s = document.createElement("a");
         s.setAttribute("href", "#"), s.classList.add("neo-icon-browser--icon-name", "flex", "text-base", "text-xs"), s.innerHTML = '<div class="mr-1 opacity-60">' + Drupal.t("Name") + ':</div> <div class="text-ellipsis overflow-hidden whitespace-nowrap">' + t.name + "</div>", s.classList.add("use-neo-tooltip"), s.setAttribute("data-tippy-content", c), s.setAttribute("data-tippy-delay", "200"), s.addEventListener("click", (n) => {
           this.copyToClipboard(n, c, t.name);

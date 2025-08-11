@@ -214,7 +214,7 @@ class NeoIconBrowser {
     icons.forEach(icon => {
       const item = this.showInfo ? document.createElement('div') : document.createElement('a');
       const itemIcon = this.showInfo ? document.createElement('a') : document.createElement('div');
-      itemIcon.classList.add('neo-icon-browser--icon', 'flex', 'items-center', 'justify-center', 'rounded', 'h-20', 'text-4xl', 'bg-base-200', 'border', 'border-base-300', 'text-base-content-200', 'w-full', 'overflow-hidden', '[&_span:before]:!text-base-content-200');
+      itemIcon.classList.add('neo-icon-browser--icon', 'flex', 'items-center', 'justify-center', 'rounded', 'h-20', 'text-4xl', 'bg-base-200', 'border', 'border-base-300', 'text-base-200-content', 'w-full', 'overflow-hidden', '[&_span:before]:!text-base-200-content');
       itemIcon.innerHTML = icon.render;
       item.appendChild(itemIcon);
       if (this.showInfo && !this.updateInput && !this.updateIcon && !icon.empty) {
@@ -228,7 +228,7 @@ class NeoIconBrowser {
         });
 
         const itemInfo = document.createElement('div');
-        itemInfo.classList.add('neo-icon-browser--icon-info', 'flex', 'flex-col', 'text-xs', 'text-base-content-300', 'mt-1');
+        itemInfo.classList.add('neo-icon-browser--icon-info', 'flex', 'flex-col', 'text-xs', 'text-base-300-content', 'mt-1');
         item.appendChild(itemInfo);
 
         const itemName = document.createElement('a');
