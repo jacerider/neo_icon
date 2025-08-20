@@ -17,7 +17,7 @@
   if (window && window.addEventListener) {
     var cache = Object.create(null); // Holds xhr objects to prevent multiple requests.
     var checkUseElems:Function;
-    var tid:NodeJS.Timeout|undefined|number; // Timeout id.
+    var tid:number|undefined; // Timeout id.
     var debouncedCheck = function () {
       clearTimeout(tid);
       tid = setTimeout(checkUseElems, 100);
@@ -235,5 +235,3 @@
     }, false);
   }
 }());
-
-export {};

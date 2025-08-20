@@ -12,9 +12,15 @@ services:
     tags:
       - { name: twig.extension }
 
+  # neo_icon.neo_build_event_subscriber:
+  #   class: '\Drupal\neo_icon\EventSubscriber\NeoBuildEventSubscriber'
+  #   arguments: ['@entity_type.manager', '@file_system', '@file_url_generator']
+  #   tags:
+  #     - { name: 'event_subscriber' }
+
   neo_icon.neo_build_event_subscriber:
     class: '\Drupal\neo_icon\EventSubscriber\NeoBuildEventSubscriber'
-    arguments: ['@entity_type.manager', '@file_system', '@file_url_generator']
+    arguments: ['@entity_type.manager']
     tags:
       - { name: 'event_subscriber' }
 

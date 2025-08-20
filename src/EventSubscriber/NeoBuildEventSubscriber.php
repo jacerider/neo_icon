@@ -5,9 +5,6 @@ declare(strict_types=1);
 namespace Drupal\neo_icon\EventSubscriber;
 
 use Drupal\Core\Entity\EntityTypeManagerInterface;
-use Drupal\Core\File\FileExists;
-use Drupal\Core\File\FileSystemInterface;
-use Drupal\Core\File\FileUrlGeneratorInterface;
 use Drupal\neo_build\Event\NeoBuildEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
@@ -23,47 +20,84 @@ class NeoBuildEventSubscriber implements EventSubscriberInterface {
    */
   public function __construct(
     private readonly EntityTypeManagerInterface $entityTypeManager,
-    private readonly FileSystemInterface $fileSystem,
-    private readonly FileUrlGeneratorInterface $fileUrlGenerator,
   ) {}
 
   /**
-   * Subscribe to the user login event dispatched.
+   * Subscribe to the Neo build event dispatched.
    *
-   * @param \Drupal\custom_events\Event\UserLoginEvent $event
+   * @param \Drupal\neo_build\Event\NeoBuildEvent $event
    *   Our custom event object.
    */
   public function onBuild(NeoBuildEvent $event) {
-    $config = $event->getConfig();
+    $collection = $event->getCollection();
     /** @var \Drupal\neo_icon\IconLibraryStorageInterface $storage */
     $storage = $this->entityTypeManager->getStorage('neo_icon_library');
-    $css = [
-      '$icons: (',
-    ];
-    foreach ($storage->loadGlobals() as $library) {
+    $libraryIds = [];
+    // We reverse the array so higher priority libraries will overwrite
+    // lower priority ones.
+    foreach (array_reverse($storage->loadGlobals()) as $library) {
       if (!$library->isFont()) {
         continue;
       }
       foreach ($library->getIconInstances() as $icon) {
-        $css_icon = [];
-        $css_icon[] = '  ' . $icon->getName() . ': (';
-        $css_icon[] = '    library: \'' . $library->id() . '\',';
-        $css_icon[] = '    hex: \'' . $icon->getHex() . '\',';
-        $css_icon[] = '  ),';
-        $css[$icon->getName()] = implode("\n", $css_icon);
+        $libraryIds[$library->id()] = $library->id();
+        $collection->addTailwindThemeItem('--icon-' . $icon->getName(), "'" . $icon->getHex() . "'");
+        $collection->addTailwindThemeItem('--icon-library-' . $icon->getName(), "'icon-" . $library->id() . "'");
       }
     }
-    $css[] = ');' . "\n";
-    $directory = 'public://neo-build/neo-icon';
-    $destination = $directory . '/neo-icons.scss';
-    $this->fileSystem->prepareDirectory($directory, FileSystemInterface::CREATE_DIRECTORY);
-    $this->fileSystem->saveData(implode("\n", $css), $destination, FileExists::Replace);
-    $url = $event->getDocRoot() . ltrim($this->fileUrlGenerator->generateString($destination), '/');
-    foreach ($config['scopes'] as $scopeId => &$scope) {
-      $scope['vite']['scssInclude'][] = dirname($url);
+    if ($libraryIds) {
+      // $utilities = [
+      //   'icon-*' => [
+      //     '--tw-content' => '--value(--icon-*)',
+      //     'display' => 'inline-block',
+      //     'content' => 'var(--tw-content)',
+      //     'font-family' => '--value(--icon-library-*)',
+      //     '-webkit-font-smoothing' => 'antialiased',
+      //     '-moz-osx-font-smoothing' => 'grayscale',
+      //     'font-style' => 'normal',
+      //     'font-variant' => 'normal',
+      //     'font-weight' => 'normal',
+      //     'line-height' => 1,
+      //   ],
+      // ];
+      $collection->addTailwindUtility('icon-*', [
+        '--tw-content' => '--value(--icon-*)',
+        'display' => 'inline-block',
+        'content' => 'var(--tw-content)',
+        'font-family' => '--value(--icon-library-*)',
+        '-webkit-font-smoothing' => 'antialiased',
+        '-moz-osx-font-smoothing' => 'grayscale',
+        'font-style' => 'normal',
+        'font-variant' => 'normal',
+        'font-weight' => 'normal',
+        'line-height' => 1,
+      ]);
+      // $collection->addTailwindUtilities($utilities);
     }
-    $config['tailwind']['variants']['icon'] = ['& .neo-icon'];
-    $event->setConfig($config);
+  }
+
+  /**
+   * Create a nested CSS variable string.
+   */
+  protected function createNestedVars($items, $prefix = '') {
+    if (empty($items)) {
+      return '';
+    }
+    // Ensure items are indexed numerically.
+    $items = array_values($items);
+
+    $result = '';
+    for ($i = 0; $i < count($items); $i++) {
+      $result .= 'var(--' . $prefix . $items[$i];
+      if ($i < count($items) - 1) {
+        $result .= ', ';
+      }
+    }
+
+    // Add closing parentheses.
+    $result .= str_repeat(')', count($items));
+
+    return $result;
   }
 
   /**

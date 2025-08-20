@@ -1,15 +1,15 @@
 icon-svg:
   version: VERSION
-  neo: { group: contrib }
+  neo: true
   css:
     component:
-      src/css/icon-svg.scss: {}
+      src/css/icon-svg.css: {}
   js:
     src/js/icon-svg.ts: {}
 
 icon-browser:
   version: VERSION
-  neo: { group: contrib }
+  neo: true
   # css:
   #   component:
   #     src/css/icon-browser.scss: {}
@@ -32,4 +32,4 @@ icon.include:
   dependencies: []
   neo:
     include:
-      src/css/include/neo-icon.scss: {}
+      src/css/include/neo-icon.css: {}

@@ -54,22 +54,14 @@ $this->icon('Angel', NULL, NULL, ['all']);
 ```
 
 
-USAGE WITHIN SCSS
+USAGE WITHIN TAILWIND
 -----
 
-Global icon sets can be utilized directly within .scss files via a mixin.
+Global icon sets can utilitized within Neo Build.
 
 ```scss
-@use 'neo-icon';
-
-@include neo-icon.icon('drupal', before);
-@include neo-icon.icon('drupal', after);
+<div class="before:icon-drupal after:icon-drupal">
 ```
-
-This mixin intentionally uses only the icon name and ignore the library. This
-allows swapping out different icons libraries without having to rename the
-icons. It can result in a conflict is two libraries and marked as global when
-both contain an icon with the same name.
 
 
 ICON DEFINITIONS

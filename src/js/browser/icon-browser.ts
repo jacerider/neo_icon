@@ -12,7 +12,7 @@ class NeoIconBrowser {
   protected icons: Array<NeoIcon> = [];
   protected limit:number = 80;
   protected page:number = 1;
-  protected searchTimer:NodeJS.Timeout|undefined;
+  protected searchTimer:any;
   protected category:string = '';
   protected searchQuery:string = '';
   protected showInfo:boolean = false;

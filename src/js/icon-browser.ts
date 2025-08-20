@@ -11,5 +11,3 @@ import { NeoIconBrowser } from './browser/icon-browser';
   };
 
 })(Drupal, once);
-
-export {};
