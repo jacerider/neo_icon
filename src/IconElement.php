@@ -216,7 +216,7 @@ class IconElement implements IconElementInterface {
     if ($rendered && is_array($this->text)) {
       $text = $this->renderer()->render($text);
     }
-    if (is_string($text)) {
+    if ($text && is_string($text)) {
       // phpcs:ignore
       $text = $this->t($text);
     }
