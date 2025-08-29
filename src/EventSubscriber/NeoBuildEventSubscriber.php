@@ -58,7 +58,9 @@ class NeoBuildEventSubscriber implements EventSubscriberInterface {
         'font-weight' => 'normal',
         'line-height' => 1,
       ]);
-      // $collection->addTailwindUtilities($utilities);
+      $collection->addTailwindVariants([
+        'icon' => ['& .neo-icon'],
+      ]);
     }
   }
 
