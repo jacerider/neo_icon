@@ -32,6 +32,22 @@ neo_icon.entity.third_party:
   sequence:
     type: string
 
+field.widget.settings.neo_icon:
+  type: mapping
+  label: Neo Icon
+  mapping:
+    include:
+      type: sequence
+      label: Include
+    exclude:
+      type: sequence
+      label: Exclude
+
+field.storage_settings.neo_icon:
+  type: field.storage_settings.string
+  # label: Neo Icon
+  # mapping:
+
 node.type.*.third_party.neo_icon:
   type: neo_icon.entity.third_party
 
