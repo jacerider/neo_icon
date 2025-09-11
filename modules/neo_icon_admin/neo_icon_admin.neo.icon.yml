@@ -352,6 +352,11 @@ admin.cart:
   start: cart
   icon: shopping-cart
   prefix: admin
+admin.add_cart:
+  start: add to cart
+  icon: cart-plus
+  prefix: admin
+  weight: -10
 admin.payment:
   start: payment
   icon: money-bill
