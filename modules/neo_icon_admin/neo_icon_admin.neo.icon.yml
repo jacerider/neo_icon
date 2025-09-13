@@ -381,3 +381,7 @@ admin.masquerade:
   start: masquerade
   icon: user-secret
   prefix: admin
+admin.search:
+  word: search
+  icon: search
+  prefix: admin
