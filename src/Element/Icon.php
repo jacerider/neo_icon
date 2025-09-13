@@ -26,7 +26,6 @@ class Icon extends RenderElementBase {
       '#icon_attributes' => [],
       '#icon_only' => FALSE,
       '#tooltip' => NULL,
-      '#attributes' => [],
       '#pre_render' => [
         [$class, 'preRenderIcon'],
       ],
