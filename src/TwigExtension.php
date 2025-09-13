@@ -2,6 +2,7 @@
 
 namespace Drupal\neo_icon;
 
+use Drupal\Core\Entity\EntityInterface;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
 use Twig\TwigFunction;
@@ -30,6 +31,7 @@ class TwigExtension extends AbstractExtension {
   public function getFunctions() {
     return [
       new TwigFunction('icon', [$this, 'renderIcon']),
+      new TwigFunction('icon_entity', [$this, 'renderIconFromEntity']),
     ];
   }
 
@@ -39,6 +41,8 @@ class TwigExtension extends AbstractExtension {
   public function getFilters() {
     return [
       new TwigFilter('icon_only', [$this, 'iconOnly']),
+      new TwigFilter('icon_prefix', [$this, 'iconPrefix']),
+      new TwigFilter('icon_class', [$this, 'iconClass']),
     ];
   }
 
@@ -47,26 +51,73 @@ class TwigExtension extends AbstractExtension {
    *
    * @param string $icon
    *   The icon_id of the icon to render.
+   * @param string $title
+   *   The title of the icon.
    *
    * @return mixed[]
    *   A render array.
    */
-  public static function renderIcon($icon) {
+  public static function renderIcon($icon = NULL, $title = NULL) {
     $build = [
-      '#theme' => 'neo_icon',
+      '#type' => 'neo_icon',
+      '#title' => $title,
       '#icon' => $icon,
     ];
     return $build;
   }
 
   /**
+   * Render the icon from an entity.
+   *
+   * @param \Drupal\Core\Entity\EntityInterface $entity
+   *   The entity to render the icon for.
+   *
+   * @return mixed[]
+   *   A render array.
+   */
+  public static function renderIconFromEntity(EntityInterface $entity) {
+    $entityType = $entity->getEntityType();
+    $bundleTypeId = $entityType->getBundleEntityType();
+    if (!$bundleTypeId) {
+      return [];
+    }
+    $bundleLabel = \Drupal::entityTypeManager()
+      ->getStorage($bundleTypeId)
+      ->load($entity->bundle())
+      ->label();
+    if (!$bundleLabel) {
+      return [];
+    }
+    $build = [
+      '#type' => 'neo_icon',
+      '#title' => $bundleLabel,
+      '#icon_prefix' => ['entity.' . $entityType->getBundleEntityType() ?: $entityType->id()],
+    ];
+    return $build;
+  }
+
+  /**
+   * Set the icon only flag.
+   */
+  public function iconOnly(array $build, $iconOnly = TRUE) {
+    $build['#icon_only'] = $iconOnly;
+    return $build;
+  }
+
+  /**
+   * Set the icon only flag.
+   */
+  public function iconPrefix(array $build, array $prefix = []) {
+    $build['#icon_prefix'] = $prefix;
+    return $build;
+  }
+
+  /**
    * Add classes to a renderable array.
    */
-  public function iconOnly($icon, $iconOnly = TRUE) {
-    if ($icon instanceof IconElement) {
-      $icon->iconOnly($iconOnly);
-    }
-    return $icon;
+  public function iconClass(array $build, string $class) {
+    $build['#icon_attributes']['class'][] = $class;
+    return $build;
   }
 
 }
