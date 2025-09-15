@@ -177,6 +177,14 @@ class IconElement implements IconElementInterface {
   /**
    * {@inheritdoc}
    */
+  public function iconPrefix(array $prefix = []): self {
+    $this->prefix = $prefix;
+    return $this;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function iconBefore() {
     $this->iconPosition('before');
     return $this;
@@ -239,6 +247,14 @@ class IconElement implements IconElementInterface {
       $this->setIconAttributes([]);
     }
     return $asArray ? $this->iconAttributes->toArray() : $this->iconAttributes;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function addIconClass(string $class) {
+    $this->getIconAttributes(FALSE)->addClass($class);
+    return $this;
   }
 
   /**

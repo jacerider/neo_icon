@@ -99,7 +99,11 @@ class TwigExtension extends AbstractExtension {
   /**
    * Set the icon only flag.
    */
-  public function iconOnly(array $build, $iconOnly = TRUE) {
+  public function iconOnly(array|IconElementInterface $build, $iconOnly = TRUE) {
+    if ($build instanceof IconElementInterface) {
+      $build->iconOnly($iconOnly);
+      return $build;
+    }
     $build['#icon_only'] = $iconOnly;
     return $build;
   }
@@ -107,7 +111,11 @@ class TwigExtension extends AbstractExtension {
   /**
    * Set the icon only flag.
    */
-  public function iconPrefix(array $build, array $prefix = []) {
+  public function iconPrefix(array|IconElementInterface $build, array $prefix = []) {
+    if ($build instanceof IconElementInterface) {
+      $build->iconPrefix($prefix);
+      return $build;
+    }
     $build['#icon_prefix'] = $prefix;
     return $build;
   }
@@ -115,7 +123,11 @@ class TwigExtension extends AbstractExtension {
   /**
    * Add classes to a renderable array.
    */
-  public function iconClass(array $build, string $class) {
+  public function iconClass(array|IconElementInterface $build, string $class) {
+    if ($build instanceof IconElementInterface) {
+      $build->addIconClass($class);
+      return $build;
+    }
     $build['#icon_attributes']['class'][] = $class;
     return $build;
   }

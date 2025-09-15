@@ -48,6 +48,16 @@ interface IconElementInterface extends MarkupInterface {
   public function iconPosition($position);
 
   /**
+   * Set the icon prefixes.
+   *
+   * @param array $prefix
+   *   An array of prefixes to use when looking up the icon.
+   *
+   * @return $this
+   */
+  public function iconPrefix(array $prefix = []): self;
+
+  /**
    * Show the icon before the title.
    *
    * @return $this
@@ -100,6 +110,16 @@ interface IconElementInterface extends MarkupInterface {
    * @return $this
    */
   public function setIconAttributes(array $attributes);
+
+  /**
+   * Add a class on the icon attributes.
+   *
+   * @param string $class
+   *   The class to add.
+   *
+   * @return $this
+   */
+  public function addIconClass(string $class);
 
   /**
    * Get the label attributes.
