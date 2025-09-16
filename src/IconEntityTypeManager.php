@@ -51,7 +51,7 @@ final class IconEntityTypeManager extends DefaultPluginManager {
     $this->factory = new ContainerFactory($this);
     $this->moduleHandler = $module_handler;
     $this->alterInfo('neo_icon_entity_type_info');
-    $this->setCacheBackend($cache_backend, 'neo_icon_entity_type_plugins');
+    $this->setCacheBackend($cache_backend, 'neo_icon_entity_type_plugins', ['neo_icon_entity_type_plugins', 'neo_icon']);
   }
 
   /**
