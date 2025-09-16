@@ -9,6 +9,7 @@ use Drupal\Core\Cache\Cache;
 use Drupal\Core\Config\Entity\ConfigEntityInterface;
 use Drupal\Core\Entity\EntityFormInterface;
 use Drupal\Core\Entity\EntityInterface;
+use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Link;
 use Drupal\Core\Url;
@@ -114,6 +115,12 @@ function neo_icon_entity(EntityInterface $entity, string $labelOverride = NULL):
   elseif ($bundleOf = $entity->getEntityType()->getBundleOf()) {
     $entityTypeId = $bundleOf;
   }
+  return new IconElement($labelOverride ?? $label, NULL, NULL, ['entity.' . $entityTypeId]);
+}
+
+function neo_icon_entity_type(EntityTypeInterface $entity_type, string $labelOverride = NULL): IconElement {
+  $label = $entity_type->getLabel();
+  $entityTypeId = $entity_type->id();
   return new IconElement($labelOverride ?? $label, NULL, NULL, ['entity.' . $entityTypeId]);
 }
 
