@@ -105,21 +105,23 @@ class IconManager extends DefaultPluginManager implements IconManagerInterface {
     if (!empty($definition['word'])) {
       $word = preg_quote($definition['word']);
       $definition['regex'] = "\b$word(s?|es?)\b";
-      $definition['weight'] = $definition['weight'] ?: 10;
     }
     elseif (!empty($definition['start'])) {
       $word = preg_quote($definition['start']);
       $definition['regex'] = "\b^$word(s?|es?)\b";
-      $definition['weight'] = $definition['weight'] ?: 10;
     }
     elseif (!empty($definition['end'])) {
       $word = preg_quote($definition['end']);
       $definition['regex'] = "\b$word(s?|es?)$\b";
-      $definition['weight'] = $definition['weight'] ?: 10;
+    }
+    elseif (!empty($definition['startend'])) {
+      $word = preg_quote($definition['startend']);
+      $definition['regex'] = "(^\b$word(es?|s)?\b|\b$word(es?|s)?\b$)";
     }
     elseif (!empty($definition['exact'])) {
       $word = preg_quote($definition['exact']);
       $definition['regex'] = "^$word$";
+      $definition['weight'] = $definition['weight'] ?: -1;
     }
     unset($definition['word'], $definition['start'], $definition['end'], $definition['exact']);
 
@@ -129,9 +131,6 @@ class IconManager extends DefaultPluginManager implements IconManagerInterface {
 
     if (is_string($definition['prefix'])) {
       $definition['prefix'] = [$definition['prefix']];
-    }
-    if (!empty($definition['weight'])) {
-      $definition['weight'] = 10000 + $definition['weight'];
     }
 
     if (!is_array($definition['prefix'])) {
