@@ -25,3 +25,8 @@ neo.icon.all:
   route_name: neo.icon.all
   base_route: entity.neo_icon_library.collection
   title: 'Icon Browser'
+
+neo.icon.entity:
+  route_name: neo.icon.entity
+  base_route: entity.neo_icon_library.collection
+  title: 'Entity Type Icons'
