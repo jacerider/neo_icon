@@ -6,6 +6,7 @@
  */
 
 use Drupal\Core\Config\Entity\ConfigEntityInterface;
+use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Link;
 use Drupal\neo_icon\IconElement;
 use Drupal\neo_icon\IconElementInterface;
@@ -63,7 +64,8 @@ function neo_icon_admin_preprocess_page_title(&$variables) {
         foreach ($parameters as $name => $options) {
           if (isset($options['type']) && strpos($options['type'], 'entity:') === 0) {
             $entity = $route_match->getParameter($name);
-            if ($entity instanceof ConfigEntityInterface) {
+            if ($entity instanceof EntityInterface) {
+              $prefix[] = 'entity';
               $prefix[] = 'entity.' . $entity->getEntityTypeId();
             }
           }
