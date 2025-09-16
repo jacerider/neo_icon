@@ -1,3 +1,13 @@
+neo_icon.entity:
+  type: mapping
+  label: Entity Icons
+  mapping:
+    types:
+      type: sequence
+      label: Types
+      sequence:
+        type: string
+
 neo_icon.neo_icon_library.*:
   type: config_entity
   label: 'Neo Icon Library'
