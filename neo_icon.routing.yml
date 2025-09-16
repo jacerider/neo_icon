@@ -15,3 +15,11 @@ neo.icon.all:
     libraries: ''
   requirements:
     _permission: 'administer neo_icon'
+
+neo.icon.entity:
+  path: '/admin/config/neo/icons/entity'
+  defaults:
+    _form: '\Drupal\neo_icon\Form\IconEntityForm'
+    _title: 'Entity Type Icons'
+  requirements:
+    _permission: 'administer neo_icon'
