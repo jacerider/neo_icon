@@ -91,7 +91,7 @@ class TwigExtension extends AbstractExtension {
     $build = [
       '#type' => 'neo_icon',
       '#title' => $bundleLabel,
-      '#icon_prefix' => ['entity.' . $entityType->getBundleEntityType() ?: $entityType->id()],
+      '#icon_prefix' => ['entity', 'entity.' . $entityType->getBundleEntityType() ?: $entityType->id()],
     ];
     return $build;
   }
