@@ -23,6 +23,7 @@ function neo_icon_local_task_preprocess_menu_local_task(&$variables) {
     $icon = new IconElement($variables['link']['#title'], NULL, NULL, [
       'local_action',
       'admin',
+      'entity',
     ]);
     if ($icon->getIcon()) {
       $variables['link']['#title'] = $icon;
@@ -46,6 +47,7 @@ function neo_icon_local_task_preprocess_menu_local_action(&$variables) {
     $icon = new IconElement($variables['link']['#title'], NULL, NULL, [
       'local_action',
       'admin',
+      'entity',
     ]);
     if ($icon->getIcon()) {
       $variables['link']['#title'] = $icon;
