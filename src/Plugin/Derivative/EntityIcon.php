@@ -3,6 +3,7 @@
 namespace Drupal\neo_icon\Plugin\Derivative;
 
 use Drupal\Component\Plugin\Derivative\DeriverBase;
+use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Entity\EntityTypeBundleInfoInterface;
 use Drupal\Core\Entity\EntityTypeManager;
 use Drupal\Core\Plugin\Discovery\ContainerDeriverInterface;
@@ -15,13 +16,22 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 final class EntityIcon extends DeriverBase implements ContainerDeriverInterface {
 
   /**
+   * The configuration.
+   *
+   * @var \Drupal\Core\Config\ImmutableConfig
+   */
+  protected $config;
+
+  /**
    * Constructs a EntityIcon object.
    */
   public function __construct(
+    ConfigFactoryInterface $config_factory,
     private readonly EntityTypeManager $entityTypeManager,
     private readonly EntityTypeBundleInfoInterface $bundleManager,
     private readonly IconEntityTypeManager $iconPluginManager,
   ) {
+    $this->config = $config_factory->get('neo_icon.entity');
   }
 
   /**
@@ -29,9 +39,10 @@ final class EntityIcon extends DeriverBase implements ContainerDeriverInterface 
    */
   public static function create(ContainerInterface $container, $base_plugin_id) {
     return new static(
+      $container->get('config.factory'),
       $container->get('entity_type.manager'),
       $container->get('entity_type.bundle.info'),
-      $container->get('neo_icon.entity_type.manager')
+      $container->get('neo_icon.entity_type.manager'),
     );
   }
 
@@ -58,9 +69,22 @@ final class EntityIcon extends DeriverBase implements ContainerDeriverInterface 
               'entity.' . $entityTypeId,
               'entity.' . $bundleOf,
             ],
+            'weight' => -1,
           ] + $base_plugin_definition;
         }
       }
+    }
+    foreach ($this->config->get('types') ?? [] as $entityTypeId => $icon) {
+      $entityType = $this->entityTypeManager->getDefinition($entityTypeId);
+      $this->derivatives[$entityTypeId] = [
+        'icon' => $icon,
+        'startend' => strtolower($entityType->getLabel()),
+        'prefix' => [
+          'entity',
+          'entity.' . $entityTypeId,
+        ],
+        'weight' => -1,
+      ] + $base_plugin_definition;
     }
     return $this->derivatives;
   }
