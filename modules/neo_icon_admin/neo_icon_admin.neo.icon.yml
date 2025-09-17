@@ -387,3 +387,47 @@ admin.search:
   word: search
   icon: search
   prefix: admin
+admin.test:
+  word: test
+  icon: debug
+  prefix: admin
+admin.results:
+  word: results
+  icon: poll-h
+  prefix: admin
+admin.email_handlers:
+  word: emails / handlers
+  icon: envelope-open-text
+  prefix: admin
+admin.css_js:
+  word: css / js
+  icon: code
+  prefix: admin
+admin.access:
+  word: access
+  icon: user-lock
+  prefix: admin
+admin.general:
+  word: general
+  icon: tools
+  prefix: admin
+admin.confirmation:
+  word: confirmation
+  icon: check-double
+  prefix: admin
+admin.download:
+  word: download
+  icon: download
+  prefix: admin
+admin.clear:
+  word: clear
+  icon: eraser
+  prefix: admin
+admin.source:
+  word: source
+  icon: code
+  prefix: admin
+admin.elements:
+  word: elements
+  icon: list-alt
+  prefix: admin
