@@ -60,7 +60,7 @@ admin.terms:
   prefix: admin
 admin.webform:
   regex: webform
-  icon: thunderstorm
+  icon: typewriter
   prefix: admin
 admin.report:
   word: report
