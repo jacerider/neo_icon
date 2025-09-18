@@ -23,7 +23,7 @@ class IconEntityForm extends ConfigFormBase {
     ConfigFactoryInterface $config_factory,
     protected EntityTypeManagerInterface $entityTypeManager,
     protected IconEntityTypeManager $iconPluginManager,
-    protected $typedConfigManager = NULL,
+    TypedConfigManagerInterface $typedConfigManager,
   ) {
     parent::__construct($config_factory, $typedConfigManager);
   }
