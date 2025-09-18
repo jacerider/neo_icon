@@ -21,9 +21,9 @@ class IconEntityForm extends ConfigFormBase {
    */
   public function __construct(
     ConfigFactoryInterface $config_factory,
-    protected TypedConfigManagerInterface $typedConfigManager,
     protected EntityTypeManagerInterface $entityTypeManager,
     protected IconEntityTypeManager $iconPluginManager,
+    protected $typedConfigManager = NULL,
   ) {
     parent::__construct($config_factory, $typedConfigManager);
   }
@@ -34,9 +34,9 @@ class IconEntityForm extends ConfigFormBase {
   public static function create(ContainerInterface $container) {
     return new static(
       $container->get('config.factory'),
-      $container->get('config.typed'),
       $container->get('entity_type.manager'),
       $container->get('neo_icon.entity_type.manager'),
+      $container->get('config.typed'),
     );
   }
 
