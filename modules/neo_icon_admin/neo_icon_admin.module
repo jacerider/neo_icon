@@ -92,3 +92,30 @@ function neo_icon_admin_preprocess_links__dropbutton(&$variables) {
     }
   }
 }
+
+/**
+ * Implements template_preprocess_views_view().
+ */
+function neo_icon_preprocess_views_view(&$variables) {
+  foreach ([
+    'header',
+    'footer',
+    'empty',
+  ] as $region) {
+    if (!empty($variables[$region]) && is_array($variables[$region])) {
+      foreach ($variables[$region] as $key => &$item) {
+        if (is_array($item) && isset($item['#type'])) {
+          switch ($item['#type']) {
+            case 'link':
+              if (!empty($item['#title']) && !$item['#title'] instanceof IconElementInterface) {
+                $item['#title'] = new IconElement($item['#title'], NULL, NULL, [
+                  'admin',
+                ]);
+              }
+              break;
+          }
+        }
+      }
+    }
+  }
+}
