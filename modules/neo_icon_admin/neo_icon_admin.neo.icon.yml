@@ -119,6 +119,10 @@ admin.file:
   word: file
   icon: file
   prefix: admin
+admin.csv:
+  word: csv
+  icon: file-csv
+  prefix: admin
 admin.crop:
   word: crop
   icon: crop
@@ -248,6 +252,14 @@ admin.create:
 admin.select:
   start: select
   icon: check-square
+  prefix: admin
+admin.email:
+  start: email
+  icon: envelope
+  prefix: admin
+admin.print:
+  start: print
+  icon: print
   prefix: admin
 admin.list:
   word: list
