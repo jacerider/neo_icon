@@ -242,6 +242,14 @@ class IconElement implements IconElementInterface {
   /**
    * {@inheritdoc}
    */
+  public function addIconClass(string $class) {
+    $this->getIconAttributes(FALSE)->addClass($class);
+    return $this;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function getIconAttributes($asArray = TRUE): Attribute|array {
     if (!isset($this->iconAttributes)) {
       $this->setIconAttributes([]);
@@ -252,16 +260,16 @@ class IconElement implements IconElementInterface {
   /**
    * {@inheritdoc}
    */
-  public function addIconClass(string $class) {
-    $this->getIconAttributes(FALSE)->addClass($class);
+  public function setLabelAttributes(array $attributes) {
+    $this->labelAttributes = new Attribute($attributes);
     return $this;
   }
 
   /**
    * {@inheritdoc}
    */
-  public function setLabelAttributes(array $attributes) {
-    $this->labelAttributes = new Attribute($attributes);
+  public function addLabelClass(string $class) {
+    $this->getLabelAttributes(FALSE)->addClass($class);
     return $this;
   }
 
@@ -292,7 +300,7 @@ class IconElement implements IconElementInterface {
         '#position' => $this->iconPosition,
         '#icon_only' => $this->iconOnly,
         '#attributes_icon' => $this->getIconAttributes(),
-        '#attributes_label' => $this->getLabelAttributes(),
+        '#attributes' => $this->getLabelAttributes(),
       ];
       if (!$this->isTooltip()) {
         $build['#attributes_icon']['title'] = $text;
