@@ -8,6 +8,26 @@ namespace Drupal\neo_icon;
 trait IconMimeTrait {
 
   /**
+   * Get an icon for a file source.
+   *
+   * @param string $src
+   *   The file source (path, URL, or filename).
+   *
+   * @return string
+   *   The icon id.
+   */
+  protected function getIconFromSrc(string $src) {
+    $mimeType = $this->getMimeTypeFromSrc($src);
+
+    if ($mimeType) {
+      return $this->getMimeTypeIcon($mimeType);
+    }
+
+    // If we can't determine the MIME type, return the default file icon.
+    return 'file';
+  }
+
+  /**
    * Get an icon for a mime type.
    *
    * @param string $mimeType
@@ -159,6 +179,119 @@ trait IconMimeTrait {
       default:
         return 'file';
     }
+  }
+
+  /**
+   * Get the MIME type from a file source.
+   *
+   * @param string $src
+   *   The file source (path, URL, or filename).
+   *
+   * @return string|null
+   *   The MIME type, or NULL if it cannot be determined.
+   */
+  protected function getMimeTypeFromSrc(string $src) {
+    // If the source is a local file path and the file exists, use finfo.
+    if (file_exists($src) && is_readable($src)) {
+      $finfo = new \finfo(FILEINFO_MIME_TYPE);
+      return $finfo->file($src);
+    }
+
+    // Fall back to extension-based detection.
+    $extension = strtolower(pathinfo($src, PATHINFO_EXTENSION));
+
+    return $this->getMimeTypeFromExtension($extension);
+  }
+
+  /**
+   * Get MIME type from file extension.
+   *
+   * @param string $extension
+   *   The file extension (without the dot).
+   *
+   * @return string|null
+   *   The MIME type, or NULL if the extension is not recognized.
+   */
+  protected function getMimeTypeFromExtension(string $extension) {
+    $mimeTypes = [
+      // Images.
+      'jpg' => 'image/jpeg',
+      'jpeg' => 'image/jpeg',
+      'png' => 'image/png',
+      'gif' => 'image/gif',
+      'bmp' => 'image/bmp',
+      'webp' => 'image/webp',
+      'svg' => 'image/svg+xml',
+      'ico' => 'image/x-icon',
+
+      // Audio.
+      'mp3' => 'audio/mpeg',
+      'wav' => 'audio/vnd.wav',
+      'ogg' => 'audio/ogg',
+      'mp4a' => 'audio/mp4',
+      'aac' => 'audio/aac',
+      'flac' => 'audio/flac',
+
+      // Video.
+      'mp4' => 'video/mp4',
+      'avi' => 'video/x-msvideo',
+      'mov' => 'video/quicktime',
+      'wmv' => 'video/x-ms-wmv',
+      'flv' => 'video/x-flv',
+      'webm' => 'video/webm',
+      'mkv' => 'video/x-matroska',
+
+      // Documents.
+      'pdf' => 'application/pdf',
+      'doc' => 'application/msword',
+      'docx' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      'xls' => 'application/vnd.ms-excel',
+      'xlsx' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      'ppt' => 'application/vnd.ms-powerpoint',
+      'pptx' => 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+      'odt' => 'application/vnd.oasis.opendocument.text',
+      'ods' => 'application/vnd.oasis.opendocument.spreadsheet',
+      'odp' => 'application/vnd.oasis.opendocument.presentation',
+
+      // Archives.
+      'zip' => 'application/zip',
+      'rar' => 'application/x-rar',
+      '7z' => 'application/x-7z-compressed',
+      'tar' => 'application/x-tar',
+      'gz' => 'application/x-gzip',
+      'bz2' => 'application/x-bzip2',
+
+      // Code files.
+      'html' => 'text/html',
+      'htm' => 'text/html',
+      'css' => 'text/css',
+      'js' => 'application/javascript',
+      'json' => 'application/json',
+      'xml' => 'application/xml',
+      'php' => 'application/x-php',
+      'py' => 'text/x-python',
+      'rb' => 'application/x-ruby',
+      'java' => 'text/x-java-source',
+      'cpp' => 'text/x-c++src',
+      'c' => 'text/x-csrc',
+      'h' => 'text/x-chdr',
+      'sql' => 'text/x-sql',
+
+      // Text files.
+      'txt' => 'text/plain',
+      'csv' => 'text/csv',
+      'log' => 'text/plain',
+      'md' => 'text/markdown',
+      'rtf' => 'application/rtf',
+
+      // Executables.
+      'exe' => 'application/x-ms-dos-executable',
+      'msi' => 'application/x-msi',
+      'deb' => 'application/x-deb',
+      'rpm' => 'application/x-rpm',
+    ];
+
+    return $mimeTypes[$extension] ?? NULL;
   }
 
 }
