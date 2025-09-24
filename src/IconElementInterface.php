@@ -143,6 +143,16 @@ interface IconElementInterface extends MarkupInterface {
   public function setLabelAttributes(array $attributes);
 
   /**
+   * Add a class on the label attributes.
+   *
+   * @param string $class
+   *   The class to add.
+   *
+   * @return $this
+   */
+  public function addLabelClass(string $class);
+
+  /**
    * Get the icon.
    *
    * @return \Drupal\neo_icon\IconInterface
