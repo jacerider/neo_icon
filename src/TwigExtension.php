@@ -42,6 +42,7 @@ class TwigExtension extends AbstractExtension {
     return [
       new TwigFilter('icon_only', [$this, 'iconOnly']),
       new TwigFilter('icon_prefix', [$this, 'iconPrefix']),
+      new TwigFilter('label_class', [$this, 'labelClass']),
       new TwigFilter('icon_class', [$this, 'iconClass']),
     ];
   }
@@ -117,6 +118,18 @@ class TwigExtension extends AbstractExtension {
       return $build;
     }
     $build['#icon_prefix'] = $prefix;
+    return $build;
+  }
+
+  /**
+   * Add classes to a renderable array.
+   */
+  public function labelClass(array|IconElementInterface $build, string $class) {
+    if ($build instanceof IconElementInterface) {
+      $build->addLabelClass($class);
+      return $build;
+    }
+    $build['#label_attributes']['class'][] = $class;
     return $build;
   }
 
