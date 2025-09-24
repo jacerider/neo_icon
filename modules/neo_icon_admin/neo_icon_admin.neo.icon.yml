@@ -367,6 +367,18 @@ admin.commerce:
   start: commerce
   icon: store
   prefix: admin
+admin.store:
+  word: store
+  icon: store
+  prefix: admin
+admin.product:
+  start: product
+  icon: box-usd
+  prefix: admin
+admin.checkout:
+  start: checkout
+  icon: cash-register
+  prefix: admin
 admin.cart:
   start: cart
   icon: shopping-cart
