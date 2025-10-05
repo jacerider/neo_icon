@@ -53,6 +53,19 @@ field.widget.settings.neo_icon:
       type: sequence
       label: Exclude
 
+field.formatter.settings.boolean_icon:
+  type: mapping
+  mapping:
+    format:
+      type: string
+      label: 'Output format'
+    icon_only:
+      type: boolean
+      label: 'Icon only'
+    as_tooltip:
+      type: boolean
+      label: 'As tooltip'
+
 field.storage_settings.neo_icon:
   type: field.storage_settings.string
   # label: Neo Icon
