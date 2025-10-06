@@ -22,6 +22,14 @@ interface IconElementInterface extends MarkupInterface {
   public function iconOnly($icon_only = TRUE): self;
 
   /**
+   * Check if only the icon is shown.
+   *
+   * @return bool
+   *   TRUE if only the icon is shown, FALSE otherwise.
+   */
+  public function isIconOnly(): bool;
+
+  /**
    * Sets the icon to be displayed as a tooltip.
    *
    * @param bool $as_tooltip
@@ -81,6 +89,14 @@ interface IconElementInterface extends MarkupInterface {
    *   The current instance of the IconElement class.
    */
   public function iconLookup($text);
+
+  /**
+   * Set the text.
+   *
+   * @param string $text
+   *   The text.
+   */
+  public function setText(mixed $text);
 
   /**
    * Get the text.
