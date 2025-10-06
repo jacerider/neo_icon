@@ -135,7 +135,7 @@ class IconElement implements IconElementInterface {
    *   If TRUE, the status will be ignored.
    */
   public function __construct($text = NULL, $icon = NULL, $library = NULL, array $prefix = [], $ignore_status = FALSE) {
-    $this->text = $text;
+    $this->setText($text);
     $this->icon = $icon;
     $this->library = $library;
     $this->prefix = $prefix;
@@ -148,6 +148,13 @@ class IconElement implements IconElementInterface {
   public function iconOnly($icon_only = TRUE): self {
     $this->iconOnly = $icon_only;
     return $this;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function isIconOnly(): bool {
+    return $this->iconOnly;
   }
 
   /**
@@ -214,6 +221,14 @@ class IconElement implements IconElementInterface {
       $this->iconObject = $this->iconRepository()->getIcon($this->iconLookupText ?? $this->text, $this->icon, $this->library, $this->prefix, $this->ignoreStatus);
     }
     return $this->iconObject;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function setText(mixed $text) {
+    $this->text = $text;
+    return $this;
   }
 
   /**
