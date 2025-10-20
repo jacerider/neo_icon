@@ -6,6 +6,10 @@ admin.front:
   start: front
   icon: home
   prefix: admin
+admin.frontpage:
+  start: frontpage
+  icon: home
+  prefix: admin
 # admin.back:
 #   start: back
 #   icon: backpack
@@ -68,6 +72,11 @@ admin.report:
   prefix: admin
 admin.log:
   word: log
+  icon: laptop-code
+  weight: 10
+  prefix: admin
+admin.watchdog:
+  word: watchdog
   icon: laptop-code
   weight: 10
   prefix: admin
@@ -213,6 +222,14 @@ admin.copy:
 admin.register:
   start: register
   icon: cabinet-filing
+  prefix: admin
+admin.link:
+  start: link
+  icon: link
+  prefix: admin
+admin.linkit:
+  start: linkit
+  icon: link
   prefix: admin
 admin.registrations:
   word: registrations
@@ -411,6 +428,26 @@ admin.search:
   word: search
   icon: search
   prefix: admin
+admin.archive:
+  word: archive
+  icon: archive
+  prefix: admin
+admin.glossary:
+  word: glossary
+  icon: line-height
+  prefix: admin
+admin.new:
+  word: new
+  icon: sparkles
+  prefix: admin
+admin.recent:
+  word: recent
+  icon: broadcast-tower
+  prefix: admin
+admin.online:
+  word: online
+  icon: plug
+  prefix: admin
 admin.test:
   word: test
   icon: debug
@@ -422,6 +459,18 @@ admin.results:
 admin.email_handlers:
   word: emails / handlers
   icon: envelope-open-text
+  prefix: admin
+admin.mail_system:
+  word: mail system
+  icon: envelope-open-text
+  prefix: admin
+admin.metatag:
+  word: metatag
+  icon: tags
+  prefix: admin
+admin.google:
+  word: google
+  icon: google
   prefix: admin
 admin.css_js:
   word: css / js
