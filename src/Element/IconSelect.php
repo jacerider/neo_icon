@@ -170,7 +170,7 @@ final class IconSelect extends FormElementBase {
    */
   public static function validateNeoIcon($element, FormStateInterface $form_state, $form) {
     $value = $form_state->getValue($element['#parents']);
-    $value = $value['value'] ?? NULL;
+    $value = $value['value'] ?? '';
     $form_state->setValueForElement($element, $value);
   }
 
