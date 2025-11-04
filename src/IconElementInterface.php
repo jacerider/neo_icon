@@ -107,6 +107,16 @@ interface IconElementInterface extends MarkupInterface {
   public function getText();
 
   /**
+   * Set whether to assign the title attribute to the icon element.
+   *
+   * @param bool $assign_title
+   *   Whether to assign the title attribute.
+   *
+   * @return $this
+   */
+  public function assignTitle(bool $assign_title = TRUE): self;
+
+  /**
    * Get the icon attributes.
    *
    * @param bool $asArray
