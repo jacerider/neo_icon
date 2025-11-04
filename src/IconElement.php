@@ -34,6 +34,13 @@ class IconElement implements IconElementInterface {
    *
    * @var mixed
    */
+  protected $originalText;
+
+  /**
+   * The icon text.
+   *
+   * @var mixed
+   */
   protected $text;
 
   /**
@@ -107,6 +114,13 @@ class IconElement implements IconElementInterface {
   protected $iconPosition = 'before';
 
   /**
+   * Whether to add the title attribute to the icon element.
+   *
+   * @var bool
+   */
+  protected bool $title = TRUE;
+
+  /**
    * The item attributes.
    *
    * @var \Drupal\Core\Template\Attribute
@@ -163,6 +177,7 @@ class IconElement implements IconElementInterface {
   public function asTooltip($as_tooltip = TRUE, mixed $content = NULL): self {
     $this->asTooltip = $as_tooltip;
     $this->tooltip = $content;
+    $this->assignTitle(FALSE);
     return $this;
   }
 
@@ -249,6 +264,14 @@ class IconElement implements IconElementInterface {
   /**
    * {@inheritdoc}
    */
+  public function assignTitle(bool $assign_title = TRUE): self {
+    $this->title = $assign_title;
+    return $this;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function setIconAttributes(array $attributes) {
     $this->iconAttributes = new Attribute($attributes);
     return $this;
@@ -317,7 +340,7 @@ class IconElement implements IconElementInterface {
         '#attributes_icon' => $this->getIconAttributes(),
         '#attributes' => $this->getLabelAttributes(),
       ];
-      if (!$this->isTooltip()) {
+      if ($this->title) {
         $build['#attributes_icon']['title'] = $text;
       }
     }
@@ -369,7 +392,6 @@ class IconElement implements IconElementInterface {
    */
   protected function iconRepository() {
     if (!static::$iconRepository) {
-      // @phpstan-ignore-next-line
       static::$iconRepository = \Drupal::service('neo_icon.repository');
     }
     return static::$iconRepository;
@@ -383,7 +405,6 @@ class IconElement implements IconElementInterface {
    */
   protected function renderer() {
     if (!static::$renderer) {
-      // @phpstan-ignore-next-line
       static::$renderer = \Drupal::service('renderer');
     }
     return static::$renderer;
