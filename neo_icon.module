@@ -395,3 +395,12 @@ function neo_icon_preprocess_entity_add_list(&$variables) {
     }
   }
 }
+
+/**
+ * Implements hook_preprocess_accordion_item().
+ */
+function neo_icon_preprocess_accordion_item(array &$variables) {
+  if (!empty($variables['element']['#icon'])) {
+    $variables['title'] = neo_icon($variables['title'], $variables['element']['#icon']);
+  }
+}
