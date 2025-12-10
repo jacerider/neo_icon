@@ -20,6 +20,7 @@ class IconBrowser extends RenderElementBase {
     return [
       '#theme' => 'neo_icon_browser',
       '#libraries' => [],
+      '#show_title' => FALSE,
       '#show_info' => FALSE,
       // A selector to an input field that will store the selected icon.
       '#update_input' => NULL,
@@ -70,6 +71,9 @@ class IconBrowser extends RenderElementBase {
     }
     if (!empty($element['#show_info'])) {
       $element['#attributes']['data-show-info'] = 'true';
+    }
+    if (!empty($element['#show_title'])) {
+      $element['#attributes']['data-show-title'] = 'true';
     }
     $element['#libraries'] = [];
     foreach ($libraries as $library) {
