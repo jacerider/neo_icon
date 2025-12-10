@@ -8,12 +8,12 @@
  * @ingroup themeable
  */
 #}
-<div{{ attributes.addClass('card', 'bg-default') }}>
-  <div class="neo-icon-browser--inner flex flex-col items-center">
+<div{{ attributes.addClass('flex flex-col min-h-full bg-default') }}>
+  <div class="neo-icon-browser--inner flex flex-col items-center grow">
     <div class="neo-icon-browser--loader text-center transition-opacity duration-300 p-form-item">
       {{ loader }}
     </div>
-    <div class="neo-icon-browser--content w-full hidden opacity-0 transition-opacity duration-300">
+    <div class="neo-icon-browser--content flex-col w-full hidden opacity-0 transition-opacity duration-300 grow">
       <div class="neo-icon-browser--header flex items-center bg-base-100 border-b border-base-300 sticky top-neo-t modal:top-0 z-10 shadow-lg">
         <div class="neo-icon-browser--first p-4">
           <div class="form--inline">
@@ -28,8 +28,8 @@
           </div>
         </div>
       </div>
-      <div class="neo-icon-browser--icons">
-        <div class="neo-icon-browser--list grid grid-cols-2 gap-1 p-4 md:grid-cols-5 lg:grid-cols-8">
+      <div class="neo-icon-browser--icons p-4 grow w-full">
+        <div class="neo-icon-browser--list grid grid-cols-2 gap-3 md:grid-cols-5 lg:grid-cols-8">
         </div>
       </div>
       <div class="neo-icon-browser--footer bg-base-100 border-t border-base-300 p-4 py-2 sticky bottom-0 z-10">
