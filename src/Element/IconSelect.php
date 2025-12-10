@@ -151,6 +151,7 @@ final class IconSelect extends FormElementBase {
       '#update_input_format' => $trigger['#format'],
       '#update_icon' => '#' . $trigger['#field_id'] . '-icon i',
       '#update_allow_empty' => empty($trigger['#required']),
+      '#show_title' => TRUE,
     ], [
       'width' => '100%',
       'height' => '100%',
