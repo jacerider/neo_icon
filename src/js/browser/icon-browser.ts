@@ -1,6 +1,10 @@
 class NeoIconBrowser {
   protected element:HTMLElement;
   protected content:HTMLElement;
+  protected modal:HTMLElement | null = null;
+  protected header:HTMLElement;
+  protected footer:HTMLElement;
+  protected wrapper:HTMLElement;
   protected list:HTMLElement;
   protected search:HTMLInputElement;
   protected categories:HTMLSelectElement;
@@ -16,6 +20,7 @@ class NeoIconBrowser {
   protected category:string = '';
   protected searchQuery:string = '';
   protected showInfo:boolean = false;
+  protected showTitle:boolean = false;
   protected updateInput:string|null;
   protected updateInputFormat:string|null;
   protected updateAllowEmpty:boolean = false;
@@ -27,6 +32,10 @@ class NeoIconBrowser {
   constructor(element:HTMLElement) {
     this.element = element;
     this.content = element.querySelector('.neo-icon-browser--content') as HTMLElement;
+    this.modal = this.element.closest('.neo-modal--content') as HTMLElement;
+    this.header = element.querySelector('.neo-icon-browser--header') as HTMLElement;
+    this.footer = element.querySelector('.neo-icon-browser--footer') as HTMLElement;
+    this.wrapper = this.element.querySelector('.neo-icon-browser--icons') as HTMLElement;
     this.list = element.querySelector('.neo-icon-browser--list') as HTMLElement;
     this.search = element.querySelector('.neo-icon-browser--search') as HTMLInputElement;
     this.categories = element.querySelector('.neo-icon-browser--libraries') as HTMLSelectElement;
@@ -35,10 +44,24 @@ class NeoIconBrowser {
     this.pagerNext = element.querySelectorAll('.neo-icon-browser--pager-next');
     this.infoPages = element.querySelector('.neo-icon-browser--info-pages') as HTMLElement;
     this.showInfo = this.element.dataset.showInfo === 'true';
+    this.showTitle = this.element.dataset.showTitle === 'true';
     this.updateInput = this.element.dataset.updateInput || null;
     this.updateInputFormat = this.element.dataset.updateInputFormat || 'name';
     this.updateAllowEmpty = this.element.dataset.updateAllowEmpty === 'true';
     this.updateIcon = this.element.dataset.updateIcon || null;
+
+    if (this.modal) {
+      let timeout: number;
+      window.addEventListener('resize', () => {
+        clearTimeout(timeout);
+        timeout = window.setTimeout(() => {
+          this.placeIcons();
+        }, 250);
+      });
+    }
+    else {
+      this.element.classList.add('card');
+    }
 
     this.content.style.display = 'none';
     this.content.classList.remove('hidden');
@@ -53,7 +76,7 @@ class NeoIconBrowser {
       if (loader) {
         loader.addEventListener('transitionend', () => {
           loader.style.display = 'none';
-          this.content.style.display = 'block';
+          this.content.style.display = 'flex';
           setTimeout(() => {
             this.content.classList.remove('opacity-0');
             this.search.focus();
@@ -214,7 +237,7 @@ class NeoIconBrowser {
     icons.forEach(icon => {
       const item = this.showInfo ? document.createElement('div') : document.createElement('a');
       const itemIcon = this.showInfo ? document.createElement('a') : document.createElement('div');
-      itemIcon.classList.add('neo-icon-browser--icon', 'flex', 'items-center', 'justify-center', 'rounded', 'h-20', 'text-4xl', 'bg-base-200', 'border', 'border-base-300', 'text-base-200-content', 'w-full', 'overflow-hidden', '[&_span:before]:!text-base-200-content');
+      itemIcon.classList.add('neo-icon-browser--icon', 'flex', 'flex-col', 'items-center', 'justify-center', 'rounded', 'h-20', 'text-4xl', 'bg-base-200', 'border', 'border-base-300', 'text-base-200-content', 'w-full', 'overflow-hidden');
       itemIcon.innerHTML = icon.render;
       item.appendChild(itemIcon);
       if (this.showInfo && !this.updateInput && !this.updateIcon && !icon.empty) {
@@ -271,12 +294,18 @@ class NeoIconBrowser {
           item.classList.add('use-neo-tooltip');
           item.setAttribute('data-tippy-content', 'None');
         }
+        else if (this.showTitle) {
+          const itemTitle = document.createElement('div');
+          itemTitle.classList.add('neo-icon-browser--icon-title', 'text-xs', 'text-base', 'text-center', 'truncate', 'w-full', 'px-2', 'mt-2');
+          itemTitle.textContent = icon.name;
+          itemIcon.appendChild(itemTitle);
+        }
+
         item.setAttribute('href', '#');
         item.addEventListener('click', e => {
           e.preventDefault();
 
-          const modal = this.element.closest('.neo-modal');
-          if (modal) {
+          if (this.modal) {
             NeoModal.closeTop();
           }
           if (this.updateInput) {
@@ -311,17 +340,46 @@ class NeoIconBrowser {
           }
         });
       }
-      item.classList.add('neo-icon-browser--item', 'bg-base-50', 'border', 'border-base-300', 'rounded-lg', 'p-3', 'm-1', 'flex', 'flex-col', 'hover:bg-base-100', 'focus', 'transition-all');
+      item.classList.add('neo-icon-browser--item', 'bg-base-50', 'border', 'border-base-300', 'rounded-lg', 'p-1', 'flex', 'flex-col', 'focus', 'transition-all');
+      if (this.showInfo) {
+        item.classList.add('hover:bg-base-100');
+      }
+      else {
+        item.classList.add('hover:bg-primary', 'hover:border-primary');
+      }
       item.tabIndex = 0;
       item.setAttribute('aria-label', icon.name);
       this.list.appendChild(item);
     });
-    const modal = this.element.closest('.neo-modal--content');
-    if (modal) {
-      modal.scrollTo({top: 0, behavior: 'smooth'});
+    if (this.modal) {
+      // Recalculate limit based on modal size.
+      this.content.style.display = 'flex';
+      const iconComputedStyles = getComputedStyle(this.wrapper);
+      const containingHeight = this.modal.offsetHeight - this.header.offsetHeight - this.footer.offsetHeight - (parseFloat(iconComputedStyles.paddingTop) + parseFloat(iconComputedStyles.paddingBottom));
+      const containingWidth = this.modal.offsetWidth - (parseFloat(iconComputedStyles.paddingLeft) + parseFloat(iconComputedStyles.paddingRight));
+      const item = this.list.querySelector('.neo-icon-browser--item') as HTMLElement;
+      if (item && containingHeight && containingWidth) {
+        const gapValue = parseFloat(window.getComputedStyle(this.list).getPropertyValue('gap')) / 2;
+        const itemHeight = item.offsetHeight + gapValue;
+        const itemWidth = item.offsetWidth + gapValue;
+        const itemsPerRow = Math.floor(containingWidth / itemWidth); // 16 = margin
+        const rowsThatFit = Math.floor(containingHeight / itemHeight); // 16 = margin
+        const totalItemsThatFit = itemsPerRow * rowsThatFit;
+        if (this.limit !== totalItemsThatFit) {
+          this.wrapper.style.height = containingHeight + 'px';
+          this.wrapper.style.overflow = 'hidden';
+          this.limit = totalItemsThatFit;
+          if (!icons.length) {
+            this.page = Math.ceil(this.icons.length / this.limit);
+          }
+          this.placeIcons();
+          return;
+        }
+      }
+      this.modal.scrollTo({top: 0, behavior: 'smooth'});
     }
     else {
-      this.content.scrollIntoView({behavior: 'smooth'});
+      window.scrollTo({top: 0, behavior: 'smooth'});
     }
     if (Drupal.behaviors && Drupal.behaviors.neoTooltip) {
       Drupal.behaviors.neoTooltip.attach(this.element);
