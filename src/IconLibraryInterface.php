@@ -68,6 +68,17 @@ interface IconLibraryInterface extends ConfigEntityInterface, ConfigFileEntityEv
   public function isGlobal();
 
   /**
+   * Should this icon package be unique.
+   *
+   * When marked as unique, the library ID will be prepended before each icon
+   * name. This allows libraries with the same icon names to coexist.
+   *
+   * @return bool
+   *   If TRUE, only one instance of this icon package can be enabled.
+   */
+  public function isUnique();
+
+  /**
    * Check if this is an SVG icon set.
    *
    * @return bool
