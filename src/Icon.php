@@ -45,6 +45,13 @@ class Icon implements IconInterface {
   protected $codes;
 
   /**
+   * Whether the icon is unique.
+   *
+   * @var bool
+   */
+  protected bool $unique;
+
+  /**
    * The icon library.
    *
    * @var \Drupal\neo_icon\IconLibraryInterface
@@ -60,6 +67,7 @@ class Icon implements IconInterface {
     $this->prefix = $icon_definition['prefix'];
     $this->code = $icon_definition['code'];
     $this->codes = $icon_definition['codes'];
+    $this->unique = !empty($icon_definition['unique']) ? $icon_definition['unique'] : FALSE;
     $this->library = $library;
   }
 
@@ -74,7 +82,7 @@ class Icon implements IconInterface {
    * {@inheritdoc}
    */
   public function getName() {
-    return $this->name;
+    return $this->unique ? $this->id : $this->name;
   }
 
   /**
