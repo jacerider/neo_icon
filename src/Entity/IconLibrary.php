@@ -49,6 +49,7 @@ use Drupal\neo_icon\IconLibraryInterface;
  *     "file",
  *     "status",
  *     "global",
+ *     "unique",
  *     "weight",
  *   },
  *   links = {
@@ -176,6 +177,13 @@ class IconLibrary extends ConfigEntityBase implements IconLibraryInterface {
   /**
    * {@inheritdoc}
    */
+  public function isUnique() {
+    return (bool) $this->get('unique');
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function isSvg() {
     return $this->getType() == 'image';
   }
@@ -271,6 +279,14 @@ class IconLibrary extends ConfigEntityBase implements IconLibraryInterface {
       if (file_exists($path)) {
         $data = file_get_contents($path);
         $this->iconDefinitions = Json::decode($data);
+        if ($this->isUnique()) {
+          $uniqueIconDefinitions = [];
+          foreach ($this->iconDefinitions as $name => $icon) {
+            $uniqueIconDefinitions[$icon['id']] = $icon;
+            $uniqueIconDefinitions[$icon['id']]['unique'] = TRUE;
+          }
+          $this->iconDefinitions = $uniqueIconDefinitions;
+        }
       }
     }
     return $this->iconDefinitions;
