@@ -28,14 +28,14 @@ class IconRepository implements IconRepositoryInterface {
    *
    * @var array
    */
-  protected $libraryMatches = [];
+  protected array $libraryMatches = [];
 
   /**
    * A list of definition matches.
    *
    * @var array
    */
-  protected $definitionMatches = [];
+  protected array $definitionMatches = [];
 
   /**
    * Constructs a new NeoIconRepository object.
