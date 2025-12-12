@@ -72,6 +72,13 @@ class IconLibraryForm extends EntityForm {
       '#default_value' => $this->entity->isGlobal(),
     ];
 
+    $form['unique'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Unique'),
+      '#description' => $this->t('If checked, this icon package will use unique icon names to avoid conflicts with other icon packages. This is useful when using multiple icon packages that have icons with the same name.'),
+      '#default_value' => $this->entity->isUnique(),
+    ];
+
     $form['status'] = [
       '#type' => 'checkbox',
       '#title' => $this->t('Published'),
