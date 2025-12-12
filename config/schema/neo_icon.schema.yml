@@ -25,13 +25,16 @@ neo_icon.neo_icon_library.*:
       label: 'The type of icon. Either font or image.'
     file:
       type: string
-      label: File
+      label: 'File'
     status:
       type: boolean
       label: 'Status'
     global:
       type: boolean
       label: 'Global'
+    unique:
+      type: boolean
+      label: 'Unique'
     weight:
       type: integer
       label: 'Weight'
