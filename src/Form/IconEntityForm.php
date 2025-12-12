@@ -60,8 +60,6 @@ class IconEntityForm extends ConfigFormBase {
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
-    $config = $this->config('neo_icon.entity');
-
     $entity_types = $this->entityTypeManager->getDefinitions();
     $form['types'] = [
       '#tree' => TRUE,
@@ -77,7 +75,6 @@ class IconEntityForm extends ConfigFormBase {
         ];
       }
     }
-
     return parent::buildForm($form, $form_state);
   }
 
