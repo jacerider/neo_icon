@@ -99,6 +99,12 @@ class NeoIconBrowser {
       const libraries = JSON.parse(this.element.dataset.libraries) as Array<string>;
       url += '/' + libraries.join('+');
     }
+    if (this.element.dataset.icons) {
+      const icons = JSON.parse(this.element.dataset.icons) as Array<string>;
+      const params = new URLSearchParams();
+      params.append('icons', JSON.stringify(icons));
+      url += '?' + params.toString();
+    }
     const source = await fetch(
       url
     );
