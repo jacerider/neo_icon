@@ -48,6 +48,7 @@ final class IconSelect extends FormElementBase {
         [$class, 'preRenderGroup'],
       ],
       '#libraries' => [],
+      '#icons' => [],
       // Can be name, selector.
       '#format' => 'name',
       '#empty_icon' => 'ban',
@@ -109,6 +110,7 @@ final class IconSelect extends FormElementBase {
       '#title' => new IconElement(t('Browse'), 'search'),
       '#name' => $id,
       '#libraries' => $element['#libraries'],
+      '#icons' => $element['#icons'],
       '#format' => $element['#format'],
       '#value' => 'search',
       '#attributes' => [
@@ -147,6 +149,7 @@ final class IconSelect extends FormElementBase {
     $response->addCommand(new NeoModalCommand([
       '#type' => 'neo_icon_browser',
       '#libraries' => $trigger['#libraries'],
+      '#icons' => $trigger['#icons'],
       '#update_input' => '#' . $trigger['#field_id'] . '-value',
       '#update_input_format' => $trigger['#format'],
       '#update_icon' => '#' . $trigger['#field_id'] . '-icon i',
