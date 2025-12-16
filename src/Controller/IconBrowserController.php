@@ -11,6 +11,7 @@ use Drupal\Core\Cache\CacheableMetadata;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Render\RendererInterface;
 use Drupal\neo_icon\Icon;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Instance of ValetController.
@@ -52,12 +53,19 @@ class IconBrowserController extends ControllerBase {
    * @return Symfony\Component\HttpFoundation\JsonResponse
    *   A json object.
    */
-  public function data($libraries = '') {
+  public function data(Request $request, $libraries = '') {
     $data = [];
     $libraries = !empty($libraries) ? explode(' ', $libraries) : [];
+    $icons = $request->query->get('icons');
+    if ($icons) {
+      $icons = json_decode($icons, TRUE);
+    }
     $cid = 'neo_icons';
     if ($libraries) {
       $cid .= ':' . implode('.', $libraries);
+    }
+    if ($icons) {
+      $cid .= ':icons:' . implode('.', $icons);
     }
     if ($cache = $this->cache->get($cid)) {
       return new JsonResponse($cache->data);
@@ -71,6 +79,9 @@ class IconBrowserController extends ControllerBase {
     foreach ($this->iconLibraryStorage->loadAvailable($libraries, [], TRUE) as $library) {
       $cacheable_metadata->addCacheableDependency($library);
       foreach ($library->getIcons() as $name => $definition) {
+        if ($icons && !in_array($name, $icons)) {
+          continue;
+        }
         $icon = new Icon($definition, $library);
         $render = $icon->render();
         $data[] = [
