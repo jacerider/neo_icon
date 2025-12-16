@@ -52,9 +52,18 @@ field.widget.settings.neo_icon:
     include:
       type: sequence
       label: Include
+      sequence:
+        type: string
     exclude:
       type: sequence
       label: Exclude
+      sequence:
+        type: string
+    icons:
+      type: sequence
+      label: Icons
+      sequence:
+        type: string
 
 field.formatter.settings.boolean_icon:
   type: mapping
