@@ -7,6 +7,7 @@ use Drupal\Core\Field\FieldDefinitionInterface;
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Field\WidgetBase;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Render\Markup;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -71,6 +72,7 @@ class IconWidget extends WidgetBase {
     return [
       'include' => [],
       'exclude' => [],
+      'icons' => [],
     ] + parent::defaultSettings();
   }
 
@@ -118,7 +120,35 @@ class IconWidget extends WidgetBase {
       '#options' => $options,
     ];
 
+    $element['icons'] = [
+      '#type' => 'textfield',
+      '#title' => t('Icons'),
+      '#description' => t('A comma separated list of icon names that should be made available in this field. If no icons are specified, all icons from the selected libraries will be available.'),
+      '#default_value' => implode(', ', $this->getSetting('icons')),
+    ];
+
+    $element['#element_validate'] = [
+      [get_class($this), 'validateIconWidget'],
+    ];
+
     return $element;
+  }
+
+  /**
+   * Validate the include/exclude settings.
+   */
+  public static function validateIconWidget(array $element, FormStateInterface $form_state) {
+    $values = $form_state->getValue($element['#parents']);
+    $values['include'] = array_filter($values['include']);
+    $values['exclude'] = array_filter($values['exclude']);
+    $values['icons'] = array_map('trim', explode(',', $values['icons'] ?? ''));
+
+    $conflicts = array_intersect_key($values['include'], $values['exclude']);
+    if (!empty($conflicts)) {
+      $form_state->setError($element, t('The same icon library cannot be included and excluded.'));
+    }
+
+    $form_state->setValue($element['#parents'], $values);
   }
 
   /**
@@ -138,6 +168,7 @@ class IconWidget extends WidgetBase {
       '#type' => 'neo_icon_select',
       '#default_value' => $items[$delta]->value ?? NULL,
       '#libraries' => array_keys($options),
+      '#icons' => array_values(array_filter($this->getSetting('icons'))),
     ];
     return $element;
   }
@@ -150,6 +181,7 @@ class IconWidget extends WidgetBase {
     $options = $this->getLibraryOptions();
     $include = array_filter($this->getSetting('include'));
     $exclude = array_filter($this->getSetting('exclude'));
+    $icons = array_filter($this->getSetting('icons'));
     if ($include) {
       $options = array_intersect_key($options, $include);
     }
@@ -158,6 +190,13 @@ class IconWidget extends WidgetBase {
     }
     if ($options) {
       $summary[] = $this->t('Libraries: @libraries', ['@libraries' => implode(', ', $options)]);
+    }
+    if ($icons) {
+      $iconIcons = [];
+      foreach ($icons as $icon_name) {
+        $iconIcons[] = neo_icon('', $icon_name);
+      }
+      $summary[] = $this->t('Allowed Icons: @icons', ['@icons' => Markup::create(implode(' ', $iconIcons))]);
     }
     return $summary;
   }
