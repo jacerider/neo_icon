@@ -20,6 +20,7 @@ class IconBrowser extends RenderElementBase {
     return [
       '#theme' => 'neo_icon_browser',
       '#libraries' => [],
+      '#icons' => [],
       '#show_title' => FALSE,
       '#show_info' => FALSE,
       // A selector to an input field that will store the selected icon.
@@ -82,6 +83,9 @@ class IconBrowser extends RenderElementBase {
       $element['#library_options'][$library->id()] = $library->label();
     }
     $element['#attributes']['data-libraries'][] = Json::encode($element['#libraries']);
+    if ($element['#icons']) {
+      $element['#attributes']['data-icons'][] = Json::encode($element['#icons']);
+    }
     return $element;
   }
 
