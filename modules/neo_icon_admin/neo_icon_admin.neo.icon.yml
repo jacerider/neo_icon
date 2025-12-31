@@ -34,6 +34,10 @@ admin.configuration:
   start: configuration
   icon: sliders-v-square
   prefix: admin
+admin.configure:
+  word: configure
+  icon: cog
+  prefix: admin
 admin.reroute:
   start: reroute
   icon: route
