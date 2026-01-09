@@ -1,6 +1,9 @@
 neo_icon.entity:
   deriver: 'Drupal\neo_icon\Plugin\Derivative\EntityIcon'
   prefix: entity
+neo_icon.save:
+  word: save
+  icon: check-circle
 neo_icon.published:
   word: published
   icon: check-circle
