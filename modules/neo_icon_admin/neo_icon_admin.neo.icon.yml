@@ -112,6 +112,10 @@ admin.workflow:
   word: workflow
   icon: code-branch
   prefix: admin
+admin.latest_version:
+  word: latest version
+  icon: code-commit
+  prefix: admin
 admin.date:
   word: date
   icon: alarm-clock
