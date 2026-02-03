@@ -199,6 +199,14 @@ class IconElement implements IconElementInterface {
   /**
    * {@inheritdoc}
    */
+  public function iconLibrary(?string $library = NULL): self {
+    $this->library = $library;
+    return $this;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function iconPrefix(array $prefix = []): self {
     $this->prefix = $prefix;
     return $this;
