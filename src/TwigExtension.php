@@ -41,6 +41,7 @@ class TwigExtension extends AbstractExtension {
   public function getFilters() {
     return [
       new TwigFilter('icon_only', [$this, 'iconOnly']),
+      new TwigFilter('icon_library', [$this, 'iconLibrary']),
       new TwigFilter('icon_prefix', [$this, 'iconPrefix']),
       new TwigFilter('label_class', [$this, 'labelClass']),
       new TwigFilter('icon_class', [$this, 'iconClass']),
@@ -106,6 +107,18 @@ class TwigExtension extends AbstractExtension {
       return $build;
     }
     $build['#icon_only'] = $iconOnly;
+    return $build;
+  }
+
+  /**
+   * Set the icon only flag.
+   */
+  public function iconLibrary(array|IconElementInterface $build, ?string $library = NULL) {
+    if ($build instanceof IconElementInterface) {
+      $build->iconLibrary($library);
+      return $build;
+    }
+    $build['#icon_library'] = $library;
     return $build;
   }
 
