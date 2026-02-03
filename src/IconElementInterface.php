@@ -56,6 +56,16 @@ interface IconElementInterface extends MarkupInterface {
   public function iconPosition($position);
 
   /**
+   * Set the icon library.
+   *
+   * @param string|null $library
+   *   The icon library.
+   *
+   * @return $this
+   */
+  public function iconLibrary(?string $library = NULL): self;
+
+  /**
    * Set the icon prefixes.
    *
    * @param array $prefix
