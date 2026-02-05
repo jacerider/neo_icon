@@ -46,6 +46,20 @@ class NeoBuildEventSubscriber implements EventSubscriberInterface {
       }
     }
     if ($libraryIds) {
+      foreach ($libraryIds as $libraryId) {
+        $collection->addTailwindUtility('icon-' . $libraryId . '-*', [
+          '--tw-content' => '--value(--icon-*)',
+          'display' => 'var(--icon-display, inline-block)',
+          'content' => 'var(--tw-content)',
+          'font-family' => '--value(--icon-library-' . $libraryId . ')',
+          '-webkit-font-smoothing' => 'antialiased',
+          '-moz-osx-font-smoothing' => 'grayscale',
+          'font-style' => 'normal',
+          'font-variant' => 'normal',
+          'font-weight' => 'normal',
+          'line-height' => 1,
+        ]);
+      }
       $collection->addTailwindUtility('icon-*', [
         '--tw-content' => '--value(--icon-*)',
         'display' => 'var(--icon-display, inline-block)',
