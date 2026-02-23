@@ -4,6 +4,7 @@ namespace Drupal\neo_icon\Plugin\Derivative;
 
 use Drupal\Component\Plugin\Derivative\DeriverBase;
 use Drupal\Core\Config\ConfigFactoryInterface;
+use Drupal\Core\Config\Entity\ConfigEntityTypeInterface;
 use Drupal\Core\Entity\EntityTypeBundleInfoInterface;
 use Drupal\Core\Entity\EntityTypeManager;
 use Drupal\Core\Plugin\Discovery\ContainerDeriverInterface;
@@ -55,19 +56,25 @@ final class EntityIcon extends DeriverBase implements ContainerDeriverInterface 
       if (!$this->entityTypeManager->hasDefinition($entityTypeId)) {
         continue;
       }
+      $entities = [];
       $entityType = $this->entityTypeManager->getDefinition($entityTypeId);
       $bundleOf = $entityType->getBundleOf();
       $bundleInfo = $this->bundleManager->getBundleInfo($bundleOf);
-      foreach ($bundleInfo as $bundleId => $bundle) {
-        $entityType = $this->entityTypeManager->getStorage($entityTypeId)->load($bundleId);
-        if ($icon = $this->iconPluginManager->getEntityIcon($entityType)) {
-          $this->derivatives[$entityTypeId . '.' . $bundleId] = [
+      if ($bundleInfo) {
+        $entities = $this->entityTypeManager->getStorage($entityTypeId)->loadMultiple(array_keys($bundleInfo));
+      }
+      elseif ($entityType instanceof ConfigEntityTypeInterface) {
+        $entities = $this->entityTypeManager->getStorage($entityTypeId)->loadMultiple();
+      }
+      foreach ($entities as $entity) {
+        if ($icon = $this->iconPluginManager->getEntityIcon($entity)) {
+          $this->derivatives[$entityTypeId . '.' . $entity->id()] = [
             'icon' => $icon,
-            'exact' => strtolower($entityType->label()),
+            'exact' => strtolower($entity->label()),
             'prefix' => [
               'entity',
               'entity.' . $entityTypeId,
-              'entity.' . $bundleOf,
+              'entity.' . $bundleOf ?: $entity->id(),
             ],
             'weight' => -1,
           ] + $base_plugin_definition;

@@ -386,6 +386,16 @@ function neo_icon_preprocess_entity_add_list(&$variables) {
   if (!empty($variables['bundles'])) {
     $routeMatch = \Drupal::routeMatch();
     $entityTypeId = $routeMatch->getParameter('entity_type_id');
+    if (!$entityTypeId) {
+      foreach ($variables['bundles'] as $bundle => $data) {
+        /** @var \Drupal\Core\Link $link */
+        $link = $data['add_link'];
+        $params = $link->getUrl()->getRouteParameters();
+        if ($params) {
+          $entityTypeId = array_key_last($params);
+        }
+      }
+    }
     if ($entityTypeId) {
       foreach ($variables['bundles'] as $bundle => $data) {
         /** @var \Drupal\Core\Link $link */

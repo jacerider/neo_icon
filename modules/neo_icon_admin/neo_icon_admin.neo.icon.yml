@@ -219,6 +219,14 @@ admin.duplicate:
   start: duplicate
   icon: clone
   prefix: admin
+admin.bulk:
+  start: bulk
+  icon: files-medical
+  prefix: admin
+admin.upload_media_bulk:
+  word: upload media in bulk
+  icon: files-medical
+  prefix: admin
 admin.clone:
   start: clone
   icon: clone

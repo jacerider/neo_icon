@@ -8,3 +8,5 @@ commerce_product_type:
   label: 'Product Type'
 profile_type:
   label: 'Profile Type'
+media_bulk_config:
+  label: 'Media Bulk Config'
