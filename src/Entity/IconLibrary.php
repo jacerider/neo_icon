@@ -444,6 +444,12 @@ class IconLibrary extends ConfigEntityBase implements IconLibraryInterface {
     // Under some conditions, icon-icon exists.
     $file_contents = str_replace('icon-icon', 'icon', $file_contents);
     $file_contents = str_replace($icon_id . '-' . $base_id, $icon_id, $file_contents);
+    // Add a version query string to prevent caching issues.
+    $file_version = md5($file_contents);
+    $extensions = ['.eot', '.woff', '.woff2', '.ttf', '.svg'];
+    foreach ($extensions as $extension) {
+      $file_contents = str_replace($extension, $extension . '?v=' . $file_version, $file_contents);
+    }
     file_put_contents($file_path, $file_contents);
 
     $this->prepareDefinitions();
