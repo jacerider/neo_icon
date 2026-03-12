@@ -149,12 +149,22 @@ class TwigExtension extends AbstractExtension {
   /**
    * Add classes to a renderable array.
    */
-  public function iconClass(array|IconElementInterface $build, string $class) {
+  public function iconClass(array|IconElementInterface $build, string|array $class) {
     if ($build instanceof IconElementInterface) {
-      $build->addIconClass($class);
+      if (!is_array($class)) {
+        $class = [$class];
+      }
+      foreach ($class as $c) {
+        $build->addIconClass($c);
+      }
       return $build;
     }
-    $build['#icon_attributes']['class'][] = $class;
+    if (is_array($class)) {
+      $build['#icon_attributes']['class'] = array_merge($build['#icon_attributes']['class'] ?? [], $class);
+    }
+    else {
+      $build['#icon_attributes']['class'][] = $class;
+    }
     return $build;
   }
 
