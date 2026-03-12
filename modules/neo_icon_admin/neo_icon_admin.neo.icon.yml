@@ -10,10 +10,6 @@ admin.frontpage:
   start: frontpage
   icon: home
   prefix: admin
-# admin.back:
-#   start: back
-#   icon: backpack
-#   prefix: admin
 admin.administration:
   start: administration
   icon: tools
@@ -306,6 +302,7 @@ admin.manage_form_display:
   start: manage form display
   icon: shield-alt
   prefix: admin
+  weight: -10
 admin.manage_display:
   start: manage display
   icon: shield-check
@@ -519,4 +516,24 @@ admin.source:
 admin.elements:
   word: elements
   icon: list-alt
+  prefix: admin
+admin.overview:
+  start: overview
+  icon: list
+  prefix: admin
+admin.table:
+  start: table
+  icon: list
+  prefix: admin
+admin.grid:
+  start: grid
+  icon: th-large
+  prefix: admin
+admin.scheduled:
+  start: scheduled
+  icon: clock
+  prefix: admin
+admin.moderated:
+  start: moderated
+  icon: check-double
   prefix: admin
