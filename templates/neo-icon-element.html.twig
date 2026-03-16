@@ -11,16 +11,23 @@
 {%
   set classes = [
     'neo-icon-label',
-    icon_only and icon ? 'relative sr-only',
+    icon_only and icon ? 'sr-only',
   ]
 %}
 {% if icon and position=="before" %}
   {{ icon }}
 {% endif %}
 {% if title %}
+  {% if icon_only and icon %}
+    {# Fix for sr-only when in table. Causes page overflow. #}
+    <span class="relative">
+  {% endif %}
   <span {{ attributes.addClass(classes) }}>
     {{ title }}
   </span>
+  {% if icon_only and icon %}
+    </span>
+  {% endif %}
 {% endif %}
 {% if icon and position=="after" %}
   {{ icon }}
