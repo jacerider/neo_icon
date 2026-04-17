@@ -158,6 +158,24 @@ function neo_icon_page_attachments(array &$attachments) {
 }
 
 /**
+ * Implements hook_library_info_alter().
+ *
+ * Process libraries configured with vite.
+ */
+function neo_icon_library_info_alter(array &$libraries, string $extension) : void {
+  if ($extension === 'canvas') {
+    if (isset($libraries['canvas-ui'])) {
+      /** @var \Drupal\neo_icon\IconLibraryStorageInterface $storage */
+      $storage = \Drupal::service('entity_type.manager')->getStorage('neo_icon_library');
+      foreach ($storage->loadGlobals() as $library) {
+        /** @var \Drupal\neo_icon\IconLibraryInterface $library */
+        $libraries['canvas-ui']['dependencies'][] = 'neo_icon/' . $library->getLibraryName();
+      }
+    }
+  }
+}
+
+/**
  * Implements hook_form_alter().
  */
 function neo_icon_form_alter(&$form, $form_state, $form_id) {
