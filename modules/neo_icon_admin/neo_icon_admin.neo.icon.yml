@@ -22,6 +22,11 @@ admin.appearance:
   start: appearance
   icon: palette
   prefix: admin
+admin.preview:
+  start: preview
+  icon: eye
+  prefix: admin
+  weight: -10
 admin.extend:
   start: extend
   icon: layer-group
