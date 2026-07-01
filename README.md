@@ -4,6 +4,7 @@ CONTENTS OF THIS FILE
  * Introduction
  * Requirements
  * Installation
+ * Drush Commands
  * Usage within PHP
  * Usage within SCSS
  * Icon Definitions
@@ -26,6 +27,26 @@ INSTALLATION
 
 Install as you would normally install a contributed Drupal module. Visit
 https://www.drupal.org/node/1897420 for further information.
+
+
+DRUSH COMMANDS
+-----
+
+`neo:icon:list [search]` (alias `neoi-list`) — search the available icon names
+for the `icon()` Twig function (and the `IconTrait::icon()` helper) so you don't
+have to guess. An optional search term filters by substring; `--limit` caps the
+number of results (default 50). Supports `--format=json` for machine parsing.
+
+```bash
+# List icons (capped at --limit).
+drush neo:icon:list
+
+# Find icon names containing "arrow".
+drush neo:icon:list arrow
+
+# Widen the result cap.
+drush neo:icon:list chevron --limit=100
+```
 
 
 USAGE WITHIN SCSS
