@@ -118,6 +118,21 @@ function neo_icon_entity(EntityInterface $entity, string $labelOverride = NULL):
   return new IconElement($labelOverride ?? $label, NULL, NULL, ['entity.' . $entityTypeId]);
 }
 
+/**
+ * Generates an IconElement for a given entity type.
+ *
+ * Determines the appropriate label for the entity type and creates an
+ * IconElement instance with the label and entity type information.
+ *
+ * @param \Drupal\Core\Entity\EntityTypeInterface $entity_type
+ *   The entity type for which to generate the icon element.
+ * @param string $labelOverride
+ *   An optional label override. If provided, this will be used as the label
+ *   for the icon element instead of the entity type label.
+ *
+ * @return \Drupal\neo_icon\IconElement
+ *   The generated IconElement for the entity type.
+ */
 function neo_icon_entity_type(EntityTypeInterface $entity_type, string $labelOverride = NULL): IconElement {
   $label = $entity_type->getLabel();
   $entityTypeId = $entity_type->id();
