@@ -542,3 +542,7 @@ admin.moderated:
   start: moderated
   icon: check-double
   prefix: admin
+admin.entity_type_content:
+  word: content
+  icon: file-alt
+  prefix: entity.node
