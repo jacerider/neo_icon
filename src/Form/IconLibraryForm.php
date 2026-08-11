@@ -54,7 +54,7 @@ class IconLibraryForm extends EntityForm {
     $form['file'] = [
       '#type' => 'neo_config_file',
       '#title' => $this->entity->isNew() ? $this->t('IcoMoon Font Package') : $this->t('Replace IcoMoon Font Package'),
-      '#description' => $this->t('An IcoMoon font package. <a href="https://icomoon.io">Generate & Download</a>'),
+      '#description' => $this->t('An IcoMoon package, in either the classic layout (selection.json) or the newer one (a .icomoon.json project file). A font is used when the package contains one, otherwise the SVG sprite is. <a href="https://icomoon.io">Generate & Download</a>'),
       '#extensions' => ['zip'],
       '#required' => $this->entity->isNew(),
       '#dependencies' => [

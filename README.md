@@ -16,6 +16,47 @@ INTRODUCTION
 Allow Icomoon icon packages to be utilized within Drupal.
 
 
+ICOMOON PACKAGES
+----------------
+
+Both IcoMoon export layouts are accepted, and the one in use is detected on
+upload.
+
+The classic layout:
+
+```
+selection.json
+style.css
+fonts/<name>.{ttf,woff,eot,svg}
+symbol-defs.svg   (SVG packages)
+```
+
+The newer layout, produced by IcoMoon's current app:
+
+```
+<project>.icomoon.json
+font/style.css
+font/fonts/<name>.{otf,ttf,woff,woff2}
+svg/<name>.svg
+symbol-defs/symbol-defs.svg
+```
+
+A newer package is rewritten into the classic layout on import, so nothing else
+in the module has to care which one was uploaded. Two things are worth knowing:
+
+* The newer project file carries no font name and no class prefix — IcoMoon
+  names an unnamed project "Untitled" — so both are taken from the library's own
+  machine name, as `icon-<id>` and `icon-<id>-`.
+* When a package contains both a font and an SVG sprite, the font wins. The
+  loose `svg/` directory, the demo pages and the project file itself are
+  discarded once the icon definitions have been generated.
+
+Multicolor (duotone) glyphs are only supported in the classic layout. The newer
+project file stores a single code point per glyph, so it cannot express the
+layered glyphs the classic `properties.codes` array described; use the SVG
+sprite for a multicolor set.
+
+
 REQUIREMENTS
 ------------
 

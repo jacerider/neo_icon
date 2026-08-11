@@ -46,3 +46,4 @@ neo_icon.reset:
 neo_icon.icon_libraries:
   word: icon libraries
   icon: icons
+  prefix: admin

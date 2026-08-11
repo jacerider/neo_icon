@@ -8,6 +8,7 @@ use Drupal\Core\Config\Entity\ConfigEntityInterface;
 use Drupal\Core\File\FileExists;
 use Drupal\Core\File\FileSystemInterface;
 use Drupal\neo_config_file\ConfigFileInterface;
+use Drupal\neo_icon\IcoMoon\ProjectNormalizer;
 use Drupal\neo_icon\Icon;
 use Drupal\neo_icon\IconLibraryInterface;
 
@@ -266,7 +267,7 @@ class IconLibrary extends ConfigEntityBase implements IconLibraryInterface {
    */
   public function getInfoPrefix() {
     $info = $this->getInfo();
-    return $info['preferences'][$this->getType() . 'Pref']['prefix'];
+    return $info['preferences'][$this->getType() . 'Pref']['prefix'] ?? $this->getIconId() . '-';
   }
 
   /**
@@ -384,7 +385,44 @@ class IconLibrary extends ConfigEntityBase implements IconLibraryInterface {
       }
     }
 
-    if (file_exists($path . '/symbol-defs.svg')) {
+    // Newer IcoMoon packages ship a project file rather than a selection.json
+    // and nest their assets in subdirectories. Rewrite them into the classic
+    // layout so nothing downstream has to know the difference. The normalizer
+    // writes a selection.json that already carries this entity's name and
+    // prefix, so the rewriting below is neither needed nor wanted.
+    if ($project_file = ProjectNormalizer::detect($path)) {
+      $normalizer = new ProjectNormalizer($path, $icon_id, $file_system);
+      $this->setType($normalizer->normalize($project_file));
+      if ($skipped = $normalizer->getSkipped()) {
+        \Drupal::logger('neo_icon')->warning('Skipped @count unusable @label glyphs: @glyphs.', [
+          '@count' => count($skipped),
+          '@label' => $this->label(),
+          '@glyphs' => implode(', ', array_slice($skipped, 0, 10)),
+        ]);
+      }
+      $this->prepareDefinitions();
+      $this->save();
+      return;
+    }
+
+    if (!file_exists($path . '/selection.json')) {
+      throw new \Exception(sprintf('The %s package is not a recognized IcoMoon archive. It contains neither a selection.json nor a *.icomoon.json project file.', $this->label()));
+    }
+
+    // A font takes precedence over a sprite. Classic packages only ever
+    // contained one or the other, but the newer export can carry both.
+    $font_glob = $file_system->realpath($path . '/fonts/*.*');
+    $font_files = $font_glob ? (glob($font_glob) ?: []) : [];
+    if ($font_files) {
+      $this->setType('font');
+      foreach ($font_files as $file_to_rename_path) {
+        $file_new_path = str_replace('fonts/' . $this->getInfoName(), 'fonts/' . $icon_id, $file_to_rename_path);
+        if ($file_to_rename_path !== $file_new_path) {
+          $file_system->move($file_to_rename_path, $file_new_path, FileExists::Replace);
+        }
+      }
+    }
+    elseif (file_exists($path . '/symbol-defs.svg')) {
       $this->setType('image');
       // Update symbol to match new id.
       $file_path = $path . '/symbol-defs.svg';
@@ -393,14 +431,7 @@ class IconLibrary extends ConfigEntityBase implements IconLibraryInterface {
       file_put_contents($file_path, $file_contents);
     }
     else {
-      $this->setType('font');
-      $files_to_rename = $path . '/fonts/*.*';
-      foreach (glob($file_system->realpath($files_to_rename)) as $file_to_rename_path) {
-        $file_new_path = str_replace('fonts/' . $this->getInfoName(), 'fonts/' . $icon_id, $file_to_rename_path);
-        if ($file_to_rename_path !== $file_new_path) {
-          $file_system->move($file_to_rename_path, $file_new_path, FileExists::Replace);
-        }
-      }
+      throw new \Exception(sprintf('The %s IcoMoon package contains neither a font nor an SVG sprite.', $this->label()));
     }
 
     // Used after type has been set.
@@ -467,15 +498,16 @@ class IconLibrary extends ConfigEntityBase implements IconLibraryInterface {
     $this->iconDefinitions = [];
     $info = $this->getInfo(TRUE);
     $definitions = [];
-    if ($info) {
+    if (!empty($info['icons'])) {
       $id = $this->id();
+      $prefix = $this->getInfoPrefix();
       foreach ($info['icons'] as $icon) {
         if (isset($icon['properties']['name'])) {
           $name = $icon['properties']['name'];
           $definitions[$name] = [
             'id' => $id . '-' . $name,
             'name' => $name,
-            'prefix' => $info['preferences'][$this->getType() . 'Pref']['prefix'],
+            'prefix' => $prefix,
             'code' => $icon['properties']['code'],
           ];
           $definitions[$name]['codes'] = [];
@@ -488,7 +520,7 @@ class IconLibrary extends ConfigEntityBase implements IconLibraryInterface {
             $definitions[$name] = [
               'id' => $id . '-' . $name,
               'name' => $name,
-              'prefix' => $info['preferences'][$this->getType() . 'Pref']['prefix'],
+              'prefix' => $prefix,
               'code' => $icon['properties']['code'],
             ];
             $definitions[$name]['codes'] = [];
