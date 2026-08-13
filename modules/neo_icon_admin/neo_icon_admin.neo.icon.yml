@@ -67,6 +67,11 @@ admin.terms:
   word: terms
   icon: tags
   prefix: admin
+admin.form:
+  word: form
+  icon: typewriter
+  prefix: admin
+  weight: 10
 admin.webform:
   regex: webform
   icon: typewriter
@@ -545,6 +550,10 @@ admin.moderated:
 admin.usage:
   word: usage
   icon: bullseye-arrow
+  prefix: admin
+admin.build:
+  word: build
+  icon: tools
   prefix: admin
 admin.entity_type_content:
   word: content
