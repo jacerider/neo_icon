@@ -367,7 +367,7 @@ function template_preprocess_neo_icon(array &$variables) {
  *
  * Preprocess list builder tables.
  */
-function neo_icon_preprocess_table(&$variables) {
+function neo_icon_preprocess_table(array &$variables) {
   if ($entityTypeId = \Drupal::routeMatch()->getRouteObject()->getDefault('_entity_list')) {
     /** @var \Drupal\neo_icon\IconEntityTypePluginManager $iconPluginManager */
     $iconPluginManager = \Drupal::service('neo_icon.entity_type.manager');
@@ -395,7 +395,7 @@ function neo_icon_preprocess_table(&$variables) {
  *
  * Prepares variables for the node add list.
  */
-function neo_icon_preprocess_node_add_list(&$variables) {
+function neo_icon_preprocess_node_add_list(array &$variables) {
   $variables['types'] = [];
   if (!empty($variables['content'])) {
     foreach ($variables['content'] as $type) {
@@ -415,7 +415,7 @@ function neo_icon_preprocess_node_add_list(&$variables) {
  *
  * Prepares variables for the entity add list.
  */
-function neo_icon_preprocess_entity_add_list(&$variables) {
+function neo_icon_preprocess_entity_add_list(array &$variables) {
   if (!empty($variables['bundles'])) {
     $routeMatch = \Drupal::routeMatch();
     $entityTypeId = $routeMatch->getParameter('entity_type_id');
