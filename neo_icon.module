@@ -368,7 +368,10 @@ function template_preprocess_neo_icon(array &$variables) {
  * Preprocess list builder tables.
  */
 function neo_icon_preprocess_table(array &$variables) {
-  if ($entityTypeId = \Drupal::routeMatch()->getRouteObject()->getDefault('_entity_list')) {
+  // There is no route object outside a request context, such as when a table is
+  // rendered from Drush or a queue worker.
+  $route = \Drupal::routeMatch()->getRouteObject();
+  if ($route && ($entityTypeId = $route->getDefault('_entity_list'))) {
     /** @var \Drupal\neo_icon\IconEntityTypePluginManager $iconPluginManager */
     $iconPluginManager = \Drupal::service('neo_icon.entity_type.manager');
     if ($iconPluginManager->isSupportedEntityTypeId($entityTypeId)) {
