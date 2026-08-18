@@ -67,6 +67,7 @@ function neo_icon_theme($existing, $type, $theme, $path) {
  * @return \Drupal\neo_icon\IconElement
  *   The IconElement object.
  */
+// phpcs:ignore Drupal.NamingConventions.ValidFunctionName.InvalidPrefix
 function neo_icon($text = NULL, $icon = NULL, $library = NULL, array $prefix = []): IconElement {
   return new IconElement($text, $icon, $library, $prefix);
 }
@@ -102,7 +103,7 @@ function neo_icon_admin($text = NULL, $icon = NULL): IconElement {
  * @return \Drupal\neo_icon\IconElement
  *   The generated IconElement for the entity.
  */
-function neo_icon_entity(EntityInterface $entity, string $labelOverride = NULL): IconElement {
+function neo_icon_entity(EntityInterface $entity, ?string $labelOverride = NULL): IconElement {
   $label = $entity->label();
   $entityTypeId = $entity->getEntityTypeId();
   if ($entity->getEntityType()->getKey('bundle')) {
@@ -133,7 +134,7 @@ function neo_icon_entity(EntityInterface $entity, string $labelOverride = NULL):
  * @return \Drupal\neo_icon\IconElement
  *   The generated IconElement for the entity type.
  */
-function neo_icon_entity_type(EntityTypeInterface $entity_type, string $labelOverride = NULL): IconElement {
+function neo_icon_entity_type(EntityTypeInterface $entity_type, ?string $labelOverride = NULL): IconElement {
   $label = $entity_type->getLabel();
   $entityTypeId = $entity_type->id();
   return new IconElement($labelOverride ?? $label, NULL, NULL, ['entity.' . $entityTypeId]);

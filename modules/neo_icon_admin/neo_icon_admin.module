@@ -5,7 +5,6 @@
  * Primary module hooks for Neo Icon Local Task module.
  */
 
-use Drupal\Core\Config\Entity\ConfigEntityInterface;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Link;
 use Drupal\neo_icon\IconElement;
@@ -96,7 +95,7 @@ function neo_icon_admin_preprocess_links__dropbutton(&$variables) {
 /**
  * Implements template_preprocess_views_view().
  */
-function neo_icon_preprocess_views_view(&$variables) {
+function neo_icon_admin_preprocess_views_view(&$variables) {
   foreach ([
     'header',
     'footer',
