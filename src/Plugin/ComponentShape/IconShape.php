@@ -6,8 +6,8 @@ namespace Drupal\neo_icon\Plugin\ComponentShape;
 
 use Drupal\Core\Field\FieldDefinitionInterface;
 use Drupal\Core\StringTranslation\TranslatableMarkup;
-use Drupal\neo_alchemist\ComponentShapePluginBase;
 use Drupal\neo_alchemist\Attribute\ComponentShape;
+use Drupal\neo_alchemist\Shape\ComponentShapePluginBase;
 
 /**
  * Plugin implementation of the neo_component_shape.
