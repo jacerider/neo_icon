@@ -78,6 +78,23 @@ field.formatter.settings.boolean_icon:
       type: boolean
       label: 'As tooltip'
 
+field.formatter.settings.neo_icon_entity_reference:
+  type: mapping
+  label: 'Entity reference icon'
+  mapping:
+    link:
+      type: boolean
+      label: 'Link label to the referenced entity'
+    icon_only:
+      type: boolean
+      label: 'Icon only'
+    as_tooltip:
+      type: boolean
+      label: 'Label as tooltip'
+    icon_position:
+      type: string
+      label: 'Icon position'
+
 field.storage_settings.neo_icon:
   type: field.storage_settings.string
   # label: Neo Icon
