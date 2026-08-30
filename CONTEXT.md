@@ -93,7 +93,7 @@ their own, and reads, writes and clears the icon stored on one. Its plugins are 
 that name), "the icon plugin manager" (that is the manager over the **icon definitions**).
 
 **Icon façade** — one of the four global functions `neo_icon.module` keeps: they build an **icon
-element** and nothing else, and they are how roughly thirty sites reach this module from procedural
+element** and nothing else, and they are how every installing site reaches this module from procedural
 code. Their signatures are frozen — all four have call sites in other packages — so whatever moves
 behind them, they keep answering exactly what they answer today. _Avoid:_ "the helpers", "the
 global functions", and "the shim", which elsewhere in the stack means a forwarder marked deprecated;
