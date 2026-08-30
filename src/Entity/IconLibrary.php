@@ -390,8 +390,8 @@ class IconLibrary extends ConfigEntityBase implements IconLibraryInterface {
     // layout so nothing downstream has to know the difference. The normalizer
     // writes a selection.json that already carries this entity's name and
     // prefix, so the rewriting below is neither needed nor wanted.
-    if ($project_file = ProjectNormalizer::detect($path)) {
-      $normalizer = new ProjectNormalizer($path, $icon_id, $file_system);
+    $normalizer = new ProjectNormalizer($path, $icon_id, $file_system);
+    if ($project_file = $normalizer->detect()) {
       $this->setType($normalizer->normalize($project_file));
       if ($skipped = $normalizer->getSkipped()) {
         \Drupal::logger('neo_icon')->warning('Skipped @count unusable @label glyphs: @glyphs.', [

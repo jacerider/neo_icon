@@ -28,6 +28,8 @@ use Drupal\Core\File\FileSystemInterface;
  * ships one, a symbol-defs.svg at the root. The synthesized selection.json is
  * written already carrying the entity's own name and prefix, so the caller can
  * skip the string-rewriting the classic path performs.
+ *
+ * @internal
  */
 final class ProjectNormalizer {
 
@@ -69,19 +71,20 @@ final class ProjectNormalizer {
   /**
    * Locates the project file of a new-style package.
    *
-   * @param string $path
-   *   The directory the archive was extracted into.
+   * The directory and the file system are the ones the object was constructed
+   * with, so detection and normalization cannot disagree about which package
+   * they are looking at.
    *
    * @return string|null
    *   The project file path, or NULL when this is not a new-style package.
    */
-  public static function detect($path) {
-    $realpath = \Drupal::service('file_system')->realpath($path);
+  public function detect() {
+    $realpath = $this->fileSystem->realpath($this->path);
     if (!$realpath) {
       return NULL;
     }
     foreach (glob($realpath . '/*.icomoon.json') ?: [] as $candidate) {
-      return $path . '/' . basename($candidate);
+      return $this->path . '/' . basename($candidate);
     }
     return NULL;
   }
