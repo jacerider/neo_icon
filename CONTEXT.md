@@ -18,9 +18,11 @@ including the ones this module ships as installed configuration. _Avoid:_ "the a
 zip", "the upload".
 
 **Library directory** — the per-library directory beneath the public files where an **IcoMoon
-package** is unpacked and rewritten. It is derived from the library's machine name, it is emptied
-immediately before every extraction, and nothing outside this module writes into it. _Avoid:_ "the
-icon directory", "the extraction path".
+package** is unpacked and rewritten. It is derived from the library's machine name, and nothing
+outside this module writes into it. It is never emptied ahead of an extraction: the zip extractor
+in `neo_config_file` unpacks elsewhere and replaces the whole directory once the package is on
+disk, so a package that will not open leaves the installed library untouched. _Avoid:_ "the icon
+directory", "the extraction path".
 
 **Icon id** — the stem `icon-<machine name>` an **icon library** derives from its own id: the font
 family it declares, and, with a trailing hyphen, the class prefix every one of its icons carries. A

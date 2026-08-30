@@ -6,8 +6,8 @@ use Drupal\Component\Serialization\Json;
 use Drupal\Core\Config\Entity\ConfigEntityBase;
 use Drupal\Core\Config\Entity\ConfigEntityInterface;
 use Drupal\Core\File\FileExists;
-use Drupal\Core\File\FileSystemInterface;
 use Drupal\neo_config_file\ConfigFileInterface;
+use Drupal\neo_config_file\Exception\ExtractionRefusedException;
 use Drupal\neo_icon\IcoMoon\ProjectNormalizer;
 use Drupal\neo_icon\Icon;
 use Drupal\neo_icon\IconLibraryInterface;
@@ -282,7 +282,7 @@ class IconLibrary extends ConfigEntityBase implements IconLibraryInterface {
         $this->iconDefinitions = Json::decode($data);
         if ($this->isUnique()) {
           $uniqueIconDefinitions = [];
-          foreach ($this->iconDefinitions as $name => $icon) {
+          foreach ($this->iconDefinitions as $icon) {
             $uniqueIconDefinitions[$icon['id']] = $icon;
             $uniqueIconDefinitions[$icon['id']]['unique'] = TRUE;
           }
@@ -538,24 +538,23 @@ class IconLibrary extends ConfigEntityBase implements IconLibraryInterface {
    * {@inheritDoc}
    */
   public function neoConfigFileUpdate(ConfigFileInterface $config_file) {
-    /** @var \Drupal\Core\Archiver\ArchiverManager $archiver_manager */
-    $archiver_manager = \Drupal::service('plugin.manager.archiver');
+    /** @var \Drupal\neo_config_file\ZipExtractor $zip_extractor */
+    $zip_extractor = \Drupal::service('neo_config_file.zip_extractor');
     $file = $config_file->getFile();
     if (!$file) {
-      throw new \Exception(t('Cannot find %file.', ['%file' => $config_file->getConfigUri()]));
+      throw new \Exception(sprintf('Cannot find %s.', $config_file->getConfigUri()));
     }
     $zip_uri = $file->getFileUri();
-    /** @var \Drupal\system\Plugin\Archiver\Zip $archiver */
-    $archiver = $archiver_manager->getInstance(['filepath' => $zip_uri]);
-    if (!$archiver) {
-      throw new \Exception(t('Cannot extract %file, not a valid archive.', ['%file' => $zip_uri]));
-    }
     $directory = $this->getUri();
-    /** @var \Drupal\Core\File\FileSystemInterface $file_system */
-    $file_system = \Drupal::service('file_system');
-    $file_system->prepareDirectory($directory, FileSystemInterface::CREATE_DIRECTORY | FileSystemInterface::MODIFY_PERMISSIONS);
-    $file_system->deleteRecursive($directory);
-    $archiver->extract($directory);
+    // Nothing is emptied first: the extractor unpacks elsewhere and replaces
+    // the library directory only once the whole package is on disk, so a
+    // package that will not open leaves the installed library where it is.
+    try {
+      $zip_extractor->extract($zip_uri, $directory);
+    }
+    catch (ExtractionRefusedException $e) {
+      throw new \Exception(sprintf('Cannot extract %s, not a valid archive.', $zip_uri), 0, $e);
+    }
     $this->parepareLibrary();
   }
 
