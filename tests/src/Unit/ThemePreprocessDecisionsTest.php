@@ -4,9 +4,13 @@ declare(strict_types=1);
 
 namespace Drupal\Tests\neo_icon\Unit;
 
+use Drupal\Core\Cache\CacheBackendInterface;
 use Drupal\Core\DependencyInjection\ContainerBuilder;
+use Drupal\Core\Extension\ModuleHandlerInterface;
+use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\Tests\UnitTestCase;
 use Drupal\neo_icon\Hook\NeoIconThemeHooks;
+use Drupal\neo_icon\IconEntityTypeManager;
 use Drupal\neo_icon\IconInterface;
 use Drupal\neo_icon\IconLibraryInterface;
 use Drupal\neo_icon\IconRepositoryInterface;
@@ -53,7 +57,7 @@ final class ThemePreprocessDecisionsTest extends UnitTestCase {
       ->method('getIcon')
       ->with(NULL, 'star')
       ->willReturn($icon);
-    $hooks = new NeoIconThemeHooks($repository);
+    $hooks = $this->over($repository);
 
     $variables = [
       'icon' => 'star',
@@ -71,7 +75,7 @@ final class ThemePreprocessDecisionsTest extends UnitTestCase {
     $untouched = $this->createMock(IconRepositoryInterface::class);
     $untouched->expects($this->never())->method('getIcon');
     $variables = ['icon' => $icon, 'attributes_icon' => []];
-    (new NeoIconThemeHooks($untouched))->preprocessNeoIconElement($variables);
+    $this->over($untouched)->preprocessNeoIconElement($variables);
     $this->assertSame('neo_icon__font', $variables['icon']['#theme']);
   }
 
@@ -106,7 +110,7 @@ final class ThemePreprocessDecisionsTest extends UnitTestCase {
     // because the lookup is only reached for a string.
     $never = $this->createMock(IconRepositoryInterface::class);
     $never->expects($this->never())->method('getIcon');
-    $bare = new NeoIconThemeHooks($never);
+    $bare = $this->over($never);
     $variables = ['icon' => NULL, 'attributes_icon' => []];
     $bare->preprocessNeoIconElement($variables);
     $this->assertSame('', $variables['icon']);
@@ -154,7 +158,7 @@ final class ThemePreprocessDecisionsTest extends UnitTestCase {
     $never = $this->createMock(IconRepositoryInterface::class);
     $never->expects($this->never())->method('getIcon');
     $direct = ['icon' => $icon, 'attributes' => ['class' => ['ml-2']], 'children' => []];
-    (new NeoIconThemeHooks($never))->preprocessNeoIcon($direct);
+    $this->over($never)->preprocessNeoIcon($direct);
     $this->assertSame($variables, $direct, 'A string id and an icon end in the same place.');
   }
 
@@ -260,7 +264,33 @@ final class ThemePreprocessDecisionsTest extends UnitTestCase {
   private function hooks(?IconInterface $found): NeoIconThemeHooks {
     $repository = $this->createMock(IconRepositoryInterface::class);
     $repository->method('getIcon')->willReturn($found);
-    return new NeoIconThemeHooks($repository);
+    return $this->over($repository);
+  }
+
+  /**
+   * Builds the hook class over a repository and nothing else that matters.
+   *
+   * The class also carries the module's four `hook_preprocess_HOOK`
+   * implementations, which take a route match and the entity icon manager. None
+   * of the five methods asserted here reaches either, so both are supplied as
+   * inert doubles in one place rather than at each of this file's five
+   * constructions. What those four decide is
+   * `Drupal\Tests\neo_icon\Unit\PreprocessHookDecisionsTest`.
+   *
+   * @param \Drupal\neo_icon\IconRepositoryInterface $repository
+   *   The icon repository the two hot preprocessors ask for an icon.
+   *
+   * @return \Drupal\neo_icon\Hook\NeoIconThemeHooks
+   *   The hook class under test, constructed rather than fetched.
+   */
+  private function over(IconRepositoryInterface $repository): NeoIconThemeHooks {
+    $cache = $this->createMock(CacheBackendInterface::class);
+    $cache->method('get')->willReturn((object) ['data' => []]);
+    return new NeoIconThemeHooks(
+      $repository,
+      $this->createMock(RouteMatchInterface::class),
+      new IconEntityTypeManager($this->createMock(ModuleHandlerInterface::class), $cache)
+    );
   }
 
   /**

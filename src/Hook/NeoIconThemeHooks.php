@@ -5,7 +5,12 @@ declare(strict_types=1);
 namespace Drupal\neo_icon\Hook;
 
 use Drupal\Core\Hook\Attribute\Hook;
+use Drupal\Core\Link;
+use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
+use Drupal\Core\Url;
+use Drupal\neo_icon\IconElement;
+use Drupal\neo_icon\IconEntityTypeManager;
 use Drupal\neo_icon\IconInterface;
 use Drupal\neo_icon\IconRepositoryInterface;
 
@@ -40,10 +45,28 @@ use Drupal\neo_icon\IconRepositoryInterface;
  * handling of an icon the lookup cannot find — render nothing — is what they
  * always did.
  *
+ * Four more preprocess implementations sit below those, and they are ordinary
+ * `hook_preprocess_HOOK` implementations rather than initial preprocess
+ * callbacks: the entity list-builder table, the node add list, the entity add
+ * list and the accordion item are theme hooks other extensions register, so
+ * this module reaches them the way any module reaches somebody else's theme
+ * hook. They are here rather than on the behavioural class because this is
+ * where both precedent conversions in this repository put their `preprocess_*`
+ * implementations, and where core puts its own. Their bodies are what stood in
+ * `neo_icon.module`, with the route match and the entity icon manager arriving
+ * as constructor arguments instead of through `\Drupal::`.
+ *
+ * They build their icon elements with `new IconElement(...)` where the
+ * functions called the module's global `neo_icon()` helper. That is not
+ * tidiness: a class-based hook calling a global out of a `.module` file makes
+ * the class depend on that file having been loaded, which is the defect neo's
+ * own conversion found and fixed the same way. The façades are untouched and
+ * everybody else still calls them.
+ *
  * This is not an API and it is not `final`. The methods are public because
  * core's hook collector only reads public methods; the only ones anything
- * outside the hook system reaches are the four preprocess methods, reached
- * through the theme registry by the callable each theme hook names.
+ * outside the hook system reaches are the four initial preprocess methods,
+ * reached through the theme registry by the callable each theme hook names.
  */
 class NeoIconThemeHooks {
 
@@ -55,9 +78,20 @@ class NeoIconThemeHooks {
    * @param \Drupal\neo_icon\IconRepositoryInterface $iconRepository
    *   The icon repository, which the two hot preprocessors use for the one
    *   thing: turning a string icon id into an icon.
+   * @param \Drupal\Core\Routing\RouteMatchInterface $routeMatch
+   *   The current route match. The table preprocessor asks it for a route
+   *   object, and the entity add list preprocessor for an entity type id; both
+   *   went through `\Drupal::routeMatch()` as functions.
+   * @param \Drupal\neo_icon\IconEntityTypeManager $iconEntityTypeManager
+   *   The entity icon manager, which answers whether an entity type has icons
+   *   at all. It is the concrete class because it is `final` and declares no
+   *   interface, and the two support questions are its own rather than a
+   *   plugin manager's.
    */
   public function __construct(
     protected readonly IconRepositoryInterface $iconRepository,
+    protected readonly RouteMatchInterface $routeMatch,
+    protected readonly IconEntityTypeManager $iconEntityTypeManager,
   ) {}
 
   /**
@@ -230,6 +264,96 @@ class NeoIconThemeHooks {
           'class' => ['neo-icon-browser--libraries'],
         ],
       ];
+    }
+  }
+
+  /**
+   * Implements hook_preprocess_HOOK() for list builder tables.
+   */
+  #[Hook('preprocess_table')]
+  public function preprocessTable(array &$variables): void {
+    // There is no route object outside a request context, such as when a table
+    // is rendered from Drush or a queue worker.
+    $route = $this->routeMatch->getRouteObject();
+    if ($route && ($entityTypeId = $route->getDefault('_entity_list'))) {
+      if ($this->iconEntityTypeManager->isSupportedEntityTypeId($entityTypeId)) {
+        foreach ($variables['rows'] as $i => $row) {
+          if (!empty($row['cells'])) {
+            foreach ([
+              'title',
+              'name',
+            ] as $key) {
+              if (isset($row['cells'][$key])) {
+                if (isset($row['cells'][$key]['content'])) {
+                  $variables['rows'][$i]['cells'][$key]['content'] = new IconElement($row['cells'][$key]['content'], NULL, NULL, ['entity.' . $entityTypeId]);
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  /**
+   * Implements hook_preprocess_HOOK() for the node add list.
+   */
+  #[Hook('preprocess_node_add_list')]
+  public function preprocessNodeAddList(array &$variables): void {
+    $variables['types'] = [];
+    if (!empty($variables['content'])) {
+      foreach ($variables['content'] as $type) {
+        $variables['types'][$type->id()] = [
+          'type' => $type->id(),
+          'add_link' => Link::fromTextAndUrl(new IconElement($type->label(), NULL, NULL, ['entity.node']), Url::fromRoute('node.add', ['node_type' => $type->id()]))->toString(),
+          'description' => [
+            '#markup' => $type->getDescription(),
+          ],
+        ];
+      }
+    }
+  }
+
+  /**
+   * Implements hook_preprocess_HOOK() for the entity add list.
+   *
+   * The first loop keeps whichever entity type id it saw last rather than
+   * breaking on the first, and reads it off `array_key_last()` on a link's
+   * route parameters. It has never produced a wrong icon, because the bundles
+   * on one add-list page share an entity type; it moves as it stood, because a
+   * move that also changed behaviour could not be reviewed as a move.
+   */
+  #[Hook('preprocess_entity_add_list')]
+  public function preprocessEntityAddList(array &$variables): void {
+    if (!empty($variables['bundles'])) {
+      $entityTypeId = $this->routeMatch->getParameter('entity_type_id');
+      if (!$entityTypeId) {
+        foreach ($variables['bundles'] as $data) {
+          /** @var \Drupal\Core\Link $link */
+          $link = $data['add_link'];
+          $params = $link->getUrl()->getRouteParameters();
+          if ($params) {
+            $entityTypeId = array_key_last($params);
+          }
+        }
+      }
+      if ($entityTypeId) {
+        foreach ($variables['bundles'] as $data) {
+          /** @var \Drupal\Core\Link $link */
+          $link = $data['add_link'];
+          $link->setText(new IconElement($data['label'], NULL, NULL, ['entity.' . $entityTypeId]));
+        }
+      }
+    }
+  }
+
+  /**
+   * Implements hook_preprocess_HOOK() for accordion items.
+   */
+  #[Hook('preprocess_accordion_item')]
+  public function preprocessAccordionItem(array &$variables): void {
+    if (!empty($variables['element']['#icon'])) {
+      $variables['title'] = new IconElement($variables['title'], $variables['element']['#icon']);
     }
   }
 

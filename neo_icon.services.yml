@@ -46,11 +46,15 @@ services:
     class: Drupal\neo_icon\Hook\NeoIconHooks
     arguments: ['@entity_type.manager']
 
-  # The module's theme registration and the four callbacks its theme hooks name
-  # as their initial preprocess. Written out for the same reason as the class
-  # above, and because this one takes a named service rather than an autowirable
-  # type: the icon repository is what turns a string icon id into an icon in the
-  # two preprocessors every rendered icon passes through.
+  # The module's theme registration, the four callbacks its theme hooks name as
+  # their initial preprocess, and its four preprocess implementations against
+  # other extensions' theme hooks. Written out for the same reason as the class
+  # above, and because two of the three arguments are named services rather than
+  # autowirable types: the icon repository turns a string icon id into an icon
+  # in the two preprocessors every rendered icon passes through, the route match
+  # is what the table and entity add list preprocessors used to reach through
+  # `\Drupal::routeMatch()`, and the entity icon manager is what says whether an
+  # entity type has icons at all.
   Drupal\neo_icon\Hook\NeoIconThemeHooks:
     class: Drupal\neo_icon\Hook\NeoIconThemeHooks
-    arguments: ['@neo_icon.repository']
+    arguments: ['@neo_icon.repository', '@current_route_match', '@neo_icon.entity_type.manager']

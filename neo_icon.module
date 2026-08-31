@@ -11,8 +11,6 @@ use Drupal\Core\Entity\EntityFormInterface;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\Core\Link;
-use Drupal\Core\Url;
 use Drupal\neo_icon\IconElement;
 
 /**
@@ -157,93 +155,4 @@ function neo_icon_form_config_entity_build($entity_type, ConfigEntityInterface $
     $iconPluginManager->unsetEntityIcon($entity);
   }
   Cache::invalidateTags(['neo_icon']);
-}
-
-/**
- * Implements hook_preprocess_table().
- *
- * Preprocess list builder tables.
- */
-function neo_icon_preprocess_table(array &$variables) {
-  // There is no route object outside a request context, such as when a table is
-  // rendered from Drush or a queue worker.
-  $route = \Drupal::routeMatch()->getRouteObject();
-  if ($route && ($entityTypeId = $route->getDefault('_entity_list'))) {
-    /** @var \Drupal\neo_icon\IconEntityTypeManager $iconPluginManager */
-    $iconPluginManager = \Drupal::service('neo_icon.entity_type.manager');
-    if ($iconPluginManager->isSupportedEntityTypeId($entityTypeId)) {
-      foreach ($variables['rows'] as $i => $row) {
-        if (!empty($row['cells'])) {
-          foreach ([
-            'title',
-            'name',
-          ] as $key) {
-            if (isset($row['cells'][$key])) {
-              if (isset($row['cells'][$key]['content'])) {
-                $variables['rows'][$i]['cells'][$key]['content'] = neo_icon($row['cells'][$key]['content'], NULL, NULL, ['entity.' . $entityTypeId]);
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-}
-
-/**
- * Implements hook_preprocess_node_add_list().
- *
- * Prepares variables for the node add list.
- */
-function neo_icon_preprocess_node_add_list(array &$variables) {
-  $variables['types'] = [];
-  if (!empty($variables['content'])) {
-    foreach ($variables['content'] as $type) {
-      $variables['types'][$type->id()] = [
-        'type' => $type->id(),
-        'add_link' => Link::fromTextAndUrl(neo_icon($type->label(), NULL, NULL, ['entity.node']), Url::fromRoute('node.add', ['node_type' => $type->id()]))->toString(),
-        'description' => [
-          '#markup' => $type->getDescription(),
-        ],
-      ];
-    }
-  }
-}
-
-/**
- * Implements hook_preprocess_entity_add_list().
- *
- * Prepares variables for the entity add list.
- */
-function neo_icon_preprocess_entity_add_list(array &$variables) {
-  if (!empty($variables['bundles'])) {
-    $routeMatch = \Drupal::routeMatch();
-    $entityTypeId = $routeMatch->getParameter('entity_type_id');
-    if (!$entityTypeId) {
-      foreach ($variables['bundles'] as $data) {
-        /** @var \Drupal\Core\Link $link */
-        $link = $data['add_link'];
-        $params = $link->getUrl()->getRouteParameters();
-        if ($params) {
-          $entityTypeId = array_key_last($params);
-        }
-      }
-    }
-    if ($entityTypeId) {
-      foreach ($variables['bundles'] as $data) {
-        /** @var \Drupal\Core\Link $link */
-        $link = $data['add_link'];
-        $link->setText(neo_icon($data['label'], NULL, NULL, ['entity.' . $entityTypeId]));
-      }
-    }
-  }
-}
-
-/**
- * Implements hook_preprocess_accordion_item().
- */
-function neo_icon_preprocess_accordion_item(array &$variables) {
-  if (!empty($variables['element']['#icon'])) {
-    $variables['title'] = neo_icon($variables['title'], $variables['element']['#icon']);
-  }
 }
