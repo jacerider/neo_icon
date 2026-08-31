@@ -178,19 +178,26 @@ class EntityReferenceIconFormatter extends EntityReferenceLabelFormatter {
   /**
    * Builds the icon element for a referenced entity.
    *
-   * The neo_icon_entity() helper uses the entity's bundle label as both the
-   * icon lookup text and the display text. For a bundle entity those are the
-   * same, but for a content entity we want the icon of its bundle paired with
-   * the entity's own label.
+   * The icon element factory uses the entity's bundle label as both the icon
+   * lookup text and the display text. For a bundle entity those are the same,
+   * but for a content entity we want the icon of its bundle paired with the
+   * entity's own label.
+   *
+   * The factory is reached through the container rather than the module's
+   * `neo_icon_entity()` façade, which is deprecated in favour of it: a
+   * formatter plugin is constructed by core's own factory, so there is nowhere
+   * to inject a collaborator without restating the parent's whole signature.
    *
    * @param \Drupal\Core\Entity\EntityInterface $entity
    *   The referenced entity.
    *
    * @return \Drupal\neo_icon\IconElement
    *   The icon element.
+   *
+   * @see \Drupal\neo_icon\IconElementFactory::build()
    */
   protected function buildEntityIcon(EntityInterface $entity): IconElement {
-    $icon = neo_icon_entity($entity);
+    $icon = \Drupal::service('neo_icon.element_factory')->build($entity);
     return $icon->iconLookup($icon->getText(FALSE))->setText($entity->label());
   }
 

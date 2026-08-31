@@ -94,12 +94,16 @@ their own, and reads, writes and clears the icon stored on one. Its plugins are 
 `{extension}.neo_icon_entity_types.yml`. _Avoid:_ "the entity type manager" unqualified (core owns
 that name), "the icon plugin manager" (that is the manager over the **icon definitions**).
 
-**Icon façade** — one of the four global functions `neo_icon.module` keeps: they build an **icon
-element** and nothing else, and they are how every installing site reaches this module from procedural
-code. Their signatures are frozen — all four have call sites in other packages — so whatever moves
-behind them, they keep answering exactly what they answer today. _Avoid:_ "the helpers", "the
-global functions", and "the shim", which elsewhere in the stack means a forwarder marked deprecated;
-these are not.
+**Icon façade** — one of the four global functions `neo_icon.module` keeps: they answer with an
+**icon element** and nothing else, and they are how every installing site reaches this module from
+procedural code. Their signatures are frozen — all four have call sites in other packages — so
+whatever moves behind them, they keep answering exactly what they answer today. Three build the
+element themselves and carry no deprecation, because they *are* the replacement and a tag on them
+would have nothing to name; the entity one delegates to the **icon element factory** and carries a
+docblock `@deprecated` naming it, which reaches a tool and never an operator — nothing is logged or
+shown at runtime, on a path every rendered icon takes. _Avoid:_ "the helpers", "the global
+functions", and "the shim", which elsewhere in the stack means a forwarder marked deprecated; three
+of these are not, the entity one is.
 
 **Icon element factory** — the service that builds an **icon element** for an entity, taking its
 label from the entity type's bundle information where the entity type has bundles and from the

@@ -87,6 +87,10 @@ function neo_icon_admin($text = NULL, $icon = NULL): IconElement {
   return new IconElement($text, $icon, NULL, ['admin']);
 }
 
+// The deprecation sniff wants the @see below to be a drupal.org change record.
+// This package is not on drupal.org, so the tag names the replacement instead.
+// phpcs:disable Drupal.Commenting.Deprecated.DeprecatedWrongSeeUrlFormat
+
 /**
  * Generates an IconElement for a given entity.
  *
@@ -102,22 +106,17 @@ function neo_icon_admin($text = NULL, $icon = NULL): IconElement {
  *
  * @return \Drupal\neo_icon\IconElement
  *   The generated IconElement for the entity.
+ *
+ * @deprecated in neo_icon:1.2.0 and is removed from neo_icon:2.0.0. Use
+ *   \Drupal\neo_icon\IconElementFactory::build() instead.
+ *
+ * @see \Drupal\neo_icon\IconElementFactory::build()
  */
 function neo_icon_entity(EntityInterface $entity, ?string $labelOverride = NULL): IconElement {
-  $label = $entity->label();
-  $entityTypeId = $entity->getEntityTypeId();
-  if ($entity->getEntityType()->getKey('bundle')) {
-    $bundle = $entity->bundle();
-    $bundleInfo = \Drupal::service("entity_type.bundle.info")->getAllBundleInfo();
-    if (isset($bundleInfo[$entity->getEntityTypeId()][$bundle])) {
-      $label = $bundleInfo[$entity->getEntityTypeId()][$bundle]['label'];
-    }
-  }
-  elseif ($bundleOf = $entity->getEntityType()->getBundleOf()) {
-    $entityTypeId = $bundleOf;
-  }
-  return new IconElement($labelOverride ?? $label, NULL, NULL, ['entity.' . $entityTypeId]);
+  return \Drupal::service('neo_icon.element_factory')->build($entity, $labelOverride);
 }
+
+// phpcs:enable Drupal.Commenting.Deprecated.DeprecatedWrongSeeUrlFormat
 
 /**
  * Generates an IconElement for a given entity type.

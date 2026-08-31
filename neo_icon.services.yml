@@ -7,6 +7,14 @@ services:
     class: Drupal\neo_icon\IconRepository
     arguments: ['@entity_type.manager', '@plugin.manager.neo_icon']
 
+  # Holds what `neo_icon_entity()` used to do. The façade stays in the module
+  # file — its signature is frozen and other packages call it — and delegates
+  # here, so the bundle-label branch is reachable with a stub rather than a
+  # booted site.
+  neo_icon.element_factory:
+    class: Drupal\neo_icon\IconElementFactory
+    arguments: ['@entity_type.bundle.info']
+
   twig.neo_icon:
     class: 'Drupal\neo_icon\TwigExtension'
     tags:
