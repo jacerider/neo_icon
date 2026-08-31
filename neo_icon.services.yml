@@ -45,3 +45,12 @@ services:
   Drupal\neo_icon\Hook\NeoIconHooks:
     class: Drupal\neo_icon\Hook\NeoIconHooks
     arguments: ['@entity_type.manager']
+
+  # The module's theme registration and the four callbacks its theme hooks name
+  # as their initial preprocess. Written out for the same reason as the class
+  # above, and because this one takes a named service rather than an autowirable
+  # type: the icon repository is what turns a string icon id into an icon in the
+  # two preprocessors every rendered icon passes through.
+  Drupal\neo_icon\Hook\NeoIconThemeHooks:
+    class: Drupal\neo_icon\Hook\NeoIconThemeHooks
+    arguments: ['@neo_icon.repository']
