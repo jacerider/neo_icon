@@ -45,7 +45,7 @@ final class IconEntityTypeManager extends DefaultPluginManager {
   ];
 
   /**
-   * Constructs IconEntityTypePluginManager object.
+   * Constructs IconEntityTypeManager object.
    */
   public function __construct(ModuleHandlerInterface $module_handler, CacheBackendInterface $cache_backend) {
     $this->factory = new ContainerFactory($this);

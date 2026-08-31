@@ -198,7 +198,7 @@ function neo_icon_form_alter(&$form, $form_state, $form_id) {
   if ($form_state->getFormObject() instanceof EntityFormInterface) {
     $entity = $form_state->getFormObject()->getEntity();
     if ($entity instanceof ConfigEntityInterface) {
-      /** @var \Drupal\neo_icon\IconEntityTypePluginManager $iconPluginManager */
+      /** @var \Drupal\neo_icon\IconEntityTypeManager $iconPluginManager */
       $iconPluginManager = \Drupal::service('neo_icon.entity_type.manager');
       if (!$iconPluginManager->isSupportedEntity($entity)) {
         return;
@@ -236,7 +236,7 @@ function neo_icon_form_alter(&$form, $form_state, $form_id) {
  * Entity form builder for config entities that support icons.
  */
 function neo_icon_form_config_entity_build($entity_type, ConfigEntityInterface $entity, &$form, FormStateInterface $form_state) {
-  /** @var \Drupal\neo_icon\IconEntityTypePluginManager $iconPluginManager */
+  /** @var \Drupal\neo_icon\IconEntityTypeManager $iconPluginManager */
   $iconPluginManager = \Drupal::service('neo_icon.entity_type.manager');
   $icon = $form_state->getValue('neo_icon');
   if (!empty($icon) && is_string($icon)) {
@@ -337,7 +337,7 @@ function template_preprocess_neo_icon_element(array &$variables) {
  *   - attributes: HTML attributes for the containing element.
  */
 function template_preprocess_neo_icon(array &$variables) {
-  /** @var \Drupal\neo_icon\IconInterface $icon */
+  /** @var \Drupal\neo_icon\IconInterface|string $icon */
   $icon = $variables['icon'];
   $variables['tag'] = 'span';
   $variables['attributes']['class'][] = 'neo-icon';
@@ -373,7 +373,7 @@ function neo_icon_preprocess_table(array &$variables) {
   // rendered from Drush or a queue worker.
   $route = \Drupal::routeMatch()->getRouteObject();
   if ($route && ($entityTypeId = $route->getDefault('_entity_list'))) {
-    /** @var \Drupal\neo_icon\IconEntityTypePluginManager $iconPluginManager */
+    /** @var \Drupal\neo_icon\IconEntityTypeManager $iconPluginManager */
     $iconPluginManager = \Drupal::service('neo_icon.entity_type.manager');
     if ($iconPluginManager->isSupportedEntityTypeId($entityTypeId)) {
       foreach ($variables['rows'] as $i => $row) {
@@ -424,7 +424,7 @@ function neo_icon_preprocess_entity_add_list(array &$variables) {
     $routeMatch = \Drupal::routeMatch();
     $entityTypeId = $routeMatch->getParameter('entity_type_id');
     if (!$entityTypeId) {
-      foreach ($variables['bundles'] as $bundle => $data) {
+      foreach ($variables['bundles'] as $data) {
         /** @var \Drupal\Core\Link $link */
         $link = $data['add_link'];
         $params = $link->getUrl()->getRouteParameters();
@@ -434,7 +434,7 @@ function neo_icon_preprocess_entity_add_list(array &$variables) {
       }
     }
     if ($entityTypeId) {
-      foreach ($variables['bundles'] as $bundle => $data) {
+      foreach ($variables['bundles'] as $data) {
         /** @var \Drupal\Core\Link $link */
         $link = $data['add_link'];
         $link->setText(neo_icon($data['label'], NULL, NULL, ['entity.' . $entityTypeId]));
