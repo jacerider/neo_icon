@@ -121,8 +121,8 @@ final class ProjectNormalizer {
       $this->prefixSpriteIds();
     }
     // A stylesheet is written either way: it is what makes
-    // neo_icon_library_info_build() register a Drupal library for this set, and
-    // an image library needs that library to pull in the SVG use polyfill.
+    // NeoIconHooks::libraryInfoBuild() register a Drupal library for this set,
+    // and an image library needs that library to pull in the SVG use polyfill.
     if ($type === 'font') {
       $this->writeFontStylesheet($glyphs, $formats['fonts']);
     }

@@ -35,3 +35,13 @@ services:
   neo_icon.entity_type.manager:
     class: Drupal\neo_icon\IconEntityTypeManager
     arguments: ['@module_handler', '@cache.discovery']
+
+  # The module's three behavioural hooks. Core would register the class itself,
+  # autowired under its own name, because the container holds no definition for
+  # it and its one collaborator is an aliased interface. It is written out all
+  # the same: what a hook class is handed is worth reading in this file rather
+  # than inferring from a type hint, and the package registers the rest of its
+  # services here.
+  Drupal\neo_icon\Hook\NeoIconHooks:
+    class: Drupal\neo_icon\Hook\NeoIconHooks
+    arguments: ['@entity_type.manager']

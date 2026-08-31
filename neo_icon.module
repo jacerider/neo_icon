@@ -140,57 +140,6 @@ function neo_icon_entity_type(EntityTypeInterface $entity_type, ?string $labelOv
 }
 
 /**
- * Implements hook_library_info_build().
- */
-function neo_icon_library_info_build() {
-  $libraries = [];
-  /** @var \Drupal\neo_icon\IconLibraryStorageInterface $storage */
-  $storage = \Drupal::service('entity_type.manager')->getStorage('neo_icon_library');
-  foreach ($storage->loadMultiple() as $library) {
-    /** @var \Drupal\neo_icon\IconLibraryInterface $library */
-    if ($stylesheet = $library->getStylesheet()) {
-      $library_name = $library->getLibraryName();
-      $libraries[$library_name]['css']['theme'][$stylesheet] = [];
-      // Add SVG library if necessary.
-      if ($library->isSvg()) {
-        $libraries[$library_name]['dependencies'][] = 'neo_icon/icon-svg';
-      }
-    }
-  }
-  return $libraries;
-}
-
-/**
- * Implements hook_page_attachments().
- */
-function neo_icon_page_attachments(array &$attachments) {
-  /** @var \Drupal\neo_icon\IconLibraryStorageInterface $storage */
-  $storage = \Drupal::service('entity_type.manager')->getStorage('neo_icon_library');
-  foreach ($storage->loadGlobals() as $library) {
-    /** @var \Drupal\neo_icon\IconLibraryInterface $library */
-    $attachments['#attached']['library'][] = 'neo_icon/' . $library->getLibraryName();
-  }
-}
-
-/**
- * Implements hook_library_info_alter().
- *
- * Process libraries configured with vite.
- */
-function neo_icon_library_info_alter(array &$libraries, string $extension) : void {
-  if ($extension === 'canvas') {
-    if (isset($libraries['canvas-ui'])) {
-      /** @var \Drupal\neo_icon\IconLibraryStorageInterface $storage */
-      $storage = \Drupal::service('entity_type.manager')->getStorage('neo_icon_library');
-      foreach ($storage->loadGlobals() as $library) {
-        /** @var \Drupal\neo_icon\IconLibraryInterface $library */
-        $libraries['canvas-ui']['dependencies'][] = 'neo_icon/' . $library->getLibraryName();
-      }
-    }
-  }
-}
-
-/**
  * Implements hook_form_alter().
  */
 function neo_icon_form_alter(&$form, $form_state, $form_id) {
