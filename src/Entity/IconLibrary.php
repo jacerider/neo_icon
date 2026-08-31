@@ -366,7 +366,7 @@ class IconLibrary extends ConfigEntityBase implements IconLibraryInterface {
   /**
    * Prepare the library.
    */
-  protected function parepareLibrary() {
+  protected function prepareLibrary() {
     $path = $this->getUri();
     $base_id = $this->id();
     $icon_id = $this->getIconId();
@@ -555,7 +555,7 @@ class IconLibrary extends ConfigEntityBase implements IconLibraryInterface {
     catch (ExtractionRefusedException $e) {
       throw new \Exception(sprintf('Cannot extract %s, not a valid archive.', $zip_uri), 0, $e);
     }
-    $this->parepareLibrary();
+    $this->prepareLibrary();
   }
 
   /**
