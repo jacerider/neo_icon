@@ -2,15 +2,34 @@
 
 /**
  * @file
- * Primary module hooks for Neo Icon module.
+ * The module's four icon façades.
+ *
+ * Nothing in this file is a hook implementation. Every one of them is a method
+ * on a class under `src/Hook` — \Drupal\neo_icon\Hook\NeoIconHooks for the
+ * behavioural hooks, \Drupal\neo_icon\Hook\NeoIconThemeHooks for theme
+ * registration, the four initial preprocess callbacks and the four preprocess
+ * implementations, and \Drupal\neo_icon\Hook\NeoIconFormHooks for the form
+ * alter and the entity builder it registers.
+ *
+ * What is left is four globals that are deliberately global. Their signatures
+ * are frozen: roughly forty call sites in other packages, every file taking
+ * this module's icon trait and every Twig `icon()` call reach this module
+ * through them. Three of them construct an icon element and nothing else, so
+ * there is nothing behind them to extract; the fourth delegates to
+ * \Drupal\neo_icon\IconElementFactory, which is where its body went, and
+ * carries a docblock-only `@deprecated` naming it — no runtime trigger, because
+ * every rendered icon passes this way.
+ *
+ * The module declares `neo_icon.skip_procedural_hook_scan` so that core's hook
+ * collector stops reading this file looking for hooks. That is not cosmetic:
+ * the collector matches a procedural implementation by the shape
+ * `{module}_{hook}`, and three of the four names below match it. Extension
+ * loading is unaffected by the parameter — the module handler includes this
+ * file regardless — which is what keeps all four defined.
  */
 
-use Drupal\Core\Cache\Cache;
-use Drupal\Core\Config\Entity\ConfigEntityInterface;
-use Drupal\Core\Entity\EntityFormInterface;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityTypeInterface;
-use Drupal\Core\Form\FormStateInterface;
 use Drupal\neo_icon\IconElement;
 
 /**
@@ -98,61 +117,4 @@ function neo_icon_entity_type(EntityTypeInterface $entity_type, ?string $labelOv
   $label = $entity_type->getLabel();
   $entityTypeId = $entity_type->id();
   return new IconElement($labelOverride ?? $label, NULL, NULL, ['entity.' . $entityTypeId]);
-}
-
-/**
- * Implements hook_form_alter().
- */
-function neo_icon_form_alter(&$form, $form_state, $form_id) {
-  if ($form_state->getFormObject() instanceof EntityFormInterface) {
-    $entity = $form_state->getFormObject()->getEntity();
-    if ($entity instanceof ConfigEntityInterface) {
-      /** @var \Drupal\neo_icon\IconEntityTypeManager $iconPluginManager */
-      $iconPluginManager = \Drupal::service('neo_icon.entity_type.manager');
-      if (!$iconPluginManager->isSupportedEntity($entity)) {
-        return;
-      }
-      if (
-        strpos($form['#form_id'], '_edit_form') === FALSE &&
-        strpos($form['#form_id'], '_add_form') === FALSE &&
-        $form['#form_id'] !== $entity->getEntityTypeId() . '_form'
-      ) {
-        return;
-      }
-      $form['neo_icon'] = [
-        '#type' => 'neo_icon_select',
-        '#title' => t('Icon'),
-        '#default_value' => $iconPluginManager->getEntityIcon($entity),
-        '#parents' => ['neo_icon'],
-        '#weight' => 0,
-      ];
-      $form['#entity_builders'][] = 'neo_icon_form_config_entity_build';
-      // Special handling for media types to avoid core error.
-      if ($entity->getEntityTypeId() === 'media_type') {
-        if (empty($form['source_dependent']['source_configuration'])) {
-          unset($form['neo_icon']);
-        }
-        else {
-          $form['source_dependent']['neo_icon'] = $form['neo_icon'];
-          unset($form['neo_icon']);
-        }
-      }
-    }
-  }
-}
-
-/**
- * Entity form builder for config entities that support icons.
- */
-function neo_icon_form_config_entity_build($entity_type, ConfigEntityInterface $entity, &$form, FormStateInterface $form_state) {
-  /** @var \Drupal\neo_icon\IconEntityTypeManager $iconPluginManager */
-  $iconPluginManager = \Drupal::service('neo_icon.entity_type.manager');
-  $icon = $form_state->getValue('neo_icon');
-  if (!empty($icon) && is_string($icon)) {
-    $iconPluginManager->setEntityIcon($entity, $icon);
-  }
-  else {
-    $iconPluginManager->unsetEntityIcon($entity);
-  }
-  Cache::invalidateTags(['neo_icon']);
 }

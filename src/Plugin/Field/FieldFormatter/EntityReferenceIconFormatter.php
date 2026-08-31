@@ -112,7 +112,7 @@ class EntityReferenceIconFormatter extends EntityReferenceLabelFormatter {
       $cacheability = CacheableMetadata::createFromObject($entity);
       // Bundle icons are stored as third party settings on the bundle config
       // entity and invalidated with this tag when saved.
-      // @see neo_icon_form_config_entity_build()
+      // @see \Drupal\neo_icon\Hook\NeoIconFormHooks::configEntityBuild()
       $cacheability->addCacheTags(['neo_icon']);
 
       $icon = $this->buildEntityIcon($entity)

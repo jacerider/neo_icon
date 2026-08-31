@@ -1,3 +1,16 @@
+parameters:
+  # Every hook this module implements is a method on a class under `src/Hook`,
+  # so there is nothing procedural left for core's hook collector to find. This
+  # is the parameter core provides for exactly that statement, set by a dozen
+  # core modules. It is not cosmetic: the collector matches a procedural
+  # implementation by the shape `{module}_{hook}`, so without it three of the
+  # four surviving icon façades — `neo_icon_admin()`, `neo_icon_entity()` and
+  # `neo_icon_entity_type()` — are registered as implementations of a
+  # `hook_admin`, a `hook_entity` and a `hook_entity_type` that do not exist.
+  # Extension loading is unaffected, so `neo_icon.module` is still included and
+  # all four façades are still defined and still answer.
+  neo_icon.skip_procedural_hook_scan: true
+
 services:
   plugin.manager.neo_icon:
     class: Drupal\neo_icon\IconManager
@@ -58,3 +71,14 @@ services:
   Drupal\neo_icon\Hook\NeoIconThemeHooks:
     class: Drupal\neo_icon\Hook\NeoIconThemeHooks
     arguments: ['@neo_icon.repository', '@current_route_match', '@neo_icon.entity_type.manager']
+
+  # The module's form alter and the entity builder it registers. Written out
+  # for the same reason as the two classes above, and because its one argument
+  # is a named service rather than an autowirable type: the entity icon manager
+  # is what says whether an entity type has icons at all and what icon an
+  # entity already carries. The static entity builder beside it keeps its own
+  # container static — a static method has nowhere to inject anything — and is
+  # reached by the `Class::method` string the alter puts in `#entity_builders`.
+  Drupal\neo_icon\Hook\NeoIconFormHooks:
+    class: Drupal\neo_icon\Hook\NeoIconFormHooks
+    arguments: ['@neo_icon.entity_type.manager']
