@@ -33,7 +33,7 @@ class Icon implements IconInterface {
   /**
    * The icon code.
    *
-   * @var array
+   * @var int
    */
   protected $code;
 

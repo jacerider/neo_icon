@@ -109,7 +109,7 @@ class IconLibrary extends ConfigEntityBase implements IconLibraryInterface {
   /**
    * The library info.
    *
-   * @var bool
+   * @var array<string, mixed>
    */
   protected $info;
 

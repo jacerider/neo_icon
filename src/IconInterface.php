@@ -34,7 +34,7 @@ interface IconInterface {
   /**
    * Get the code.
    *
-   * @return string
+   * @return int
    *   The code.
    */
   public function getCode();
