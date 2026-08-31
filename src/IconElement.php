@@ -2,7 +2,6 @@
 
 namespace Drupal\neo_icon;
 
-use Drupal\Component\Utility\ToStringTrait;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\Core\Template\Attribute;
 use Drupal\neo_tooltip\Tooltip;
@@ -13,19 +12,22 @@ use Drupal\neo_tooltip\Tooltip;
 class IconElement implements IconElementInterface {
 
   use StringTranslationTrait;
-  use ToStringTrait;
 
   /**
    * The Neo icon repository service.
    *
-   * @var \Drupal\neo_icon\IconRepositoryInterface
+   * Empty until the first lookup asks for it.
+   *
+   * @var \Drupal\neo_icon\IconRepositoryInterface|null
    */
   protected static $iconRepository;
 
   /**
    * The renderer.
    *
-   * @var \Drupal\Core\Render\RendererInterface
+   * Empty until the first render asks for it.
+   *
+   * @var \Drupal\Core\Render\RendererInterface|null
    */
   protected static $renderer;
 
@@ -102,14 +104,16 @@ class IconElement implements IconElementInterface {
   /**
    * The icon object.
    *
-   * @var \Drupal\neo_icon\IconInterface
+   * Empty until the icon is resolved, and NULL when nothing matches.
+   *
+   * @var \Drupal\neo_icon\IconInterface|null
    */
   protected $iconObject;
 
   /**
    * Set icon position as it related to the string.
    *
-   * @var bool
+   * @var string
    */
   protected $iconPosition = 'before';
 
@@ -373,6 +377,23 @@ class IconElement implements IconElementInterface {
     $build = $this->getRenderable();
     $output = $this->renderer()->render($build);
     return $output;
+  }
+
+  /**
+   * Implements the magic __toString() method.
+   */
+  public function __toString() {
+    try {
+      return (string) $this->render();
+    }
+    catch (\Exception $e) {
+      // User errors in __toString() methods are considered fatal in the Drupal
+      // error handler.
+      trigger_error(get_class($e) . ' thrown while calling __toString on a ' . static::class . ' object in ' . $e->getFile() . ' on line ' . $e->getLine() . ': ' . $e->getMessage(), E_USER_WARNING);
+      // In case we are using another error handler that did not fatal on the
+      // E_USER_ERROR, we terminate execution.
+      die();
+    }
   }
 
   /**

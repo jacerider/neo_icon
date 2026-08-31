@@ -191,8 +191,8 @@ interface IconElementInterface extends MarkupInterface {
   /**
    * Get the icon.
    *
-   * @return \Drupal\neo_icon\IconInterface
-   *   The icon.
+   * @return \Drupal\neo_icon\IconInterface|null
+   *   The icon, or NULL when nothing matches.
    */
   public function getIcon();
 

@@ -116,8 +116,9 @@ interface IconLibraryInterface extends ConfigEntityInterface, ConfigFileEntityEv
    * @param string $name
    *   The name of the icon.
    *
-   * @return array
-   *   The icon definition.
+   * @return array|null
+   *   The icon definition, or NULL when this library holds no icon of that
+   *   name.
    */
   public function getIcon($name);
 
@@ -127,8 +128,9 @@ interface IconLibraryInterface extends ConfigEntityInterface, ConfigFileEntityEv
    * @param string $name
    *   The name of the icon.
    *
-   * @return \Drupal\neo_icon\IconInterface
-   *   The icon item instance.
+   * @return \Drupal\neo_icon\IconInterface|null
+   *   The icon item instance, or NULL when this library holds no icon of that
+   *   name.
    */
   public function getIconInstance($name);
 

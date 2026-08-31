@@ -21,8 +21,8 @@ interface IconRepositoryInterface {
    * @param bool $ignore_status
    *   If TRUE, the status will be ignored.
    *
-   * @return \Drupal\neo_icon\IconInterface
-   *   The icon item.
+   * @return \Drupal\neo_icon\IconInterface|null
+   *   The icon item, or NULL when nothing matches.
    */
   public function getIcon($text = NULL, $icon = NULL, $library = NULL, array $prefix = [], $ignore_status = FALSE);
 
@@ -49,8 +49,8 @@ interface IconRepositoryInterface {
    * @param bool $ignore_status
    *   If TRUE, the status will be ignored.
    *
-   * @return \Drupal\neo_icon\IconInterface
-   *   The icon item.
+   * @return \Drupal\neo_icon\IconInterface|null
+   *   The icon item, or NULL when no library holds it.
    */
   public function getIconFromLibrary($icon, $library = NULL, $ignore_status = FALSE);
 
