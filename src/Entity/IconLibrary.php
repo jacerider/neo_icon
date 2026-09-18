@@ -464,27 +464,52 @@ class IconLibrary extends ConfigEntityBase implements IconLibraryInterface {
 
     // Update IcoMoon stylesheet.
     $file_path = $path . '/style.css';
-    $file_contents = file_get_contents($file_path);
-    // The style.css file provided by IcoMoon contains query parameters where it
-    // loads in the font files. Drupal CSS aggregation doesn't handle this well
-    // so we need to remove it.
-    $file_contents = preg_replace('(\?[a-zA-Z0-9#\-\_]*)', '', $file_contents);
-    // The name and selector should be updated to match entity info.
-    $file_contents = str_replace($prefix, $icon_id . '-', $file_contents);
-    $file_contents = str_replace($name, $icon_id, $file_contents);
-    // Under some conditions, icon-icon exists.
-    $file_contents = str_replace('icon-icon', 'icon', $file_contents);
-    $file_contents = str_replace($icon_id . '-' . $base_id, $icon_id, $file_contents);
-    // Add a version query string to prevent caching issues.
-    $file_version = md5($file_contents);
-    $extensions = ['.eot', '.woff', '.woff2', '.ttf', '.svg'];
-    foreach ($extensions as $extension) {
-      $file_contents = str_replace($extension, $extension . '?v=' . $file_version, $file_contents);
-    }
+    $file_contents = static::rewriteStylesheet((string) file_get_contents($file_path), $prefix, $name, $icon_id, $base_id);
     file_put_contents($file_path, $file_contents);
 
     $this->prepareDefinitions();
     $this->save();
+  }
+
+  /**
+   * Rewrites a classic IcoMoon stylesheet to this library's names.
+   *
+   * @param string $css
+   *   The package's style.css.
+   * @param string $prefix
+   *   The package's class prefix, such as "icon-".
+   * @param string $name
+   *   The package's font name, such as "icomoon".
+   * @param string $iconId
+   *   The library's icon id, such as "icon-fa".
+   * @param string $baseId
+   *   The library's machine name, such as "fa".
+   *
+   * @return string
+   *   The stylesheet with every selector and the font renamed, font URLs
+   *   stripped of IcoMoon's query strings and given a version token instead.
+   */
+  public static function rewriteStylesheet(string $css, string $prefix, string $name, string $iconId, string $baseId): string {
+    // The style.css file provided by IcoMoon contains query parameters where it
+    // loads in the font files. Drupal CSS aggregation doesn't handle this well
+    // so we need to remove it.
+    $css = preg_replace('(\?[a-zA-Z0-9#\-\_]*)', '', $css);
+    // The name and selector should be updated to match entity info.
+    $css = str_replace($prefix, $iconId . '-', $css);
+    $css = str_replace($name, $iconId, $css);
+    // Under some conditions, icon-icon exists.
+    $css = str_replace('icon-icon', 'icon', $css);
+    // A package whose classes already carried the library id comes out with
+    // it twice. Only a doubled id followed by a dash is collapsed: a glyph
+    // whose own name starts with the id ("facebook" in a library "fa") must
+    // keep its class.
+    $css = str_replace($iconId . '-' . $baseId . '-', $iconId . '-', $css);
+    // Add a version query string to prevent caching issues.
+    $version = md5($css);
+    foreach (['.eot', '.woff', '.woff2', '.ttf', '.svg'] as $extension) {
+      $css = str_replace($extension, $extension . '?v=' . $version, $css);
+    }
+    return $css;
   }
 
   /**
