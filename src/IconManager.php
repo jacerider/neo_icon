@@ -82,6 +82,18 @@ class IconManager extends DefaultPluginManager implements IconManagerInterface {
 
   /**
    * {@inheritdoc}
+   *
+   * Discovery reads theme directories as well as module ones (see
+   * getDiscovery()), so an installed theme is a provider too. The parent only
+   * recognises modules, and dropped every definition a theme declared.
+   */
+  protected function providerExists($provider) {
+    return parent::providerExists($provider)
+      || $this->themeHandler->themeExists($provider);
+  }
+
+  /**
+   * {@inheritdoc}
    */
   protected function findDefinitions() {
     $definitions = parent::findDefinitions();
