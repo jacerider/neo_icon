@@ -100,9 +100,9 @@ class IconLibrary extends ConfigEntityBase implements IconLibraryInterface {
   protected $weight = 0;
 
   /**
-   * The icon definitions.
+   * The icon definitions, or NULL until they are read.
    *
-   * @var array
+   * @var array|null
    */
   protected $iconDefinitions;
 
@@ -520,7 +520,10 @@ class IconLibrary extends ConfigEntityBase implements IconLibraryInterface {
   protected function prepareDefinitions() {
     /** @var \Drupal\Core\File\FileSystemInterface $file_system */
     $file_system = \Drupal::service('file_system');
-    $this->iconDefinitions = [];
+    // Unset rather than emptied, so the next getIcons() reads the definitions
+    // written below instead of answering an empty library for the rest of the
+    // request.
+    $this->iconDefinitions = NULL;
     $info = $this->getInfo(TRUE);
     $definitions = [];
     if (!empty($info['icons'])) {

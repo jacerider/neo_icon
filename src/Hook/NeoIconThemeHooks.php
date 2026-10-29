@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Drupal\neo_icon\Hook;
 
+use Drupal\Core\Cache\Cache;
 use Drupal\Core\Hook\Attribute\Hook;
 use Drupal\Core\Link;
 use Drupal\Core\Routing\RouteMatchInterface;
@@ -195,6 +196,12 @@ class NeoIconThemeHooks {
       $variables['attributes']['aria-hidden'] = 'true';
       $variables['children'] = $icon->getChildren();
       $variables['#attached']['library'][] = 'neo_icon/' . $icon->getLibrary()->getLibraryName();
+      // A rendered icon depends on its library: the classes, the attachment
+      // and, for a library rendering inline SVG, the path data all come from
+      // it. Its cache tag is invalidated whenever the library is saved, which
+      // is also what re-uploading its package does, so cached markup holding
+      // the icon is rebuilt rather than left showing the old glyph.
+      $variables['#cache']['tags'] = Cache::mergeTags($variables['#cache']['tags'] ?? [], $icon->getLibrary()->getCacheTags());
     }
     else {
       // No icon found. We don't want to render anything.

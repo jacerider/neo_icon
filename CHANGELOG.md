@@ -1,5 +1,17 @@
 # Changelog
 
+## A rendered icon carries its library's cache tag
+
+**Re-uploading an icon package now refreshes cached markup holding its icons.**
+A rendered icon carried no cacheability, so a page, block or component cached
+with an icon kept the old glyph after its library's package was replaced, until
+a full cache clear. Every icon rendered through `neo_icon` or
+`neo_icon_element` now bubbles its library's config cache tag, which saving the
+library invalidates, and re-uploading a package saves it.
+
+A library unpacked during a request also answers its new icons for the rest of
+that request; it answered none until the next one.
+
 ## Glyphs named like their library keep their icon
 
 **A classic IcoMoon package no longer loses glyphs whose names start with the

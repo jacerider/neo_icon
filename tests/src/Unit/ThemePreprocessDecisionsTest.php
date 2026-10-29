@@ -153,6 +153,7 @@ final class ThemePreprocessDecisionsTest extends UnitTestCase {
     $this->assertSame('true', $variables['attributes']['aria-hidden']);
     $this->assertSame(['#markup' => 'a symbol'], $variables['children']);
     $this->assertSame(['neo_icon/brands'], $variables['#attached']['library']);
+    $this->assertSame(['config:neo_icon.neo_icon_library.brands'], $variables['#cache']['tags'], 'The icon carries its library\'s cache tag.');
 
     // Handed the icon itself rather than its id, it writes the same variables.
     $never = $this->createMock(IconRepositoryInterface::class);
@@ -314,6 +315,7 @@ final class ThemePreprocessDecisionsTest extends UnitTestCase {
     $library = $this->createMock(IconLibraryInterface::class);
     $library->method('getType')->willReturn($type);
     $library->method('getLibraryName')->willReturn($libraryName);
+    $library->method('getCacheTags')->willReturn(['config:neo_icon.neo_icon_library.' . $libraryName]);
 
     $icon = $this->createMock(IconInterface::class);
     $icon->method('getLibrary')->willReturn($library);
