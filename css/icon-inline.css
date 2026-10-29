@@ -1,0 +1,29 @@
+/**
+ * @file
+ * Inline SVG icons, sized and placed as their font glyphs were.
+ *
+ * In a layer, so any utility or theme rule on the icon wins. The wrapper is
+ * an inline block at line-height 1, as the font glyph's <i> was, so transforms
+ * such as `animate-spin` apply. The glyph's em box ran from 64 units below the
+ * baseline to 960 above it (ascent 960, descent 64 of 1024), hence the offset.
+ * Paths may stray outside the box, as they did in the font, without clipping.
+ */
+@layer components {
+  :where(.neo-icon-svg) {
+    display: inline-block;
+    line-height: 1;
+  }
+
+  /* The package's full stylesheet may be on the same page, for the icon
+     browser or an icon drawn as a font glyph, and its per-icon rules would
+     add the glyph beside the SVG. Important, so the unlayered rule loses. */
+  :where(.neo-icon-svg)::before {
+    content: none !important;
+  }
+
+  :where(.neo-icon-svg) > svg {
+    display: inline-block;
+    overflow: visible;
+    vertical-align: -0.0625em;
+  }
+}

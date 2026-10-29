@@ -82,7 +82,11 @@ class IconBrowserController extends ControllerBase {
         if ($icons && !in_array($name, $icons)) {
           continue;
         }
-        $icon = new Icon($definition, $library);
+        // Always the font glyph. A library rendering inline SVG would put every
+        // icon's paths in this payload, which for a large set approaches the
+        // size of the package's selection.json; the browser attaches the full
+        // stylesheet instead, and these stay a class each.
+        $icon = (new Icon($definition, $library))->withoutInlineSvg();
         $render = $icon->render();
         $data[] = [
           'name' => $icon->getName(),

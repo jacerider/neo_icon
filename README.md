@@ -2,6 +2,7 @@ CONTENTS OF THIS FILE
 ---------------------
 
  * Introduction
+ * Rendering: font or inline SVG
  * Requirements
  * Installation
  * Drush Commands
@@ -55,6 +56,72 @@ Multicolor (duotone) glyphs are only supported in the classic layout. The newer
 project file stores a single code point per glyph, so it cannot express the
 layered glyphs the classic `properties.codes` array described; use the SVG
 sprite for a multicolor set.
+
+
+RENDERING: FONT OR INLINE SVG
+-----------------------------
+
+Each icon library renders its icons one of two ways, set per library on its
+edit form (`render` in its configuration):
+
+* **Font** (`render: font`) — the package's own glyphs. The library attaches
+  the package's full `style.css`, and with it the whole font. A sprite package
+  renders its `<use>` reference.
+* **Inline SVG** (`render: svg`) — each icon is rendered with its own paths:
+
+  ```html
+  <i class="neo-icon neo-icon-svg icon-regular-chevron-left" aria-hidden="true">
+    <svg viewBox="0 0 640 1024" width="0.625em" height="1em" fill="currentColor">…</svg>
+  </i>
+  ```
+
+  A page carries only the icons it shows. The SVG is 1em tall and as wide as
+  the glyph was, sits on the baseline the glyph did, and fills with the
+  current colour, so `color`, `font-size`, opacity and transforms such as
+  `animate-spin` behave as they did. A path with a fill or opacity of its own
+  (multicolour and duotone glyphs) keeps it.
+
+The libraries the module ships render as inline SVG, so a new site starts on
+it. Libraries a site already had were set to font by the update that added the
+setting, and stay font until switched. In both modes the fonts use
+`font-display: swap`.
+
+The paths come from a compact store written beside the package when it is
+imported (`svg/` in the library directory, sharded so a page reads a few small
+files), never from `selection.json`. A library imported before the store
+existed has it built when it is switched to inline SVG. An icon the store has
+no paths for renders as its font glyph and attaches the full stylesheet.
+
+### What inline SVG changes
+
+* **CSS-only icons.** A library rendering inline SVG drops its `style.css` and
+  attaches an `@font-face`-only sheet (`font-face.css`). The Tailwind `icon-*`
+  and `icon-<library>-*` utilities, and `@apply icon-*` in a theme's CSS, keep
+  working: the font is still declared, and a browser only downloads it on a
+  page where one of them shows.
+* **Icon markup written by hand shows nothing.** An `<i class="icon-regular-…">`
+  built as a string — in a theme's PHP, a preprocess, a template or script —
+  relied on the per-icon rules in `style.css`, which are gone. Render the icon
+  through the module instead: `icon()` in Twig, `IconTrait::icon()` /
+  `neo_icon()` in PHP, or the `neo_icon` render element. Script that needs an
+  icon should take it rendered from the server (a `<template>`, a data
+  attribute, drupalSettings) rather than build the class.
+* **Rendered icons concatenated into a string** are XSS-filtered by Drupal,
+  which strips `<svg>`. Put the icon element in `#markup` whole, or as a render
+  array child, rather than `'<div>' . $icon . '</div>'`. Likewise a form
+  button's `#value` is plain text: an icon there cannot render as SVG.
+* **Styling the wrapper.** `.neo-icon` and the `icon-<library>-<name>` class
+  stay on the `<i>`, so rules aimed at them still apply; the SVG is centred in
+  it. A rule that sizes or pads `.neo-icon` as a box (a round badge, a fixed
+  height) is worth checking by eye, and a height workaround written for the
+  font glyph may no longer be needed.
+* **Pseudo-element content** written against a library's own class
+  (`content: '\e918'` for a prefix no installed library has) is unaffected,
+  since it never came from this module.
+
+The icon browser keeps showing font glyphs in either mode, so its payload does
+not grow with every icon's paths; it attaches the library's full stylesheet
+itself.
 
 
 REQUIREMENTS

@@ -5,6 +5,7 @@ dependencies: {  }
 id: duo
 label: Duo
 type: font
+render: svg
 file: duo_zip
 global: false
 weight: -6

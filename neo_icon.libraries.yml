@@ -7,6 +7,15 @@ icon-svg:
   js:
     src/js/icon-svg.ts: {}
 
+# The sizing and baseline rules every inline SVG icon needs. A plain library,
+# not a Neo build entry: it is attached by icon libraries rendering inline SVG
+# and must work whether or not a site has compiled its assets.
+icon-inline:
+  version: VERSION
+  css:
+    component:
+      css/icon-inline.css: {}
+
 icon-browser:
   version: VERSION
   neo: true

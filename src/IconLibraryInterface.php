@@ -17,6 +17,16 @@ interface IconLibraryInterface extends ConfigEntityInterface, ConfigFileEntityEv
   const LIBRARY_URI = 'public://neo-icon';
 
   /**
+   * Icons render as the package's own glyphs: a font glyph or sprite symbol.
+   */
+  const RENDER_FONT = 'font';
+
+  /**
+   * Icons render as inline SVG built from the package's path data.
+   */
+  const RENDER_SVG = 'svg';
+
+  /**
    * Get the icon id.
    *
    * The icon id differes from the entity id as the machine name of the entity
@@ -165,6 +175,87 @@ interface IconLibraryInterface extends ConfigEntityInterface, ConfigFileEntityEv
    *   An array of config file ids.
    */
   public function getFile();
+
+  /**
+   * How the library's icons render.
+   *
+   * Independent of the package type: the type says what the package shipped
+   * (a font or a sprite) and is decided by each import, while this is the
+   * site's choice of how icons reach the page.
+   *
+   * @return string
+   *   Either static::RENDER_FONT (the package's own glyphs, the default) or
+   *   static::RENDER_SVG (inline SVG).
+   */
+  public function getRender(): string;
+
+  /**
+   * Sets how the library's icons render.
+   *
+   * @param string $render
+   *   Either static::RENDER_FONT or static::RENDER_SVG. Anything else is font.
+   *
+   * @return $this
+   */
+  public function setRender(string $render): static;
+
+  /**
+   * Whether the library renders its icons as inline SVG.
+   *
+   * @return bool
+   *   TRUE when icons render as inline SVG.
+   */
+  public function isInlineSvg(): bool;
+
+  /**
+   * The type an icon of this library renders as.
+   *
+   * @return string
+   *   'svg' for inline SVG, otherwise the package type ('font' or 'image').
+   */
+  public function getRenderType(): string;
+
+  /**
+   * Returns the path data of one icon, for rendering it as inline SVG.
+   *
+   * Read from the compact per-icon store written when the package is
+   * imported, never from selection.json. A library imported before the store
+   * existed has it built on first use.
+   *
+   * @param string $name
+   *   The icon name, as the package names it.
+   *
+   * @return array|null
+   *   An array with 'p', the path data strings, and optionally 'w' and 'h',
+   *   the glyph's width and height when not 1024, and 'a', per-path attributes
+   *   ('fill', 'opacity'). NULL when the store holds no paths for the icon.
+   */
+  public function getSvgData(string $name): ?array;
+
+  /**
+   * Returns the URL of the library's @font-face-only stylesheet.
+   *
+   * A library rendering inline SVG attaches this instead of its full
+   * stylesheet, so CSS-only icons (Tailwind `icon-*` utilities) still have
+   * their font, which a browser only downloads where one is shown.
+   *
+   * @return string|null
+   *   The URL, or NULL when the package carries no @font-face.
+   */
+  public function getFontFaceStylesheet(): ?string;
+
+  /**
+   * Returns the name of the Drupal library carrying the full stylesheet.
+   *
+   * Registered only for a library rendering inline SVG, whose own Drupal
+   * library carries the @font-face sheet alone. Whatever still shows icons as
+   * font glyphs (the icon browser, an icon the SVG store has no paths for)
+   * attaches this one.
+   *
+   * @return string
+   *   The library name, without the extension prefix.
+   */
+  public function getFontLibraryName(): string;
 
   /**
    * Get icon library information.

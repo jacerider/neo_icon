@@ -48,10 +48,14 @@ class IconLibraryListBuilder extends DraggableListBuilder {
     }
     $row['preview']['#neo_size'] = 'min';
 
-    $type = $entity->getType();
+    $type = $entity->getRenderType();
     $row['type'] = [
       'data' => [
-        '#markup' => $this->icon($type, $type === 'font' ? 'font-case' : 'image-polaroid')->iconOnly(),
+        '#markup' => $this->icon($type === 'svg' ? $this->t('Inline SVG') : $type, match ($type) {
+          'font' => 'font-case',
+          'svg' => 'bezier-curve',
+          default => 'image-polaroid',
+        })->iconOnly(),
       ],
       '#neo_size' => 'min',
       '#neo_align' => 'center',

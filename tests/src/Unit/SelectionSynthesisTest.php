@@ -172,6 +172,29 @@ final class SelectionSynthesisTest extends UnitTestCase {
   }
 
   /**
+   * It carries each glyph's path data over from its loose SVG.
+   *
+   * The newer package keeps path data only in its loose per-glyph SVGs, which
+   * normalization prunes. A library rendering inline SVG builds its store from
+   * selection.json, so the paths and the viewBox's width and height are
+   * written into each entry before the files go.
+   */
+  public function testItCarriesEachGlyphsPathDataOverFromItsLooseSvg(): void {
+    $package = $this->buildIcoMoonPackage(['woff2'], [
+      ['name' => 'home', 'code' => 0xE900],
+    ]);
+
+    $this->normalizePackage($package);
+
+    $icon = $this->icons($package)[0]['icon'];
+    $this->assertSame(['M0 0h1024v1024H0z'], $icon['paths']);
+    $this->assertSame([[]], $icon['attrs']);
+    $this->assertSame(1024, $icon['width']);
+    $this->assertSame(1024, $icon['height']);
+    $this->assertDirectoryDoesNotExist($package . '/svg', 'The loose SVGs are still pruned.');
+  }
+
+  /**
    * Runs layout normalization over a package the builder wrote.
    *
    * @param string $package

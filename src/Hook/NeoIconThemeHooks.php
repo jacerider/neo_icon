@@ -188,20 +188,26 @@ class NeoIconThemeHooks {
       $icon = $this->iconRepository->getIcon(NULL, $icon);
     }
     if ($icon instanceof IconInterface) {
+      $library = $icon->getLibrary();
+      // What the icon renders as, which for a library rendering inline SVG is
+      // 'svg' unless the store has no paths for this icon.
+      $type = $icon->getRenderType();
       $variables['icon'] = $icon;
-      $variables['type'] = $icon->getLibrary()->getType();
+      $variables['type'] = $type;
       $variables['tag'] = $icon->getTag();
-      $variables['attributes']['class'][] = 'neo-icon-' . $icon->getLibrary()->getType();
+      $variables['attributes']['class'][] = 'neo-icon-' . $type;
       $variables['attributes']['class'][] = $icon->getSelector();
       $variables['attributes']['aria-hidden'] = 'true';
       $variables['children'] = $icon->getChildren();
-      $variables['#attached']['library'][] = 'neo_icon/' . $icon->getLibrary()->getLibraryName();
+      // A library rendering inline SVG attaches only its @font-face sheet, so
+      // one of its icons drawn as a font glyph needs the full stylesheet.
+      $variables['#attached']['library'][] = 'neo_icon/' . ($library->isInlineSvg() && $type !== 'svg' ? $library->getFontLibraryName() : $library->getLibraryName());
       // A rendered icon depends on its library: the classes, the attachment
       // and, for a library rendering inline SVG, the path data all come from
       // it. Its cache tag is invalidated whenever the library is saved, which
       // is also what re-uploading its package does, so cached markup holding
       // the icon is rebuilt rather than left showing the old glyph.
-      $variables['#cache']['tags'] = Cache::mergeTags($variables['#cache']['tags'] ?? [], $icon->getLibrary()->getCacheTags());
+      $variables['#cache']['tags'] = Cache::mergeTags($variables['#cache']['tags'] ?? [], $library->getCacheTags());
     }
     else {
       // No icon found. We don't want to render anything.

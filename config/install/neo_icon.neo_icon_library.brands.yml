@@ -5,6 +5,7 @@ dependencies: {  }
 id: brands
 label: Brands
 type: font
+render: svg
 file: brands_zip
 global: false
 weight: -9

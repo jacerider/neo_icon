@@ -5,7 +5,9 @@ namespace Drupal\neo_icon\Entity;
 use Drupal\Component\Serialization\Json;
 use Drupal\Core\Config\Entity\ConfigEntityBase;
 use Drupal\Core\Config\Entity\ConfigEntityInterface;
+use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\File\FileExists;
+use Drupal\Core\File\FileSystemInterface;
 use Drupal\neo_config_file\ConfigFileInterface;
 use Drupal\neo_config_file\Exception\ExtractionRefusedException;
 use Drupal\neo_icon\IcoMoon\ProjectNormalizer;
@@ -47,6 +49,7 @@ use Drupal\neo_icon\IconLibraryInterface;
  *     "id",
  *     "label",
  *     "type",
+ *     "render",
  *     "file",
  *     "status",
  *     "global",
@@ -86,11 +89,25 @@ class IconLibrary extends ConfigEntityBase implements IconLibraryInterface {
   protected $type;
 
   /**
+   * How the icons render: 'font' (the package's own glyphs) or 'svg'.
+   *
+   * @var string
+   */
+  protected $render = IconLibraryInterface::RENDER_FONT;
+
+  /**
    * The Neo Icon Library file.
    *
    * @var string
    */
   protected $file;
+
+  /**
+   * Path data shards read this request, keyed by shard id.
+   *
+   * @var array<string, array>
+   */
+  protected array $svgShards = [];
 
   /**
    * The library weight.
@@ -194,6 +211,252 @@ class IconLibrary extends ConfigEntityBase implements IconLibraryInterface {
    */
   public function isFont() {
     return $this->getType() == 'font';
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getRender(): string {
+    return $this->render === IconLibraryInterface::RENDER_SVG ? IconLibraryInterface::RENDER_SVG : IconLibraryInterface::RENDER_FONT;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function setRender(string $render): static {
+    $this->render = $render === IconLibraryInterface::RENDER_SVG ? IconLibraryInterface::RENDER_SVG : IconLibraryInterface::RENDER_FONT;
+    return $this;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function isInlineSvg(): bool {
+    return $this->getRender() === IconLibraryInterface::RENDER_SVG;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getRenderType(): string {
+    return $this->isInlineSvg() ? IconLibraryInterface::RENDER_SVG : (string) $this->getType();
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getFontLibraryName(): string {
+    return $this->getLibraryName() . '.font';
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getSvgData(string $name): ?array {
+    $shard = static::svgShard($name);
+    if (!isset($this->svgShards[$shard])) {
+      if (!file_exists($this->getSvgStoreUri() . '/manifest.json')) {
+        // A library imported before the store existed. Built once, from the
+        // package's selection.json, and read from shards from then on.
+        $this->writeSvgStore();
+      }
+      $this->svgShards[$shard] = [];
+      $path = $this->getSvgStoreUri() . '/' . $shard . '.json';
+      if (file_exists($path)) {
+        $this->svgShards[$shard] = Json::decode((string) file_get_contents($path)) ?: [];
+      }
+    }
+    $data = $this->svgShards[$shard][$name] ?? NULL;
+    return !empty($data['p']) ? $data : NULL;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getFontFaceStylesheet(): ?string {
+    $path = $this->getUri() . '/font-face.css';
+    if (!file_exists($path) && !$this->writeFontFaceStylesheet()) {
+      return NULL;
+    }
+    return \Drupal::service('file_url_generator')->generateString($path);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function postSave(EntityStorageInterface $storage, $update = TRUE) {
+    parent::postSave($storage, $update);
+    // Switching a library to inline SVG, including by a configuration import,
+    // must not leave the first page to pay for the derived files. Both are
+    // also built on demand, should a files directory lack them.
+    if ($this->isInlineSvg() && file_exists($this->getUri() . '/selection.json')) {
+      if (!file_exists($this->getSvgStoreUri() . '/manifest.json')) {
+        $this->writeSvgStore();
+      }
+      if (!file_exists($this->getUri() . '/font-face.css')) {
+        $this->writeFontFaceStylesheet();
+      }
+    }
+  }
+
+  /**
+   * The directory of the per-icon path data store.
+   *
+   * @return string
+   *   The store's URI.
+   */
+  protected function getSvgStoreUri(): string {
+    return $this->getUri() . '/svg';
+  }
+
+  /**
+   * The store shard an icon's path data is written to.
+   *
+   * The store is sharded so a page reads a few small files rather than a
+   * whole library's path data: the regular set alone carries 3.4MB of paths.
+   *
+   * @param string $name
+   *   The icon name.
+   *
+   * @return string
+   *   Two hex characters.
+   */
+  protected static function svgShard(string $name): string {
+    return substr(md5($name), 0, 2);
+  }
+
+  /**
+   * Writes the per-icon path data store from the package's selection.json.
+   *
+   * Each icon keeps only what rendering needs: its paths, its width and
+   * height when they are not 1024, and the fill and opacity of any path that
+   * has one. Icons without paths (a package normalized without its loose SVG
+   * files) are left out, and render as their font glyph instead.
+   */
+  public function writeSvgStore(): void {
+    /** @var \Drupal\Core\File\FileSystemInterface $file_system */
+    $file_system = \Drupal::service('file_system');
+    $directory = $this->getSvgStoreUri();
+    $file_system->deleteRecursive($directory);
+    $file_system->prepareDirectory($directory, FileSystemInterface::CREATE_DIRECTORY | FileSystemInterface::MODIFY_PERMISSIONS);
+    $this->svgShards = [];
+
+    $info = $this->getInfo(TRUE);
+    $shards = [];
+    $count = 0;
+    foreach ($info['icons'] ?? [] as $icon) {
+      $data = static::svgDataFromSelection($icon, (int) ($info['height'] ?? 1024));
+      if (!$data) {
+        continue;
+      }
+      $names = isset($icon['properties']['name']) ? [$icon['properties']['name']] : ($icon['icon']['tags'] ?? []);
+      foreach ($names as $name) {
+        $shards[static::svgShard((string) $name)][(string) $name] = $data;
+        $count++;
+      }
+    }
+    foreach ($shards as $shard => $icons) {
+      $file_system->saveData(Json::encode($icons), $directory . '/' . $shard . '.json', FileExists::Replace);
+    }
+    // Written last: its presence is what says the store is complete.
+    $file_system->saveData(Json::encode(['version' => 1, 'icons' => $count]), $directory . '/manifest.json', FileExists::Replace);
+  }
+
+  /**
+   * Extracts one icon's path data from its selection.json entry.
+   *
+   * @param array $icon
+   *   The entry in selection.json's "icons".
+   * @param int $height
+   *   The package's glyph height.
+   *
+   * @return array|null
+   *   The compact path data, or NULL when the entry has no paths.
+   */
+  public static function svgDataFromSelection(array $icon, int $height = 1024): ?array {
+    $paths = array_values(array_filter($icon['icon']['paths'] ?? [], 'is_string'));
+    if (!$paths) {
+      return NULL;
+    }
+    $data = ['p' => $paths];
+    // A glyph normalized from a newer package's loose SVG carries its own
+    // height, which is its viewBox's.
+    $height = (int) ($icon['icon']['height'] ?? $height);
+    $width = (int) ($icon['icon']['width'] ?? $height);
+    if ($width !== 1024) {
+      $data['w'] = $width;
+    }
+    if ($height !== 1024) {
+      $data['h'] = $height;
+    }
+    $attrs = [];
+    $any = FALSE;
+    foreach (array_keys($paths) as $delta) {
+      $source = $icon['icon']['attrs'][$delta] ?? $icon['attrs'][$delta] ?? [];
+      $attr = [];
+      if (isset($source['fill']) && is_string($source['fill']) && $source['fill'] !== '') {
+        $attr['fill'] = $source['fill'];
+      }
+      if (isset($source['opacity']) && is_numeric($source['opacity'])) {
+        $attr['opacity'] = (float) $source['opacity'];
+      }
+      $attrs[] = $attr;
+      $any = $any || $attr;
+    }
+    if ($any) {
+      $data['a'] = $attrs;
+    }
+    return $data;
+  }
+
+  /**
+   * Writes the @font-face-only stylesheet from the package's style.css.
+   *
+   * @return bool
+   *   TRUE when a stylesheet carrying at least one @font-face was written.
+   */
+  protected function writeFontFaceStylesheet(): bool {
+    $source = $this->getUri() . '/style.css';
+    if (!file_exists($source)) {
+      return FALSE;
+    }
+    $css = static::extractFontFace((string) file_get_contents($source));
+    if ($css === '') {
+      return FALSE;
+    }
+    /** @var \Drupal\Core\File\FileSystemInterface $file_system */
+    $file_system = \Drupal::service('file_system');
+    $file_system->saveData($css, $this->getUri() . '/font-face.css', FileExists::Replace);
+    return TRUE;
+  }
+
+  /**
+   * Returns the @font-face rules of a stylesheet and nothing else.
+   *
+   * @param string $css
+   *   The stylesheet.
+   *
+   * @return string
+   *   Its @font-face rules, with `font-display: swap`.
+   */
+  public static function extractFontFace(string $css): string {
+    if (!preg_match_all('/@font-face\s*\{[^}]*\}/', $css, $matches)) {
+      return '';
+    }
+    return static::swapFontDisplay(implode("\n\n", $matches[0])) . "\n";
+  }
+
+  /**
+   * Has a stylesheet's fonts swap in rather than block the text.
+   *
+   * @param string $css
+   *   The stylesheet.
+   *
+   * @return string
+   *   The stylesheet with every `font-display: block` made `swap`.
+   */
+  public static function swapFontDisplay(string $css): string {
+    return (string) preg_replace('/font-display:\s*block/', 'font-display: swap', $css);
   }
 
   /**
@@ -504,6 +767,9 @@ class IconLibrary extends ConfigEntityBase implements IconLibraryInterface {
     // whose own name starts with the id ("facebook" in a library "fa") must
     // keep its class.
     $css = str_replace($iconId . '-' . $baseId . '-', $iconId . '-', $css);
+    // A blocked glyph hides the text it sits in until the font arrives, so
+    // icon fonts swap in instead.
+    $css = static::swapFontDisplay($css);
     // Add a version query string to prevent caching issues.
     $version = md5($css);
     foreach (['.eot', '.woff', '.woff2', '.ttf', '.svg'] as $extension) {
@@ -560,6 +826,10 @@ class IconLibrary extends ConfigEntityBase implements IconLibraryInterface {
       }
     }
     $file_system->saveData(Json::encode($definitions), $this->getUri() . '/definitions.json', FileExists::Replace);
+    // The derived files every library carries whatever it renders as, so
+    // switching it to inline SVG later needs no re-import.
+    $this->writeSvgStore();
+    $this->writeFontFaceStylesheet();
   }
 
   /**

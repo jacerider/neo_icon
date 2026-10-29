@@ -319,6 +319,7 @@ final class ThemePreprocessDecisionsTest extends UnitTestCase {
 
     $icon = $this->createMock(IconInterface::class);
     $icon->method('getLibrary')->willReturn($library);
+    $icon->method('getRenderType')->willReturn($type);
     $icon->method('getTag')->willReturn($tag);
     $icon->method('getSelector')->willReturn($selector);
     $icon->method('getChildren')->willReturn($children);

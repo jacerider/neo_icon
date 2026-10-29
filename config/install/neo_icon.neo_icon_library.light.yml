@@ -5,6 +5,7 @@ dependencies: {  }
 id: light
 label: Light
 type: font
+render: svg
 file: light_zip
 global: false
 weight: -8

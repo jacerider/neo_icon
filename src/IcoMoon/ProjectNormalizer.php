@@ -105,6 +105,10 @@ final class ProjectNormalizer {
     $glyphs = $this->readGlyphs($project_file);
 
     $formats = $this->relocate();
+    // Read before pruning removes them: the loose per-glyph SVGs are the only
+    // place a newer package keeps its path data, which inline SVG rendering
+    // needs.
+    $glyphs = $this->readLooseSvgs($glyphs);
     $this->prune($project_file);
 
     if ($formats['font']) {
@@ -195,6 +199,65 @@ final class ProjectNormalizer {
 
     if (!$glyphs) {
       throw new \Exception(sprintf('%s contains no usable glyphs.', basename($project_file)));
+    }
+    return $glyphs;
+  }
+
+  /**
+   * Adds each glyph's path data from its loose SVG file.
+   *
+   * Only `<path>` elements are read, with their `fill` and `opacity`, and the
+   * viewBox gives the glyph's width and height. A glyph whose file is missing,
+   * unreadable or carries no path keeps no path data and renders as its font
+   * glyph even in a library rendering inline SVG.
+   *
+   * @param array[] $glyphs
+   *   A list of ['name' => string, 'code' => int].
+   *
+   * @return array[]
+   *   The same list, each glyph that had usable paths given a 'svg' key with
+   *   'paths', 'attrs', 'width' and 'height'.
+   */
+  private function readLooseSvgs(array $glyphs) {
+    foreach ($glyphs as $delta => $glyph) {
+      $file = $this->path . '/svg/' . $glyph['name'] . '.svg';
+      if (!file_exists($file)) {
+        continue;
+      }
+      $document = new \DOMDocument();
+      if (!@$document->loadXML((string) file_get_contents($file), LIBXML_NONET)) {
+        continue;
+      }
+      $root = $document->documentElement;
+      $viewBox = preg_split('/[\s,]+/', trim((string) $root?->getAttribute('viewBox')));
+      if (count($viewBox) !== 4 || (float) $viewBox[3] <= 0) {
+        continue;
+      }
+      $paths = [];
+      $attrs = [];
+      foreach ($document->getElementsByTagName('path') as $element) {
+        $d = trim($element->getAttribute('d'));
+        if ($d === '') {
+          continue;
+        }
+        $attr = [];
+        if (($fill = $element->getAttribute('fill')) !== '' && $fill !== 'currentColor') {
+          $attr['fill'] = $fill;
+        }
+        if (is_numeric($opacity = $element->getAttribute('opacity'))) {
+          $attr['opacity'] = (float) $opacity;
+        }
+        $paths[] = $d;
+        $attrs[] = $attr;
+      }
+      if ($paths) {
+        $glyphs[$delta]['svg'] = [
+          'paths' => $paths,
+          'attrs' => $attrs,
+          'width' => (int) round((float) $viewBox[2]),
+          'height' => (int) round((float) $viewBox[3]),
+        ];
+      }
     }
     return $glyphs;
   }
@@ -334,7 +397,7 @@ final class ProjectNormalizer {
     $css .= "  src:  " . implode(",\n    ", $sources) . ";\n";
     $css .= "  font-weight: normal;\n";
     $css .= "  font-style: normal;\n";
-    $css .= "  font-display: block;\n";
+    $css .= "  font-display: swap;\n";
     $css .= "}\n\n";
     $css .= '[class^="' . $this->iconId . '-"], [class*=" ' . $this->iconId . '-"] {' . "\n";
     $css .= "  /* use !important to prevent issues with browser extensions that change fonts */\n";
@@ -405,7 +468,9 @@ final class ProjectNormalizer {
    *
    * It is written already normalized — the name and prefix are the entity's,
    * not IcoMoon's — so the caller does not run the classic rewriting pass over
-   * it. Path data is omitted because nothing in the module reads it.
+   * it. Path data read from the loose SVGs is written in the classic places
+   * (paths, attrs, width), plus a per-glyph height, because the library's
+   * inline SVG store is built from it.
    *
    * Both prefixes are written because getInfoPrefix() picks between them by
    * library type, and the type is decided by what the package happened to ship.
@@ -416,10 +481,12 @@ final class ProjectNormalizer {
   private function writeSelection(array $glyphs) {
     $icons = [];
     foreach ($glyphs as $glyph) {
+      $icon = ['tags' => [$glyph['name']]];
+      if (isset($glyph['svg'])) {
+        $icon += $glyph['svg'];
+      }
       $icons[] = [
-        'icon' => [
-          'tags' => [$glyph['name']],
-        ],
+        'icon' => $icon,
         'properties' => [
           'name' => $glyph['name'],
           'code' => $glyph['code'],

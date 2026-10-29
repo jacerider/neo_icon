@@ -4,6 +4,7 @@ namespace Drupal\neo_icon\Form;
 
 use Drupal\Core\Entity\EntityForm;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\neo_icon\IconLibraryInterface;
 
 /**
  * Class create/edit form for icon libraries.
@@ -63,6 +64,17 @@ class IconLibraryForm extends EntityForm {
         ],
       ],
       '#default_value' => $this->entity->getFile(),
+    ];
+
+    $form['render'] = [
+      '#type' => 'radios',
+      '#title' => $this->t('Render icons as'),
+      '#options' => [
+        IconLibraryInterface::RENDER_FONT => $this->t("Font (the package's own glyphs)"),
+        IconLibraryInterface::RENDER_SVG => $this->t('Inline SVG'),
+      ],
+      '#default_value' => $this->entity->getRender(),
+      '#description' => $this->t("Inline SVG puts each icon's paths in the page, so a page carries only the icons it shows instead of the whole font and its stylesheet. Icons applied through CSS alone (the <code>icon-*</code> utilities) still use the font, which a browser downloads only where one is shown. Icons written as markup by hand, such as <code>&lt;i class=&quot;icon-regular-…&quot;&gt;</code>, show nothing in this mode."),
     ];
 
     $form['global'] = [

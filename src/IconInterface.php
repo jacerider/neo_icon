@@ -72,6 +72,26 @@ interface IconInterface {
   public function getChildren();
 
   /**
+   * The type this icon renders as.
+   *
+   * @return string
+   *   'svg' when its library renders inline SVG and the store holds its
+   *   paths, otherwise the package type ('font' or 'image').
+   */
+  public function getRenderType(): string;
+
+  /**
+   * Returns a copy of this icon that renders as its package's own glyph.
+   *
+   * For whatever must show many icons at once and cannot carry each one's
+   * path data, such as the icon browser.
+   *
+   * @return static
+   *   The copy.
+   */
+  public function withoutInlineSvg(): static;
+
+  /**
    * Return as render array.
    *
    * @return array

@@ -53,7 +53,24 @@ class NeoIconHooks {
     $storage = $this->entityTypeManager->getStorage('neo_icon_library');
     foreach ($storage->loadMultiple() as $library) {
       /** @var \Drupal\neo_icon\IconLibraryInterface $library */
-      if ($stylesheet = $library->getStylesheet()) {
+      if ($library->isInlineSvg()) {
+        // Inline SVG: the icons carry their own paths, so the library needs
+        // only the sizing rules and, for CSS-only icons, the @font-face. The
+        // full stylesheet stays available, under its own name, to whatever
+        // still shows icons as font glyphs.
+        $library_name = $library->getLibraryName();
+        $libraries[$library_name]['dependencies'][] = 'neo_icon/icon-inline';
+        if ($fontFace = $library->getFontFaceStylesheet()) {
+          $libraries[$library_name]['css']['theme'][$fontFace] = [];
+        }
+        if ($stylesheet = $library->getStylesheet()) {
+          $libraries[$library->getFontLibraryName()]['css']['theme'][$stylesheet] = [];
+          if ($library->isSvg()) {
+            $libraries[$library->getFontLibraryName()]['dependencies'][] = 'neo_icon/icon-svg';
+          }
+        }
+      }
+      elseif ($stylesheet = $library->getStylesheet()) {
         $library_name = $library->getLibraryName();
         $libraries[$library_name]['css']['theme'][$stylesheet] = [];
         // Add SVG library if necessary.

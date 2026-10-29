@@ -79,7 +79,9 @@ class IconBrowser extends RenderElementBase {
     $element['#libraries'] = [];
     foreach ($libraries as $library) {
       $element['#libraries'][] = $library->id();
-      $element['#attached']['library'][] = 'neo_icon/' . $library->getLibraryName();
+      // The browser shows icons as font glyphs (see IconBrowserController), so
+      // a library rendering inline SVG attaches its full stylesheet here.
+      $element['#attached']['library'][] = 'neo_icon/' . ($library->isInlineSvg() ? $library->getFontLibraryName() : $library->getLibraryName());
       $element['#library_options'][$library->id()] = $library->label();
     }
     $element['#attributes']['data-libraries'][] = Json::encode($element['#libraries']);

@@ -5,6 +5,7 @@ dependencies: {  }
 id: regular
 label: Regular
 type: font
+render: svg
 file: regular_zip
 global: true
 weight: -10

@@ -23,6 +23,13 @@ neo_icon.neo_icon_library.*:
     type:
       type: string
       label: 'The type of icon. Either font or image.'
+    render:
+      type: string
+      label: 'How icons render. Either font or svg.'
+      constraints:
+        Choice:
+          - font
+          - svg
     file:
       type: string
       label: 'File'

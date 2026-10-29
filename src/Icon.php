@@ -2,6 +2,7 @@
 
 namespace Drupal\neo_icon;
 
+use Drupal\Component\Utility\Html;
 use Drupal\Core\Render\Markup;
 
 /**
@@ -57,6 +58,13 @@ class Icon implements IconInterface {
    * @var \Drupal\neo_icon\IconLibraryInterface
    */
   protected $library;
+
+  /**
+   * Whether this icon ignores its library's inline SVG rendering.
+   *
+   * @var bool
+   */
+  protected bool $noInlineSvg = FALSE;
 
   /**
    * Construct an icon.
@@ -116,8 +124,39 @@ class Icon implements IconInterface {
   /**
    * {@inheritdoc}
    */
+  public function getRenderType(): string {
+    if (!$this->noInlineSvg && $this->getLibrary()->isInlineSvg() && $this->getSvgData()) {
+      return IconLibraryInterface::RENDER_SVG;
+    }
+    return (string) $this->getLibrary()->getType();
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function withoutInlineSvg(): static {
+    $icon = clone $this;
+    $icon->noInlineSvg = TRUE;
+    return $icon;
+  }
+
+  /**
+   * Returns this icon's path data from its library's store.
+   *
+   * @return array|null
+   *   The path data, or NULL when the store holds none for this icon.
+   */
+  protected function getSvgData(): ?array {
+    return $this->getLibrary()->getSvgData((string) $this->name);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function getTag() {
-    return $this->getLibrary()->isSvg() ? 'svg' : 'i';
+    // Inline SVG keeps the <i> wrapper a font glyph renders in, so the classes,
+    // the attributes and every rule written against `.neo-icon` still apply.
+    return $this->getRenderType() === 'image' ? 'svg' : 'i';
   }
 
   /**
@@ -125,7 +164,11 @@ class Icon implements IconInterface {
    */
   public function getChildren() {
     $build = [];
-    if ($this->getLibrary()->isFont()) {
+    $type = $this->getRenderType();
+    if ($type === IconLibraryInterface::RENDER_SVG) {
+      $build['#markup'] = Markup::create(static::buildSvg($this->getSvgData()));
+    }
+    elseif ($type === 'font') {
       // Font glyphs cannot have more than one color by default. Using CSS,
       // IcoMoon layers multiple glyphs on top of each other to implement
       // multicolor glyphs. As a result, these glyphs take more than one
@@ -149,9 +192,43 @@ class Icon implements IconInterface {
    */
   public function render() {
     return [
-      '#theme' => 'neo_icon__' . $this->getLibrary()->getType(),
+      '#theme' => 'neo_icon__' . $this->getRenderType(),
       '#icon' => $this,
     ];
+  }
+
+  /**
+   * Builds the inline SVG for an icon's path data.
+   *
+   * The box is the glyph's own: 1em tall and as wide as the glyph advances in
+   * the font, so it takes the space the font glyph took. Fill is the current
+   * color, so `color` styles it as it did the glyph; a path with a fill or an
+   * opacity of its own keeps it, as the package's stylesheet gave its font
+   * glyph. The baseline offset lives in the module's inline SVG stylesheet.
+   *
+   * @param array $data
+   *   The path data, as IconLibraryInterface::getSvgData() returns it.
+   *
+   * @return string
+   *   The SVG markup.
+   */
+  public static function buildSvg(array $data): string {
+    $width = (int) ($data['w'] ?? 1024);
+    $height = (int) ($data['h'] ?? 1024);
+    $em = rtrim(rtrim(number_format($width / max($height, 1), 4, '.', ''), '0'), '.');
+    $svg = '<svg viewBox="0 0 ' . $width . ' ' . $height . '" width="' . $em . 'em" height="1em" fill="currentColor">';
+    foreach ($data['p'] ?? [] as $delta => $d) {
+      $svg .= '<path d="' . Html::escape((string) $d) . '"';
+      $attrs = $data['a'][$delta] ?? [];
+      if (isset($attrs['fill']) && is_string($attrs['fill'])) {
+        $svg .= ' fill="' . Html::escape($attrs['fill']) . '"';
+      }
+      if (isset($attrs['opacity']) && is_numeric($attrs['opacity'])) {
+        $svg .= ' opacity="' . (float) $attrs['opacity'] . '"';
+      }
+      $svg .= '/>';
+    }
+    return $svg . '</svg>';
   }
 
 }

@@ -1,5 +1,43 @@
 # Changelog
 
+## Icon libraries can render as inline SVG
+
+**Each icon library now renders its icons as a font or as inline SVG, set per
+library.** In inline SVG, an icon is its own paths inside the usual wrapper,
+`<i class="neo-icon neo-icon-svg icon-…"><svg …></svg></i>`, so a page carries
+only the icons it shows instead of a whole font and a stylesheet with a rule
+per icon (the regular set's are 1.4MB and 280KB). The SVG takes the glyph's
+width and baseline and fills with the current colour, so `color`, `font-size`,
+opacity and `animate-spin` behave as before; multicolour and duotone paths keep
+their own fill and opacity.
+
+- **Existing libraries stay font.** An update writes `render: font` on every
+  library a site has; export the configuration after `drush updb`. Switch a
+  library on its edit form, or set `render: svg` in its configuration.
+- **The libraries the module ships render as inline SVG**, so new sites start
+  on it.
+- **CSS-only icons keep working.** A library rendering inline SVG drops its
+  `style.css` and attaches an `@font-face`-only `font-face.css`, so the
+  Tailwind `icon-*` utilities still have their font, which a browser only
+  downloads where one shows.
+- **Hand-written icon markup does not.** Anything that builds
+  `<i class="icon-…">` itself, or concatenates a rendered icon into a string
+  Drupal XSS-filters, shows nothing for an inline SVG library. The README lists
+  what to look for before switching a library.
+- **Fonts swap in.** Icon fonts use `font-display: swap` instead of `block`, so
+  text no longer waits for them. The update rewrites existing libraries'
+  stylesheets; new imports get it directly.
+- Path data comes from a compact store written at import beside the package
+  (`svg/`), built on switching for a library imported earlier. An icon it has
+  no paths for falls back to its font glyph.
+- The icon browser still shows font glyphs, so its payload does not grow.
+- A newer-layout package keeps its glyphs' path data, read from its loose SVGs
+  before they are discarded.
+- New: `IconLibraryInterface::getRender()`, `setRender()`, `isInlineSvg()`,
+  `getRenderType()`, `getSvgData()`, `getFontFaceStylesheet()`,
+  `getFontLibraryName()`; `IconInterface::getRenderType()`,
+  `withoutInlineSvg()`; the `neo_icon/icon-inline` library.
+
 ## A rendered icon carries its library's cache tag
 
 **Re-uploading an icon package now refreshes cached markup holding its icons.**

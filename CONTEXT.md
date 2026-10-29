@@ -40,6 +40,23 @@ then the discard of the demo files, the rewrite of the stylesheet and `selection
 library's own **icon id**, and the writing of the **icon definitions**. _Avoid:_ "the import",
 "post-processing", "the rewrite" (that is **layout normalization**, one step inside this).
 
+**Render mode** — how an **icon library**'s icons reach the page, the library's `render` setting:
+`font` (the package's own glyphs, with its whole stylesheet and font) or `svg` (**inline SVG**).
+Independent of the package type, which says what the package shipped and is re-decided by every
+import. _Avoid:_ "type" for this (that is the package's), "SVG mode" for a sprite package.
+
+**Inline SVG** — the `svg` **render mode**: an icon rendered as `<i class="neo-icon neo-icon-svg …">`
+around an `<svg>` built from its paths, read from the **SVG store**. The library attaches its
+**font-face sheet** instead of its stylesheet. _Avoid:_ "sprite" (that is a package type).
+
+**SVG store** — the compact per-icon path data written into a **library directory**'s `svg/` at
+**library preparation**, sharded by icon name, with a `manifest.json` written last to say it is
+complete. The only thing **inline SVG** reads paths from. _Avoid:_ "the selection" (that is
+`selection.json`, never read per request).
+
+**Font-face sheet** — `font-face.css` in a **library directory**: the package stylesheet's
+`@font-face` rules alone, so CSS-only icons keep their font under **inline SVG**.
+
 ## Package layouts
 
 **Classic layout** — the on-disk shape everything downstream of import assumes: a `selection.json`,
