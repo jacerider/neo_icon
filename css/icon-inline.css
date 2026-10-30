@@ -7,7 +7,15 @@
  * such as `animate-spin` apply. The glyph's em box ran from 64 units below the
  * baseline to 960 above it (ascent 960, descent 64 of 1024), hence the offset.
  * Paths may stray outside the box, as they did in the font, without clipping.
+ *
+ * Layers rank by first declaration, and this module sheet can load before the
+ * theme's compiled CSS (it does on admin pages). Declaring `components` first
+ * would rank it below Tailwind's `base`, whose preflight `svg { display: block }`
+ * then breaks the icon onto its own line. So the order is declared here,
+ * matching the order Tailwind's output declares its layers in.
  */
+@layer properties, theme, base, components, utilities;
+
 @layer components {
   :where(.neo-icon-svg) {
     display: inline-block;

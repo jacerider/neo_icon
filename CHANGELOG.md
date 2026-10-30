@@ -52,6 +52,11 @@ their own fill and opacity.
   `getFontLibraryName()`; `IconInterface::getRenderType()`,
   `withoutInlineSvg()`; the `neo_icon/icon-inline` library.
 
+- `css/icon-inline.css` declares the layer order Tailwind's output uses before
+  its own `components` rules. Loaded ahead of a theme's compiled CSS (as on
+  admin pages), it otherwise ranked `components` below `base`, and preflight's
+  `svg { display: block }` broke an icon onto its own line inside buttons.
+
 ## A rendered icon carries its library's cache tag
 
 **Re-uploading an icon package now refreshes cached markup holding its icons.**
