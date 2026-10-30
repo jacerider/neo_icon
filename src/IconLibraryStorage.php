@@ -57,6 +57,18 @@ class IconLibraryStorage extends ConfigEntityStorage implements IconLibraryStora
 
   /**
    * {@inheritdoc}
+   *
+   * Saving or deleting a library resets the cache, so what loadAvailable()
+   * answers is reset with it: a library saved earlier in the request, such as
+   * one switched to inline SVG, would otherwise be answered as it was.
+   */
+  public function resetCache(?array $ids = NULL) {
+    parent::resetCache($ids);
+    $this->available = NULL;
+  }
+
+  /**
+   * {@inheritdoc}
    */
   public function loadGlobals() {
     $global = [];

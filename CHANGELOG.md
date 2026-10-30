@@ -1,5 +1,19 @@
 # Changelog
 
+## Icons rendered for script, once per icon
+
+**`neo_icon.markup_map` renders icons for script to show.** Script that builds
+`<i class="icon-…">` from a selector draws nothing once the icon's library
+renders inline SVG. Code that hands icons to script — a JSON endpoint's results,
+drupalSettings — can now give the service the icons or their selectors and ship
+what it answers: the rendered markup keyed by selector, each icon once however
+many items use it, with the libraries' cache tags collected for whatever caches
+it. See "Icons for script" in the README.
+
+- New: `IconMarkupMapInterface` and the `neo_icon.markup_map` service.
+- Saving a library resets what `IconLibraryStorage::loadAvailable()` answers, so
+  a library switched to inline SVG earlier in a request is answered as switched.
+
 ## Icon libraries can render as inline SVG
 
 **Each icon library now renders its icons as a font or as inline SVG, set per

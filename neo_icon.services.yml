@@ -28,6 +28,15 @@ services:
     class: Drupal\neo_icon\IconElementFactory
     arguments: ['@entity_type.bundle.info']
 
+  # Renders icons for script that shows them: a map of rendered markup keyed
+  # by selector, one entry per icon, for a JSON endpoint or drupalSettings to
+  # ship. Script that built `<i class="icon-…">` itself draws nothing for a
+  # library rendering inline SVG.
+  neo_icon.markup_map:
+    class: Drupal\neo_icon\IconMarkupMap
+    arguments: ['@neo_icon.repository', '@renderer']
+  Drupal\neo_icon\IconMarkupMapInterface: '@neo_icon.markup_map'
+
   twig.neo_icon:
     class: 'Drupal\neo_icon\TwigExtension'
     tags:

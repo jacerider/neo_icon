@@ -105,7 +105,9 @@ no paths for renders as its font glyph and attaches the full stylesheet.
   through the module instead: `icon()` in Twig, `IconTrait::icon()` /
   `neo_icon()` in PHP, or the `neo_icon` render element. Script that needs an
   icon should take it rendered from the server (a `<template>`, a data
-  attribute, drupalSettings) rather than build the class.
+  attribute, drupalSettings) rather than build the class. For many icons —
+  a JSON endpoint's results — the `neo_icon.markup_map` service renders
+  them into a map keyed by selector, once per icon (see below).
 * **Rendered icons concatenated into a string** are XSS-filtered by Drupal,
   which strips `<svg>`. Put the icon element in `#markup` whole, or as a render
   array child, rather than `'<div>' . $icon . '</div>'`. Likewise a form
@@ -118,6 +120,29 @@ no paths for renders as its font glyph and attaches the full stylesheet.
 * **Pseudo-element content** written against a library's own class
   (`content: '\e918'` for a prefix no installed library has) is unaffected,
   since it never came from this module.
+
+### Icons for script
+
+`neo_icon.markup_map` (`IconMarkupMapInterface`) renders icons for script to
+show. Give it icons, or selectors, and it answers their markup keyed by
+selector, each icon once however often it is given:
+
+```php
+$metadata = new BubbleableMetadata();
+$icons = \Drupal::service('neo_icon.markup_map')->build([
+  'icon-regular-cog',
+  $element->getIcon(),
+], $metadata);
+// ['icon-regular-cog' => '<i class="neo-icon neo-icon-svg …"><svg …></svg></i>', …]
+```
+
+Ship the map beside the data that names the icons by selector, and have script
+put the markup in the page as it is. Each icon is rendered in isolation, so
+nothing bubbles into the page being rendered; `$metadata` collects the
+libraries' cache tags instead, for whatever caches the map, so saving or
+re-uploading a library invalidates it. A font library's entries are its font
+glyphs, which still need the library's stylesheet on the page; an inline SVG
+entry needs only `neo_icon/icon-inline`.
 
 The icon browser keeps showing font glyphs in either mode, so its payload does
 not grow with every icon's paths; it attaches the library's full stylesheet

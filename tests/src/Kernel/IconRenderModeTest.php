@@ -158,6 +158,19 @@ final class IconRenderModeTest extends KernelTestBase {
   }
 
   /**
+   * A library switched earlier in the request is answered as switched.
+   */
+  public function testAvailableLibrariesFollowTheirSave(): void {
+    $library = $this->importClassicLibrary('test');
+    $storage = $this->container->get('entity_type.manager')->getStorage('neo_icon_library');
+    $this->assertFalse($storage->loadAvailable()['test']->isInlineSvg());
+
+    $library->setRender('svg')->save();
+
+    $this->assertTrue($storage->loadAvailable()['test']->isInlineSvg());
+  }
+
+  /**
    * Re-uploading the package rewrites the store.
    */
   public function testReuploadRewritesTheStore(): void {
