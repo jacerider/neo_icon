@@ -635,6 +635,10 @@ class IconLibrary extends ConfigEntityBase implements IconLibraryInterface {
     $icon_id = $this->getIconId();
     /** @var \Drupal\Core\File\FileSystemInterface $file_system */
     $file_system = \Drupal::service('file_system');
+    // The package was just unpacked over the library directory. Info read
+    // earlier in the request, such as by the library form, names the
+    // previous package, and renaming from those names would match nothing.
+    $this->getInfo(TRUE);
 
     // Remove unnecessary files.
     $file_system->deleteRecursive($path . '/demo-files');

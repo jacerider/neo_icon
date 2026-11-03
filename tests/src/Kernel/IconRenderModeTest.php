@@ -184,6 +184,31 @@ final class IconRenderModeTest extends KernelTestBase {
   }
 
   /**
+   * Re-uploading renames the fresh package, not by the previous one's names.
+   *
+   * The library has already read its processed selection.json, as the library
+   * form does before it saves. Renaming by those names matched nothing in the
+   * newly unpacked package and left IcoMoon's font family in place, so every
+   * CSS-only icon asking for the library's family lost its glyph.
+   */
+  public function testReuploadRenamesTheFreshPackage(): void {
+    $library = $this->importClassicLibrary('test', ['render' => 'svg']);
+    $this->assertSame('icon-test', $library->getInfoName());
+
+    $library->neoConfigFileUpdate($this->classicConfigFile($this->buildClassicZip()));
+
+    $uri = $library->getUri();
+    $this->assertFileExists($uri . '/fonts/icon-test.woff');
+    $this->assertFileDoesNotExist($uri . '/fonts/icomoon.woff');
+    foreach (['style.css', 'font-face.css'] as $stylesheet) {
+      $css = (string) file_get_contents($uri . '/' . $stylesheet);
+      $this->assertStringContainsString("font-family: 'icon-test'", $css, $stylesheet);
+      $this->assertStringNotContainsString('icomoon', $css, $stylesheet);
+    }
+    $this->assertStringContainsString('.icon-test-chevron:before', (string) file_get_contents($uri . '/style.css'));
+  }
+
+  /**
    * The icon browser's payload carries font glyphs, never path data.
    */
   public function testIconBrowserPayloadStaysFontGlyphs(): void {
