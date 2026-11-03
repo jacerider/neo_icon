@@ -1,5 +1,19 @@
 # Changelog
 
+## Re-uploaded packages keep the library's font names
+
+**Re-uploading a classic IcoMoon package now renames it to the library's
+names.** When the library had already read its previous package earlier in the
+request, as its edit form does, the import renamed by that package's names,
+matched nothing, and left IcoMoon's own (`icomoon`, or the project name) in the
+fonts, `style.css` and `font-face.css`. Inline SVG icons were unaffected, but
+CSS-only icons that ask for the library's family (`icon-regular`), such as table
+sort arrows and select chevrons, drew empty boxes.
+
+- A site that re-uploaded a package before this fix keeps the broken files.
+  Re-import it once after updating, by uploading it again on the library form
+  or with `$library->neoConfigFileUpdate($config_file)`, then rebuild caches.
+
 ## Icons rendered for script, once per icon
 
 **`neo_icon.markup_map` renders icons for script to show.** Script that builds
